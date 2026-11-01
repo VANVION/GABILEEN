@@ -6,8 +6,8 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>GABILEEN — магазин мужской одежды</title>
-<meta name="description" content="GABILEEN — магазин мужской классической одежды: пиджаки 50–58 размеров. Цена 25 000 ₽. Заказ через WhatsApp, Telegram и MAX.">
+<title>GABILEEN — мужские пиджаки 50–58</title>
+<meta name="description" content="Пиджаки на каждый день и на особый случай. Размеры 50–58, 25 000 ₽. Доставка по Москве и России, примерка с выездом к вам.">
 <meta name="theme-color" content="#1a1814">
 <!-- Favicon / app icons -->
 <link rel="icon" type="image/png" href="./favicon.png?v=1">
@@ -23,17 +23,17 @@
 <!-- Link preview (Open Graph / Twitter) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GABILEEN">
-<meta property="og:title" content="GABILEEN — магазин мужской одежды">
-<meta property="og:description" content="Мужская классика: пиджаки 50–58 размеров по 25 000 ₽. Заказ через WhatsApp, Telegram и MAX.">
+<meta property="og:title" content="GABILEEN — мужские пиджаки 50–58">
+<meta property="og:description" content="Пиджаки на каждый день и на особый случай. Размеры 50–58, 25 000 ₽. Доставка по Москве и России, примерка с выездом к вам.">
 <meta property="og:url" content="https://vanvion.github.io/GABILEEN/">
-<meta property="og:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=1">
+<meta property="og:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="GABILEEN — магазин мужской одежды">
-<meta name="twitter:description" content="Мужская классика: пиджаки 50–58 размеров по 25 000 ₽.">
-<meta name="twitter:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=1">
+<meta name="twitter:title" content="GABILEEN — мужские пиджаки 50–58">
+<meta name="twitter:description" content="Пиджаки на каждый день и на особый случай. Размеры 50–58, 25 000 ₽. Доставка и примерка с выездом.">
+<meta name="twitter:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=2">
 
 <!-- Структурированные данные для поиска (Яндекс / Google) -->
 <script type="application/ld+json">
@@ -1511,6 +1511,31 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 @keyframes szShake { 0%,100% { transform: none; } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
 .cart-item-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .cart-item-price { font-size: 13px; letter-spacing: 0.03em; margin-top: 9px; white-space: nowrap; }
+.sz.off { opacity: 0.35; text-decoration: line-through; pointer-events: none; }
+.sz-help { display: inline-block; font-size: 11.5px; letter-spacing: 0.06em; color: var(--text2); text-decoration: underline; text-underline-offset: 3px; margin: -4px 0 14px; text-transform: uppercase; }
+.svc { margin-top: 18px; border: 1px solid rgba(26,24,20,0.12); border-radius: 18px; padding: 4px 14px; background: rgba(255,255,255,0.4); }
+.svc-row { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; font-size: 12.5px; letter-spacing: 0.03em; line-height: 1.4; }
+.svc-row + .svc-row { border-top: 1px solid rgba(26,24,20,0.08); }
+.svc-row svg { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+.svc-row small { display: block; color: var(--text2); font-size: 11.5px; letter-spacing: 0.02em; margin-top: 2px; text-transform: none; }
+.sc-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 6px 0 12px; }
+.sc-table th { font-size: 10.5px; letter-spacing: 0.08em; color: var(--muted); font-weight: 400; text-align: left; padding: 8px 6px; border-bottom: 1px solid rgba(26,24,20,0.15); }
+.sc-table td { padding: 10px 6px; border-bottom: 1px solid rgba(26,24,20,0.08); }
+.sc-table td:first-child { font-size: 15px; }
+.sc-note { font-size: 12.5px; color: var(--text2); line-height: 1.5; margin-bottom: 14px; text-transform: none; }
+.dl-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.dl-opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; text-transform: none; padding: 12px 14px; border-radius: 16px; border: 1px solid rgba(26,24,20,0.15); background: rgba(255,255,255,0.5); font-size: 13px; letter-spacing: 0.02em; }
+.dl-opt.active { border-color: var(--text); background: #fff; }
+.dl-radio { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(26,24,20,0.35); flex: none; margin-top: 1px; position: relative; }
+.dl-opt.active .dl-radio { border-color: var(--text); }
+.dl-opt.active .dl-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--text); }
+.dl-opt b { display: block; font-weight: 400; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12.5px; }
+.dl-opt small { display: block; color: var(--text2); font-size: 11.5px; margin-top: 3px; line-height: 1.4; }
+.dl-price { margin-left: auto; white-space: nowrap; font-size: 12px; color: var(--text2); padding-left: 8px; }
+.cart-field { width: 100%; font-family: var(--font); font-size: 14px; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(26,24,20,0.15); background: rgba(255,255,255,0.6); color: var(--text); margin-bottom: 8px; -webkit-appearance: none; }
+.cart-field:focus { outline: none; border-color: var(--text2); }
+.cart-field::placeholder { color: var(--muted); }
+.cart-field.err { border-color: #c0392b; }
 .cart-hint { font-size: 11px; color: var(--text2); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
 </style>
 <!-- Yandex.Metrika: впиши номер счётчика в YM_ID (сейчас 0 — счётчик выключен) -->
@@ -1572,6 +1597,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 </button>
 <div class="contacts" id="cart"></div>
 <div class="contacts" id="qadd"></div>
+<div class="contacts" id="sizeChart"></div>
 <div class="contacts" id="news"></div>
 <div class="contacts" id="chat"></div>
 
@@ -1626,6 +1652,26 @@ const CONTACTS = {
     'Россия, Москва, ТЦ «Садовод», 16 линия, пав. 72'
   ]
 };
+/* ---------- СПОСОБЫ ПОЛУЧЕНИЯ ----------
+   price: число (₽), 0 — бесплатно, null — «уточнит менеджер». needsAddress — спрашивать адрес. */
+const DELIVERY = [
+  { key: 'courier', ru: 'Курьер по Москве', en: 'Courier in Moscow', price: null, needsAddress: true,
+    note_ru: 'Привезём в удобное время', note_en: 'At a time that suits you' },
+  { key: 'fitting', ru: 'Выезд с примеркой', en: 'Home try-on visit', price: null, needsAddress: true,
+    note_ru: 'Привезём модель в нескольких размерах — примерите дома или в офисе', note_en: 'We bring several sizes for you to try at home or in the office' },
+  { key: 'cdek', ru: 'Доставка по России (СДЭК)', en: 'Delivery across Russia (CDEK)', price: null, needsAddress: true,
+    note_ru: 'До пункта выдачи или курьером до двери', note_en: 'To a pickup point or to your door' },
+  { key: 'pickup', ru: 'Самовывоз', en: 'Pickup', price: 0, needsAddress: false,
+    note_ru: CONTACTS.addresses[0], note_en: CONTACTS.addresses[0] }
+];
+/* ---------- РАЗМЕРНАЯ СЕТКА (обхваты в см, ориентировочно) ---------- */
+const SIZE_CHART = [
+  { size: 50, chest: '98–101',  waist: '86–89' },
+  { size: 52, chest: '102–105', waist: '90–93' },
+  { size: 54, chest: '106–109', waist: '94–97' },
+  { size: 56, chest: '110–113', waist: '98–101' },
+  { size: 58, chest: '114–117', waist: '102–105' }
+];
 function orderLinks(msg) {
   const t = encodeURIComponent(msg);
   return {
@@ -1711,7 +1757,7 @@ function familyOf(p) {
 
 const I18N = {
   ru: {
-    subtitle: 'МАГАЗИН · МУЖСКАЯ КЛАССИКА',
+    subtitle: 'МУЖСКИЕ ПИДЖАКИ · 50–58',
     search: 'ПОИСК ПО АРТИКУЛУ ИЛИ НАЗВАНИЮ',
     tabs: { all: 'ВСЕ', bryuki: 'БРЮКИ', pidzhaki: 'ПИДЖАКИ', palto: 'ПАЛЬТО' },
     count: n => n + ' ' + plural(n, 'ПОЗИЦИЯ', 'ПОЗИЦИИ', 'ПОЗИЦИЙ'),
@@ -1730,7 +1776,7 @@ const I18N = {
     retry: 'ПОВТОРИТЬ'
   },
   en: {
-    subtitle: 'STORE · MENSWEAR',
+    subtitle: 'MEN\'S JACKETS · 50–58',
     search: 'SEARCH BY ARTICLE OR NAME',
     tabs: { all: 'ALL', bryuki: 'TROUSERS', pidzhaki: 'JACKETS', palto: 'COATS' },
     count: n => n + ' ' + (n === 1 ? 'ITEM' : 'ITEMS'),
@@ -1749,7 +1795,7 @@ const I18N = {
     retry: 'RETRY'
   },
   tr: {
-    subtitle: 'MAĞAZA · ERKEK KLASİK',
+    subtitle: 'ERKEK CEKETLERİ · 50–58',
     search: 'ÜRÜN KODU VEYA ADIYLA ARA',
     tabs: { all: 'TÜMÜ', bryuki: 'PANTOLON', pidzhaki: 'CEKET', palto: 'PALTO' },
     count: n => n + ' ÜRÜN',
@@ -1768,7 +1814,7 @@ const I18N = {
     retry: 'TEKRAR DENE'
   },
   az: {
-    subtitle: 'MAĞAZA · KİŞİ KLASSİK',
+    subtitle: 'KİŞİ PİDJAKLARI · 50–58',
     search: 'ARTİKUL VƏ YA AD ÜZRƏ AXTARIŞ',
     tabs: { all: 'HAMISI', bryuki: 'ŞALVAR', pidzhaki: 'PİDJAK', palto: 'PALTO' },
     count: n => n + ' MƏHSUL',
@@ -1825,6 +1871,14 @@ const DICT = {
   'МАГАЗИН · ОТВЕЧУ НА ВОПРОСЫ': { tr: 'MAĞAZA · SORULARINIZI YANITLARIM', az: 'MAĞAZA · SUALLARA CAVAB VERİRƏM' },
   'ОФОРМИТЬ ЗАКАЗ ЧЕРЕЗ': { tr: 'SİPARİŞ VER', az: 'SİFARİŞ VER' },
   'ВЫБЕРИТЕ РАЗМЕР': { tr: 'BEDEN SEÇİN', az: 'ÖLÇÜ SEÇİN' },
+  'Таблица размеров': { tr: 'Beden tablosu', az: 'Ölçü cədvəli' },
+  'ТАБЛИЦА РАЗМЕРОВ': { tr: 'BEDEN TABLOSU', az: 'ÖLÇÜ CƏDVƏLİ' },
+  'СПОСОБ ПОЛУЧЕНИЯ': { tr: 'TESLİMAT ŞEKLİ', az: 'ÇATDIRILMA ÜSULU' },
+  'ВАШИ ДАННЫЕ': { tr: 'BİLGİLERİNİZ', az: 'MƏLUMATLARINIZ' },
+  'Имя': { tr: 'Ad', az: 'Ad' },
+  'Телефон': { tr: 'Telefon', az: 'Telefon' },
+  'ВЫЕЗД С ПРИМЕРКОЙ': { tr: 'EVDE PROVA', az: 'EVDƏ PROVA' },
+  'Нет в наличии': { tr: 'Stokta yok', az: 'Stokda yoxdur' },
   'ВЫБОР РАЗМЕРА': { tr: 'BEDEN SEÇİMİ', az: 'ÖLÇÜ SEÇİMİ' },
   'РАЗМЕР': { tr: 'BEDEN', az: 'ÖLÇÜ' },
   'Выберите размер': { tr: 'Beden seçin', az: 'Ölçü seçin' },
@@ -2343,6 +2397,9 @@ function renderTabs() {
   const order = ['all', 'bryuki', 'pidzhaki', 'palto'];
   // Скрываем категорию, если в ней нет товаров (напр. ПАЛЬТО). Вкладка вернётся
   // автоматически, как только для неё появятся товары — ничего удалять не нужно.
+  const cats = order.filter(c => c !== 'all' && PRODUCTS.some(p => p.cat === c));
+  $('tabs').style.display = cats.length < 2 ? 'none' : '';
+  if (cats.length < 2) CAT = 'all';
   $('tabs').innerHTML = order.map(c => {
     const n = c === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === c).length;
     if (c !== 'all' && n === 0) return '';
@@ -2599,7 +2656,7 @@ function openDetail(id, cardEl, opts) {
       '<div class="section-label d-anim d2">' + t().colors + ' · ' + variants.length + '</div>' +
       '<div class="cv-row d-anim d2">' + swatches + '</div>' +
       '<div class="cv-current d-anim d2">' + esc(curLabel) + '</div>' +
-      '<div class="addcart d-anim d3">' + addcartHTML(p) + '</div>' +
+      '<div class="addcart d-anim d3">' + addcartHTML(p, true) + '</div>' +
       '<div class="order-block d-anim d3">' + orderHTML(p) + '</div>' +
       '<div class="specs d-anim d4">' + rows + '</div>' +
       '<button class="share-btn d-anim d4" id="shareBtn">' + t().share + '</button>' +
@@ -3217,6 +3274,12 @@ let CART = [];
 try { CART = JSON.parse(localStorage.getItem('gabileen_cart') || '[]') || []; } catch (e) { CART = []; }
 CART = CART.filter(i => i && i.id && i.size && i.qty > 0);
 let CART_COMMENT = '';
+let CUST = { name: '', phone: '', address: '', delivery: 'courier' };
+try { Object.assign(CUST, JSON.parse(localStorage.getItem('gabileen_customer') || '{}')); } catch (e) {}
+if (!DELIVERY.some(d => d.key === CUST.delivery)) CUST.delivery = DELIVERY[0].key;
+function saveCust() { try { localStorage.setItem('gabileen_customer', JSON.stringify(CUST)); } catch (e) {} }
+function curDelivery() { return DELIVERY.find(d => d.key === CUST.delivery) || DELIVERY[0]; }
+function dlPriceLabel(d) { return d.price === 0 ? L('бесплатно', 'free') : d.price ? fmtPrice(d.price) : ''; }
 function saveCart() { try { localStorage.setItem('gabileen_cart', JSON.stringify(CART)); } catch (e) {} }
 function prodById(id) { return PRODUCTS.find(p => p.id === id); }
 function cartCount() { return CART.reduce((s, i) => s + i.qty, 0); }
@@ -3261,23 +3324,68 @@ function renderCartFab() {
   if (fab) { fab.hidden = n === 0; const b = $('cartBadge'); if (b) b.textContent = n; }
   const db = $('detailCartBadge'); if (db) { db.textContent = n; db.style.display = n ? 'flex' : 'none'; }
 }
+/* размеры, которых нет в наличии: поле soldout — «56, 58» */
+function soldoutList(p) { return (String((p && p.soldout) || '').match(/\d+/g) || []); }
 /* блок «цена + выбор размера + в корзину» */
-function addcartHTML(p) {
+function addcartHTML(p, withServices) {
   const price = priceOf(p);
   const sizes = sizeList(p);
+  const off = soldoutList(p);
   return (price ? '<div class="price-big">' + fmtPrice(price) + '</div>' : '') +
     '<div class="addcart-label">' + L('ВЫБЕРИТЕ РАЗМЕР', 'SELECT SIZE') + '</div>' +
-    '<div class="sz-row">' + sizes.map(s =>
-      '<button class="sz" data-size="' + s + '">' + s + '</button>'
-    ).join('') + '</div>' +
-    '<button class="addcart-btn ac-go" style="width:100%">' + L('В КОРЗИНУ', 'ADD TO CART') + '</button>';
+    '<div class="sz-row">' + sizes.map(s => {
+      const no = off.indexOf(String(s)) >= 0;
+      return '<button class="sz' + (no ? ' off' : '') + '" data-size="' + s + '"' + (no ? ' disabled title="' + L('Нет в наличии', 'Out of stock') + '"' : '') + '>' + s + '</button>';
+    }).join('') + '</div>' +
+    '<button class="sz-help">' + L('Таблица размеров', 'Size guide') + '</button>' +
+    '<button class="addcart-btn ac-go" style="width:100%">' + L('В КОРЗИНУ', 'ADD TO CART') + '</button>' +
+    (withServices ? servicesHTML() : '');
 }
+const ICON_TRUCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h13v10H1z"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="5.5" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg>';
+const ICON_HANGER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7a2 2 0 1 1 2-2c0 1-1 1.5-2 2.3V9"/><path d="M12 9 2.5 16.2A1 1 0 0 0 3.1 18h17.8a1 1 0 0 0 .6-1.8z"/></svg>';
+const ICON_RULER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16 16 3l5 5L8 21z"/><path d="m7 12 2 2M10 9l2 2M13 6l2 2"/></svg>';
+function servicesHTML() {
+  return '<div class="svc">' +
+    '<div class="svc-row">' + ICON_HANGER + '<div>' + L('ВЫЕЗД С ПРИМЕРКОЙ', 'HOME TRY-ON') +
+      '<small>' + L('Привезём модель в нескольких размерах — примерите дома или в офисе', 'We bring several sizes for you to try at home or in the office') + '</small></div></div>' +
+    '<div class="svc-row">' + ICON_TRUCK + '<div>' + L('ДОСТАВКА ПО МОСКВЕ И РОССИИ', 'DELIVERY IN MOSCOW & RUSSIA') +
+      '<small>' + L('Курьером или СДЭК — выберете в корзине', 'By courier or CDEK — choose in the cart') + '</small></div></div>' +
+    '<div class="svc-row">' + ICON_RULER + '<div>' + L('ПОМОЖЕМ С РАЗМЕРОМ', 'HELP WITH SIZING') +
+      '<small>' + L('Напишите рост и обхват груди — подберём', 'Send us your height and chest size') + '</small></div></div>' +
+  '</div>';
+}
+/* ---------- окно «таблица размеров» ---------- */
+function openSizeChart() {
+  haptic('light');
+  const box = $('sizeChart');
+  const rows = SIZE_CHART.map(r => '<tr><td>' + r.size + '</td><td>' + r.chest + '</td><td>' + r.waist + '</td></tr>').join('');
+  const l = orderLinks('Здравствуйте! Помогите подобрать размер пиджака. Мой рост: , обхват груди: ');
+  box.innerHTML = '<div class="ct-sheet">' +
+    '<button class="ct-close" id="scClose" aria-label="Закрыть">&#10005;</button>' +
+    '<div class="ct-title">' + L('ТАБЛИЦА РАЗМЕРОВ', 'SIZE GUIDE') + '</div>' +
+    '<div class="ct-sub">' + L('ПИДЖАКИ · ОБХВАТЫ В СМ', 'JACKETS · MEASUREMENTS IN CM') + '</div>' +
+    '<table class="sc-table"><tr><th>' + L('РАЗМЕР', 'SIZE') + '</th><th>' + L('ГРУДЬ', 'CHEST') + '</th><th>' + L('ТАЛИЯ', 'WAIST') + '</th></tr>' + rows + '</table>' +
+    '<div class="sc-note">' + L('Обхват груди измеряйте по самым выступающим точкам, под мышками. Если вы между размерами — берите больший или напишите нам: подберём по росту и фигуре.',
+      'Measure your chest at the fullest point, under the arms. Between sizes? Take the larger one or message us — we will help.') + '</div>' +
+    '<div class="addcart-label">' + L('ПОМОЧЬ С РАЗМЕРОМ', 'ASK FOR HELP') + '</div>' +
+    '<div class="order-btns ct-msgrs">' +
+      '<a class="ob ob-wa" href="' + l.wa + '" target="_blank" rel="noopener">WhatsApp</a>' +
+      '<a class="ob ob-tg" href="' + l.tg + '" target="_blank" rel="noopener">Telegram</a>' +
+      '<a class="ob ob-mx" href="' + l.max + '" target="_blank" rel="noopener">MAX</a>' +
+    '</div>' +
+  '</div>';
+  box.classList.add('show');
+  $('scClose').onclick = closeSizeChart;
+  box.onclick = e => { if (e.target === box) closeSizeChart(); };
+}
+function closeSizeChart() { $('sizeChart').classList.remove('show'); }
 function setupAddCart(p, root, onAdded) {
   if (!root) return;
   const btn = root.querySelector('.ac-go'); if (!btn) return;
   const row = root.querySelector('.sz-row');
+  const help = root.querySelector('.sz-help'); if (help) help.onclick = openSizeChart;
   let sel = null;
-  root.querySelectorAll('.sz').forEach(b => b.onclick = () => {
+  root.querySelectorAll('.sz:not(.off)').forEach(b => b.onclick = () => {
     haptic('light');
     sel = b.getAttribute('data-size');
     root.querySelectorAll('.sz').forEach(x => x.classList.toggle('active', x === b));
@@ -3367,11 +3475,25 @@ function renderCart() {
       '</div>';
     }).join('');
     const n = cartCount();
+    const dl = curDelivery();
+    const dlOpts = DELIVERY.map(d =>
+      '<button class="dl-opt' + (d.key === dl.key ? ' active' : '') + '" data-dl="' + d.key + '">' +
+        '<span class="dl-radio"></span>' +
+        '<span><b>' + esc(L(d.ru, d.en)) + '</b><small>' + esc(LANG === 'ru' ? d.note_ru : d.note_en) + '</small></span>' +
+        '<span class="dl-price">' + dlPriceLabel(d) + '</span>' +
+      '</button>').join('');
+    const dlCost = dl.price ? dl.price : 0;
     body = items +
-      '<div class="cart-total"><span>' + L('ИТОГО', 'TOTAL') + ' · ' + n + ' ' + pcsWord(n) + '</span><b>' + fmtPrice(cartSum()) + '</b></div>' +
-      '<div class="addcart-label">' + L('КОММЕНТАРИЙ К ЗАКАЗУ', 'ORDER COMMENT') + '</div>' +
-      '<textarea class="cart-note" id="cartNote" rows="2" placeholder="' + L('Имя, телефон, город и адрес доставки…', 'Name, phone, delivery city and address…') + '">' + esc(CART_COMMENT) + '</textarea>' +
-      '<div class="addcart-label">' + L('ОФОРМИТЬ ЗАКАЗ ЧЕРЕЗ', 'PLACE ORDER VIA') + '</div>' +
+      '<div class="cart-total"><span>' + L('ИТОГО', 'TOTAL') + ' · ' + n + ' ' + pcsWord(n) + '</span><b>' + fmtPrice(cartSum() + dlCost) + '</b></div>' +
+      (dl.price === null ? '<div class="cart-hint" style="margin:-8px 0 14px;text-align:right">' + L('+ доставка — стоимость сообщит менеджер', '+ delivery — the manager will confirm the cost') + '</div>' : '') +
+      '<div class="addcart-label">' + L('СПОСОБ ПОЛУЧЕНИЯ', 'DELIVERY METHOD') + '</div>' +
+      '<div class="dl-opts">' + dlOpts + '</div>' +
+      '<div class="addcart-label">' + L('ВАШИ ДАННЫЕ', 'YOUR DETAILS') + '</div>' +
+      '<input class="cart-field" id="cfName" autocomplete="name" placeholder="' + L('Имя', 'Name') + '" value="' + esc(CUST.name) + '">' +
+      '<input class="cart-field" id="cfPhone" type="tel" autocomplete="tel" placeholder="' + L('Телефон', 'Phone') + '" value="' + esc(CUST.phone) + '">' +
+      (dl.needsAddress ? '<input class="cart-field" id="cfAddr" autocomplete="street-address" placeholder="' + L('Город и адрес доставки', 'City and delivery address') + '" value="' + esc(CUST.address) + '">' : '') +
+      '<textarea class="cart-note" id="cartNote" rows="2" placeholder="' + L('Комментарий: удобное время, пожелания…', 'Comment: preferred time, wishes…') + '">' + esc(CART_COMMENT) + '</textarea>' +
+      '<div class="addcart-label" style="margin-top:14px">' + L('ОФОРМИТЬ ЗАКАЗ ЧЕРЕЗ', 'PLACE ORDER VIA') + '</div>' +
       '<div class="order-btns ct-msgrs">' +
         '<button class="ob ob-wa" id="cartWa">WhatsApp</button>' +
         '<button class="ob ob-tg" id="cartTg">Telegram</button>' +
@@ -3397,6 +3519,13 @@ function renderCart() {
   box.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { haptic('light'); cartRemove(b.getAttribute('data-rm'), b.getAttribute('data-rms')); });
   const clr = $('cartClear'); if (clr) clr.onclick = () => cartClear();
   const note = $('cartNote'); if (note) note.oninput = e => { CART_COMMENT = e.target.value; };
+  [['cfName', 'name'], ['cfPhone', 'phone'], ['cfAddr', 'address']].forEach(([id, k]) => {
+    const el = $(id); if (el) el.oninput = e => { CUST[k] = e.target.value; el.classList.remove('err'); saveCust(); };
+  });
+  box.querySelectorAll('[data-dl]').forEach(b => b.onclick = () => {
+    haptic('light'); CUST.delivery = b.getAttribute('data-dl'); saveCust();
+    const st = box.querySelector('.ct-sheet').scrollTop; renderCart(); box.querySelector('.ct-sheet').scrollTop = st;
+  });
   const wa = $('cartWa'), tg = $('cartTg'), mx = $('cartMx');
   if (wa) wa.onclick = () => sendCart('wa');
   if (tg) tg.onclick = () => sendCart('tg');
@@ -3417,6 +3546,12 @@ function cartMessage() {
   lines.push('');
   const n = cartCount();
   lines.push('Итого: ' + n + ' ' + plural(n, 'товар', 'товара', 'товаров') + ' на сумму ' + fmtPrice(cartSum()));
+  const dl = curDelivery();
+  lines.push('');
+  lines.push('Получение: ' + dl.ru + (dl.price ? ' (' + fmtPrice(dl.price) + ')' : dl.price === 0 ? ' (бесплатно)' : ''));
+  if (CUST.name.trim()) lines.push('Имя: ' + CUST.name.trim());
+  if (CUST.phone.trim()) lines.push('Телефон: ' + CUST.phone.trim());
+  if (dl.needsAddress && CUST.address.trim()) lines.push('Адрес: ' + CUST.address.trim());
   if (CART_COMMENT.trim()) {
     lines.push('');
     lines.push('Комментарий: ' + CART_COMMENT.trim());
@@ -3433,6 +3568,15 @@ function copyText(txt) {
 }
 function sendCart(channel) {
   if (!CART.length) return;
+  const need = [['cfName', CUST.name], ['cfPhone', CUST.phone]];
+  if (curDelivery().needsAddress) need.push(['cfAddr', CUST.address]);
+  const miss = need.filter(([id, v]) => !String(v || '').trim());
+  if (miss.length) {
+    miss.forEach(([id]) => { const el = $(id); if (el) el.classList.add('err'); });
+    const first = $(miss[0][0]); if (first) first.focus();
+    toast(L('Заполните имя, телефон и адрес', 'Please fill in name, phone and address'));
+    return;
+  }
   haptic('medium');
   ymGoal('order_sent_' + channel);
   const msg = cartMessage();
@@ -3711,7 +3855,7 @@ $('cartFab').onclick = () => openCart();
 $('detailCart').onclick = () => openCart();
 initPush();
 renderCartFab();
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContacts(); closeCart(); closeNews(); closeChat(); closeQuickAdd(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContacts(); closeCart(); closeNews(); closeChat(); closeQuickAdd(); closeSizeChart(); } });
 
 /* ---------- premium libs: Lenis + Splitting + ScrollTrigger ---------- */
 const HAS_LENIS = typeof Lenis !== 'undefined';
