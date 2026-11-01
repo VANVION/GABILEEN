@@ -1,0 +1,4 @@
+id,cat,name_ru,name_en,model,colors,image,image2,price,sizes,comp_ru,comp_en,sil_ru,sil_en,lin_ru,lin_en,btn_ru,btn_en,country_ru,country_en
+PR-2018,pidzhaki,ПИДЖАК SONILI SIYAH,SONILI JACKET SIYAH,SONILI,siyah,images/PR-2018.jpg,,25000,"50, 52, 54, 56, 58",ПОЛИЭСТЕР 65% ВИСКОЗА 35%,POLYESTER 65% VISCOSE 35%,ПРИТАЛЕННЫЙ,SLIM FIT,ВИСКОЗА,VISCOSE,2 ПУГОВИЦЫ,2 BUTTONS,ТУРЦИЯ,TURKEY
+PR-2017,pidzhaki,ПИДЖАК SONILI K.LACI,SONILI JACKET K.LACI,SONILI,klaci,images/PR-2017.jpg,,25000,"50, 52, 54, 56, 58",ПОЛИЭСТЕР 65% ВИСКОЗА 35%,POLYESTER 65% VISCOSE 35%,ПРИТАЛЕННЫЙ,SLIM FIT,ВИСКОЗА,VISCOSE,2 ПУГОВИЦЫ,2 BUTTONS,ТУРЦИЯ,TURKEY
+PR-2016,pidzhaki,ПИДЖАК SONILI LACI,SONILI JACKET LACI,SONILI,laci,images/PR-2016.jpg,,25000,"50, 52, 54, 56, 58",ПОЛИЭСТЕР 65% ВИСКОЗА 35%,POLYESTER 65% VISCOSE 35%,ПРИТАЛЕННЫЙ,SLIM FIT,ВИСКОЗА,VISCOSE,2 ПУГОВИЦЫ,2 BUTTONS,ТУРЦИЯ,TURKEY

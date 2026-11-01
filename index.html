@@ -1,0 +1,3833 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>GABILEEN — магазин мужской одежды</title>
+<meta name="description" content="GABILEEN — магазин мужской классической одежды: пиджаки 50–58 размеров. Цена 25 000 ₽. Заказ через WhatsApp, Telegram и MAX.">
+<meta name="theme-color" content="#1a1814">
+<!-- Favicon / app icons -->
+<link rel="icon" type="image/png" href="./favicon.png?v=1">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png?v=1">
+
+<!-- iOS: открытие как приложение с главного экрана -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GABILEEN">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.json?v=1">
+
+<!-- Link preview (Open Graph / Twitter) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GABILEEN">
+<meta property="og:title" content="GABILEEN — магазин мужской одежды">
+<meta property="og:description" content="Мужская классика: пиджаки 50–58 размеров по 25 000 ₽. Заказ через WhatsApp, Telegram и MAX.">
+<meta property="og:url" content="https://vanvion.github.io/GABILEEN/">
+<meta property="og:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GABILEEN — магазин мужской одежды">
+<meta name="twitter:description" content="Мужская классика: пиджаки 50–58 размеров по 25 000 ₽.">
+<meta name="twitter:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=1">
+
+<!-- Структурированные данные для поиска (Яндекс / Google) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ClothingStore",
+  "name": "GABILEEN",
+  "description": "Магазин мужской классической одежды: пиджаки.",
+  "url": "https://vanvion.github.io/GABILEEN/",
+  "logo": "https://vanvion.github.io/GABILEEN/icon-512.png",
+  "image": "https://vanvion.github.io/GABILEEN/og-image.jpg",
+  "priceRange": "25000 RUB",
+  "telephone": "+7 916 259 1643",
+  "email": "vanvion@yandex.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "RU",
+    "addressLocality": "Москва",
+    "streetAddress": "ТЦ «Садовод», корпус Б, 1 этаж, линия В, пав. 50–52"
+  },
+  "areaServed": "RU"
+}
+</script>
+
+<!-- External enhancement libs load asynchronously so a slow/blocked CDN can never prevent the catalogue from rendering. -->
+<script async src="https://telegram.org/js/telegram-web-app.js"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting.css" media="print" onload="this.media='all'">
+<style>
+@font-face {
+  font-family: 'Futura PT Book';
+  src: url('./futura-pt-book.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+:root {
+  --bg: #f5f5f3;
+  --card: rgba(255,255,255,0.28);
+  --border: rgba(255,255,255,0.5);
+  --text: #1a1814;
+  --text2: #6b6358;
+  --muted: #a09880;
+  --accent: #1a1814;
+  --accent-fg: #ffffff;
+  --font: 'Futura PT Book', 'Futura', 'Century Gothic', sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --glass: rgba(255,255,255,0.28);
+  --glass-border: rgba(255,255,255,0.6);
+  --blur: blur(32px) saturate(1.8);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  text-transform: uppercase;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ---------- AURORA BLOBS ---------- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+#auroraCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+body { font-size: 13px; }
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+body.locked {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+img { display: block; }
+button { font-family: var(--font); text-transform: uppercase; cursor: pointer; background: none; border: none; color: inherit; }
+::selection { background: var(--text); color: #fff; }
+
+/* ---------- PULL TO REFRESH ---------- */
+.ptr {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 49;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.ptr-inner {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  padding: 14px 0;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.ptr-inner.spin { animation: ptrPulse 0.9s infinite ease-in-out; }
+@keyframes ptrPulse {
+  0%, 100% { opacity: 0.35; letter-spacing: 0.3em; }
+  50% { opacity: 1; letter-spacing: 0.42em; }
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255,255,255,0.22);
+  -webkit-backdrop-filter: blur(36px) saturate(2);
+  backdrop-filter: blur(36px) saturate(2);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  transition: transform 0.3s var(--ease);
+  padding-top: env(safe-area-inset-top);
+}
+.header-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px 4px;
+}
+.brand {
+  font-size: 30px;
+  letter-spacing: 0.22em;
+  font-weight: 400;
+  line-height: 1;
+  animation: brandIn 0.9s var(--ease) both;
+}
+@keyframes brandIn {
+  from { opacity: 0; letter-spacing: 0.42em; }
+  to { opacity: 1; letter-spacing: 0.22em; }
+}
+.lang-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.6);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.8);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  padding: 6px 12px;
+  color: var(--text2);
+  border-radius: 999px;
+  transition: color 0.25s, transform 0.15s, background 0.25s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.lang-btn:active { transform: translateY(-50%) scale(0.92); }
+.lang-menu {
+  position: fixed; z-index: 1200; min-width: 160px;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.22); padding: 6px; overflow: hidden;
+}
+.lang-opt {
+  width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+  padding: 10px 12px; border-radius: 10px; font-size: 13px; color: var(--text);
+  text-transform: none; letter-spacing: 0;
+}
+.lang-opt b { font-size: 11px; letter-spacing: 0.1em; color: var(--muted); min-width: 22px; }
+.lang-opt span { font-size: 13.5px; }
+.lang-opt.active { background: var(--card); }
+.lang-opt.active b { color: var(--accent); }
+.lang-opt:active { background: var(--card); }
+.subtitle {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--text2);
+  padding: 3px 16px 12px;
+  animation: fadeUp 0.8s 0.15s var(--ease) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- SEARCH ---------- */
+.search-wrap { position: relative; border-top: 1px solid rgba(255,255,255,0.5); }
+.search-icon {
+  position: absolute;
+  left: 16px; top: 50%;
+  transform: translateY(-50%);
+  width: 14px; height: 14px;
+  pointer-events: none;
+  opacity: 0.4;
+  transition: opacity 0.25s;
+}
+.search-wrap.focused .search-icon { opacity: 0.9; }
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  background: transparent;
+  padding: 12px 40px 12px 40px;
+}
+.search-input::placeholder { color: var(--muted); letter-spacing: 0.06em; }
+.search-clear {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%) scale(0.6);
+  font-size: 13px;
+  color: var(--muted);
+  padding: 7px 9px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s var(--ease);
+}
+.search-clear.show { opacity: 1; pointer-events: auto; transform: translateY(-50%) scale(1); }
+
+/* ---------- TABS ---------- */
+.tabs {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  gap: 24px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  position: relative;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  padding: 11px 0;
+  flex: none;
+  transition: color 0.3s;
+}
+.tab .tab-n {
+  font-size: 9px;
+  color: var(--muted);
+  vertical-align: super;
+  margin-left: 3px;
+  transition: color 0.3s;
+}
+.tab.active { color: var(--text); }
+.tab.active .tab-n { color: var(--text2); }
+.tab::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--text);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s var(--ease);
+}
+.tab.active::after { transform: scaleX(1); }
+
+/* ---------- HERO SHOWCASE (Swiper) ---------- */
+.hero-wrap {
+  position: relative;
+  margin: 12px;
+  border-radius: 28px;
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-swiper {
+  height: 58vh;
+  min-height: 340px;
+  border-radius: 28px;
+  overflow: hidden;
+}
+.hero-swiper .swiper-slide {
+  position: relative;
+  overflow: hidden;
+}
+.hero-swiper .swiper-slide img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.06);
+  transition: transform 0.8s var(--ease);
+}
+.hero-swiper .swiper-slide-active img { transform: scale(1); }
+.hero-swiper .swiper-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.0) 50%);
+}
+.hero-info {
+  position: absolute;
+  left: 18px; right: 18px; bottom: 52px;
+  z-index: 2;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s var(--ease) 0.1s, transform 0.6s var(--ease) 0.1s;
+}
+.swiper-slide-active .hero-info { opacity: 1; transform: translateY(0); }
+.hero-kicker {
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  opacity: 0.8;
+}
+.hero-title {
+  font-size: 24px;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  margin-top: 6px;
+}
+.hero-cta {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 999px;
+  padding: 8px 18px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.14);
+}
+/* Swiper pagination */
+.hero-wrap .swiper-pagination {
+  bottom: 18px;
+}
+.hero-wrap .swiper-pagination-bullet {
+  width: 6px; height: 6px;
+  background: rgba(255,255,255,0.5);
+  opacity: 1;
+  transition: width 0.35s var(--ease), background 0.35s, border-radius 0.35s;
+}
+.hero-wrap .swiper-pagination-bullet-active {
+  width: 22px;
+  border-radius: 999px;
+  background: #fff;
+}
+.hero-tag {
+  position: absolute;
+  top: 14px; left: 16px;
+  z-index: 3;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.15);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+/* ---------- COLOR FILTER ---------- */
+.color-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 16px 4px;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  position: relative;
+  z-index: 1;
+}
+.color-bar::-webkit-scrollbar { display: none; }
+/* ---------- lining sub-filter ---------- */
+.lining-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 14px 16px 2px;
+  position: relative;
+  z-index: 1;
+}
+.lining-bar:empty { display: none; }
+.ln {
+  flex: none;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--text2);
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+}
+.ln.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.ln:active { transform: scale(0.95); }
+.fabric-bar { display: flex; gap: 8px; align-items: center; padding: 10px 16px 2px; position: relative; z-index: 1; flex-wrap: wrap; }
+.fabric-bar:empty { display: none; }
+.cf {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 6px 13px 6px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.5);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s var(--spring), border-color 0.25s, background 0.25s;
+}
+.cf-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.12);
+  flex: none;
+}
+.cf-name {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  white-space: nowrap;
+}
+.cf.active { border-color: var(--text); background: rgba(255,255,255,0.9); }
+.cf.active .cf-name { color: var(--text); }
+.cf:active { transform: scale(0.94); }
+.cf-reset {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  flex: none;
+  padding: 6px 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.cf-reset.show { opacity: 1; pointer-events: auto; }
+
+/* ---------- COUNT ---------- */
+.count-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 16px 16px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  position: relative;
+  z-index: 1;
+}
+.count-num {
+  font-size: 44px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1;
+}
+.count-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  padding-bottom: 4px;
+}
+
+/* ---------- GRID ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .count-wrap { max-width: 960px; margin: 0 auto; }
+}
+
+/* ---------- LAYOUT + RIGHT SIDEBAR ---------- */
+.layout { display: flex; flex-direction: column; position: relative; z-index: 1; }
+.main { min-width: 0; }
+.sidebar { order: -1; }   /* на телефоне фильтры сверху */
+
+@media (min-width: 900px) {
+  .layout { display: block; }
+  .header { margin-right: 300px; }
+  .main { margin-right: 300px; }
+  .sidebar {
+    order: 0;
+    position: fixed;
+    top: 0; right: 0;
+    width: 300px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 45;
+    padding: 28px 24px calc(40px + env(safe-area-inset-bottom));
+    padding-top: calc(28px + env(safe-area-inset-top));
+    border-left: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.42);
+    -webkit-backdrop-filter: blur(26px) saturate(1.7);
+    backdrop-filter: blur(26px) saturate(1.7);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+  .sidebar .search-wrap { border-top: none; }
+  /* вертикальные категории */
+  .sidebar .tabs { flex-direction: column; align-items: stretch; gap: 3px; padding: 0; border-bottom: none; overflow: visible; }
+  .sidebar .tab { padding: 11px 13px; border-radius: 12px; font-size: 13px; }
+  .sidebar .tab::after { display: none; }
+  .sidebar .tab.active { background: rgba(0,0,0,0.055); }
+  .sidebar .tab .tab-n { margin-left: 6px; }
+  /* подклад и цвета — переносом в столбик */
+  .sidebar .lining-bar { flex-wrap: wrap; padding: 0; gap: 8px; }
+  .sidebar .color-bar { flex-wrap: wrap; overflow: visible; padding: 0; gap: 8px; }
+  /* кнопки — левее правой панели */
+  .to-top { right: 316px; }
+  .cart-fab { right: 316px; }
+}
+.card {
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(22px) scale(0.97);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  border-radius: 0;
+  background: rgba(255,255,255,0.22);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border: 1.5px solid rgba(255,255,255,0.65);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 340px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 1px 2px rgba(255,255,255,0.8) inset;
+}
+.card.vis { opacity: 1; transform: translateY(0) scale(1); }
+.card-press { transition: transform 0.25s var(--spring); }
+.card-img {
+  position: relative;
+  aspect-ratio: 3/4;
+  background: rgba(255,255,255,0.3);
+  overflow: hidden;
+  border-radius: 0;
+}
+.card-img img {
+  position: absolute;
+  top: -11%; left: 0;
+  width: 100%; height: 122%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+  will-change: transform;
+}
+.card-img img.loaded { opacity: 1; }
+.card-img .ph {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.card-img .ph svg { width: 46%; height: 46%; opacity: 0.12; }
+.art-tag {
+  position: absolute;
+  top: 8px; left: 8px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.7);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.8);
+}
+.card-tags {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  display: flex; flex-direction: column; gap: 5px; align-items: flex-end;
+}
+.hit-tag, .new-tag {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: 3px 9px;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.new-tag { background: #4f7a63; color: #fff; }
+.card-packs {
+  position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 3;
+  display: flex; gap: 6px; justify-content: flex-end;
+}
+.card-pack {
+  flex: 0 1 auto; min-width: 0;
+  font-size: 10.5px; letter-spacing: 0.06em; font-weight: 600;
+  padding: 7px 11px; border-radius: 999px; white-space: nowrap;
+  background: var(--accent); color: var(--accent-fg);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.28);
+  transition: transform 0.15s, background 0.2s;
+}
+.card-pack:active { transform: scale(0.9); }
+.card-pack.added { background: #4f7a63; color: #fff; transition: background 0.1s; }
+.cp-plus { font-weight: 800; margin-right: 4px; display: inline-block; }
+/* быстрый заказ */
+.qa-sheet { max-width: 440px; }
+.qa-top { display: flex; gap: 14px; align-items: center; margin: 14px 0 6px; }
+.qa-img { width: 92px; height: 112px; object-fit: cover; border-radius: 12px; flex: none; background: var(--border); }
+.qa-colors { flex: 1; min-width: 0; }
+.qa-cur { font-size: 12px; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+.qa-dots { display: flex; flex-wrap: wrap; gap: 8px; }
+.qa-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); box-shadow: inset 0 0 0 2px var(--bg); transition: transform 0.15s; }
+.qa-dot.active { box-shadow: inset 0 0 0 2px var(--bg), 0 0 0 2px var(--accent); transform: scale(1.1); }
+.qa-sheet .addcart { margin-top: 4px; }
+.card-info {
+  padding: 10px 12px 13px;
+  min-width: 0;
+}
+.card-name {
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.dots { display: flex; gap: 6px; margin-top: 8px; }
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.1);
+  flex: none;
+}
+.card-color {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 9px;
+  min-width: 0;
+}
+.card-swatch {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  flex: none;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.22);
+}
+.card-color-name {
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mdots {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 11px;
+  margin-top: 10px;
+}
+.mdot {
+  position: relative;
+  width: 17px; height: 17px;
+  padding: 0;
+  border-radius: 50%;
+  flex: none;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.16), 0 1px 3px rgba(0,0,0,0.18);
+  transition: transform 0.15s var(--spring), box-shadow 0.2s;
+}
+.mdot::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; }
+.mdot:hover { transform: scale(1.15); }
+.mdot:active { transform: scale(0.9); }
+.mdot.active { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text); }
+.mmore {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--text2);
+  margin-left: 2px;
+}
+
+/* ---------- SKELETON ---------- */
+.sk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 12px;
+}
+@media (min-width: 900px) {
+  .sk-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 16px; max-width: 960px; margin: 0 auto; }
+}
+.sk-card {
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 0;
+  overflow: hidden;
+}
+.sk-img { aspect-ratio: 3/4; border-radius: 0; }
+.sk-line { height: 12px; margin: 12px; width: 70%; border-radius: 6px; }
+.sk-line.s2 { width: 40%; margin-top: 0; }
+.shimmer {
+  background: linear-gradient(100deg, rgba(255,255,255,0.3) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.3) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+@keyframes shimmer {
+  from { background-position: 130% 0; }
+  to { background-position: -70% 0; }
+}
+
+/* ---------- STATES ---------- */
+.state {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  padding: 80px 24px;
+  animation: fadeUp 0.5s var(--ease) both;
+}
+.retry {
+  display: inline-block;
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  padding: 10px 18px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--text);
+  border-radius: 999px;
+}
+
+/* ---------- HERO CLONE ---------- */
+.hero-clone {
+  position: fixed;
+  z-index: 200;
+  object-fit: cover;
+  pointer-events: none;
+  will-change: transform, top, left, width, height, border-radius;
+  transition: top 0.45s var(--ease), left 0.45s var(--ease), width 0.45s var(--ease), height 0.45s var(--ease), border-radius 0.45s var(--ease);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+
+/* ---------- DETAIL ---------- */
+.detail {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease), transform 0.4s var(--ease);
+  -webkit-overflow-scrolling: touch;
+  will-change: transform, opacity;
+}
+.detail.open { opacity: 1; pointer-events: auto; }
+.detail.dragging { transition: none; }
+.detail-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: calc(52px + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: env(safe-area-inset-top) 16px 0;
+  background: rgba(255,255,255,0.86);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -4px;
+  flex: none;
+  border-radius: 50%;
+  color: var(--text);
+  background: rgba(255,255,255,0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+  border: 1px solid rgba(255,255,255,0.75);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255,255,255,0.7);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.22s var(--spring), box-shadow 0.22s, background 0.22s;
+}
+.back-btn svg {
+  width: 21px; height: 21px;
+  transition: transform 0.22s var(--spring);
+}
+.back-btn:hover {
+  background: rgba(255,255,255,0.72);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.16), inset 0 1px 1px rgba(255,255,255,0.8);
+}
+.back-btn:hover svg { transform: translateX(-2px); }
+.back-btn:active { transform: scale(0.9); box-shadow: 0 2px 8px rgba(0,0,0,0.14); }
+.back-btn:active svg { transform: translateX(-3px); }
+/* на десктопе выравниваем артикул по левому краю фото,
+   а кнопку делаем «летящей» поверх верхнего-левого угла фото */
+@media (min-width: 900px) {
+  .detail-top { padding-left: max(16px, calc(50% - 596px - 64px)); }
+  .back-btn {
+    position: fixed;
+    top: 92px;
+    left: max(16px, calc(50% - 596px - 66px));
+    z-index: 60;
+    margin-left: 0;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.20), inset 0 1px 1px rgba(255,255,255,0.7);
+  }
+  .back-btn svg { width: 23px; height: 23px; }
+}
+.detail-art { font-size: 11px; letter-spacing: 0.14em; color: var(--text2); }
+.drag-pill {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  width: 36px; height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+}
+.detail-img {
+  position: relative;
+  aspect-ratio: 3/4;
+  width: 100%;
+  background: var(--card);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.detail-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  will-change: transform;
+}
+.detail-img img.loaded { opacity: 1; }
+/* две фотографии рядом (полный вид + крупный план ткани) */
+.detail-img.duo { aspect-ratio: 3 / 2; display: flex; gap: 3px; }
+.detail-img.duo img { width: 50%; }
+.detail-img img.zooming { transition: none; }
+.detail-img img.zoom-reset { transition: transform 0.45s var(--spring), opacity 0.5s var(--ease); }
+.detail-img .ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.detail-img .ph svg { width: 40%; height: 40%; opacity: 0.12; }
+.zoom-hint {
+  position: absolute;
+  right: 10px; bottom: 10px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  background: rgba(255,255,255,0.8);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  padding: 4px 8px;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+.detail-body { padding: 22px 16px calc(30px + env(safe-area-inset-bottom)); }
+@media (min-width: 900px) {
+  #detailContent {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 44px;
+    padding: 36px 24px calc(48px + env(safe-area-inset-bottom));
+  }
+  .detail-img {
+    width: 48%;
+    flex: none;
+    border-radius: 0;
+    position: sticky;
+    top: 76px;
+  }
+  /* две фотографии рядом — отдаём им больше ширины, чтобы были крупными */
+  .detail-img.duo { width: 62%; }
+  .detail-body { flex: 1; min-width: 0; padding: 0; padding-top: 4px; }
+}
+.d-anim { animation: fadeUp 0.55s var(--ease) both; }
+.d-anim.d1 { animation-delay: 0.05s; }
+.d-anim.d2 { animation-delay: 0.12s; }
+.d-anim.d3 { animation-delay: 0.19s; }
+.d-anim.d4 { animation-delay: 0.26s; }
+.detail-cat { font-size: 11px; letter-spacing: 0.12em; color: var(--muted); }
+.detail-name { font-size: 21px; letter-spacing: 0.08em; line-height: 1.25; margin-top: 6px; }
+.accent-line {
+  width: 34px; height: 3px;
+  margin-top: 14px;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: background 0.5s;
+}
+.section-label { font-size: 11px; letter-spacing: 0.14em; color: var(--muted); margin: 24px 0 11px; }
+.chips { display: flex; flex-wrap: wrap; gap: 14px; }
+.chip { display: flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.08em; color: var(--text2); }
+.chip .dot { width: 13px; height: 13px; }
+.cv-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cv {
+  position: relative;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  border: 2px solid transparent;
+  transition: transform 0.2s var(--spring), border-color 0.25s;
+}
+.cv .cv-dot {
+  position: absolute; inset: 3px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+}
+.cv.active { border-color: var(--text); }
+.cv:active { transform: scale(0.85); }
+.cv-current { font-size: 12px; letter-spacing: 0.12em; color: var(--text2); margin-top: 12px; }
+.specs { border-top: 1px solid var(--border); margin-top: 24px; }
+.spec-row { display: flex; border-bottom: 1px solid var(--border); padding: 12px 0; }
+.spec-key { width: 44%; font-size: 11px; letter-spacing: 0.10em; color: var(--muted); }
+.spec-val { width: 56%; font-size: 13px; letter-spacing: 0.06em; color: var(--text); }
+.share-btn {
+  width: 100%;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  padding: 17px;
+  margin-top: 28px;
+  border-radius: 999px;
+  transition: transform 0.25s var(--spring), opacity 0.2s, background 0.5s, color 0.5s;
+}
+.share-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+/* ---------- ORDER / CONTACT BUTTONS ---------- */
+.order-block { margin-top: 28px; }
+.order-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 11px;
+}
+.order-btns { display: flex; gap: 10px; }
+.ob {
+  flex: 1;
+  text-align: center;
+  padding: 14px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s var(--spring), filter 0.2s;
+}
+.ob:active { transform: scale(0.97); }
+.ob:hover { filter: brightness(1.08); }
+/* Приглушённые благородные оттенки — узнаваемые, но без кислотности */
+.ob-wa { background: #4f7a63; }
+.ob-tg { background: #4a6f8f; }
+.ob-mx { background: #6a5a86; }
+.share-btn { margin-top: 14px; }
+
+/* ---------- CONTACT FAB ---------- */
+.contact-fab {
+  position: fixed;
+  left: 16px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 60;
+  width: 54px; height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-fg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  transition: transform 0.22s var(--spring);
+}
+.contact-fab svg { width: 24px; height: 24px; }
+.contact-fab:hover { transform: scale(1.06); }
+.contact-fab:active { transform: scale(0.9); }
+
+/* FAB подписки на уведомления (над кнопкой контактов) */
+.notify-fab {
+  position: fixed;
+  left: 16px;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  z-index: 60;
+  height: 54px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 18px 0 15px;
+  border-radius: 999px;
+  background: #4f7a63;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  white-space: nowrap;
+  overflow: hidden;
+  animation: a2hsUp 0.5s var(--ease) both;
+  transition: width 0.4s var(--ease), padding 0.4s var(--ease), gap 0.4s var(--ease), transform 0.22s var(--spring), filter 0.2s;
+}
+.notify-fab svg { width: 22px; height: 22px; flex: none; }
+.notify-fab-label { font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; transition: opacity 0.25s, max-width 0.4s var(--ease); max-width: 160px; }
+/* свёрнутое состояние — кружок-колокольчик */
+.notify-fab.mini { width: 54px !important; padding: 0; gap: 0; justify-content: center; }
+.notify-fab.mini .notify-fab-label { opacity: 0; max-width: 0; }
+.notify-fab:hover { transform: scale(1.04); }
+.notify-fab:active { transform: scale(0.94); }
+
+/* ---------- CART (корзина) ---------- */
+.cart-fab {
+  position: fixed; right: 14px; bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 61; width: 54px; height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--accent); color: var(--accent-fg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.24);
+  transition: transform 0.22s var(--spring);
+}
+.cart-fab svg { width: 24px; height: 24px; }
+.cart-fab:active { transform: scale(0.9); }
+.cart-badge {
+  position: absolute; top: -3px; right: -3px;
+  min-width: 20px; height: 20px; padding: 0 5px;
+  border-radius: 999px; background: #c0392b; color: #fff;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bg);
+}
+.cart-item { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.cart-item > img { width: 56px; height: 75px; object-fit: cover; border-radius: 7px; flex: none; background: var(--card); }
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-size: 12.5px; letter-spacing: 0.03em; line-height: 1.3; }
+.cart-item-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.cart-item-rm { color: var(--text2); font-size: 15px; align-self: flex-start; padding: 2px 4px; }
+.qty { display: inline-flex; align-items: center; margin-top: 9px; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.qty button { width: 32px; height: 30px; font-size: 17px; color: var(--text); background: var(--card); }
+.qty span { min-width: 38px; text-align: center; font-size: 13px; }
+.cart-empty { text-align: center; color: var(--text2); padding: 34px 0; font-size: 13px; }
+.cart-total { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 12px; letter-spacing: 0.05em; color: var(--text2); margin: 16px 0 14px; }
+.cart-total b { color: var(--text); font-size: 13px; }
+.cart-clear { display: block; margin: 12px auto 0; color: var(--text2); font-size: 12px; text-decoration: underline; }
+.cart-note {
+  width: 100%; box-sizing: border-box; resize: none;
+  margin-bottom: 18px; padding: 11px 13px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--card); color: var(--text);
+  font: inherit; font-size: 13px; line-height: 1.4;
+}
+.cart-note:focus { outline: none; border-color: var(--text2); }
+.cart-note::placeholder { color: var(--muted); }
+/* блок «в корзину» в карточке товара */
+.addcart { margin-top: 24px; }
+.addcart-label { font-size: 11px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 11px; }
+.addcart-row { display: flex; gap: 12px; align-items: stretch; }
+.addcart .qty { margin-top: 0; }
+.ac-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
+.ac-name { font-size: 12.5px; letter-spacing: 0.04em; }
+.ac-name small { display: block; color: var(--text2); font-size: 10.5px; letter-spacing: 0.06em; margin-top: 1px; }
+.ac-line .qty { margin-top: 0; }
+/* кнопка корзины в шапке карточки */
+.detail-cart { margin-left: auto; position: relative; width: 42px; height: 42px; flex: none; display: flex; align-items: center; justify-content: center; color: var(--text); }
+.detail-cart svg { width: 23px; height: 23px; }
+.detail-cart .cart-badge { top: 2px; right: 0; }
+/* на телефоне уплотняем карточку, чтобы кнопки были ближе */
+@media (max-width: 899px) {
+  .detail-body { padding-top: 16px; }
+  .addcart { margin-top: 18px; }
+  .order-block { margin-top: 18px; }
+  .specs { margin-top: 20px; }
+  .spec-row { padding: 10px 0; }
+}
+.addcart-btn { flex: 1; padding: 14px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); font-size: 12px; letter-spacing: 0.06em; transition: transform 0.2s var(--spring), background 0.25s; }
+.addcart-btn:active { transform: scale(0.97); }
+.addcart-btn.added { background: #4f7a63; }
+/* тост */
+.toast {
+  position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(10px); z-index: 95;
+  background: var(--accent); color: var(--accent-fg);
+  padding: 11px 18px; border-radius: 999px; font-size: 12.5px;
+  max-width: 88%; text-align: center; line-height: 1.35;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.26);
+  opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s var(--ease);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- ЧАТ-ПОМОЩНИК ---------- */
+.chat-sheet {
+  position: relative; width: 100%; max-width: 440px;
+  height: min(82vh, 740px); display: flex; flex-direction: column;
+  background: var(--bg); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  transform: translateY(16px) scale(0.97); transition: transform 0.3s var(--spring);
+}
+.contacts.show .chat-sheet { transform: none; }
+.chat-head { flex: none; padding: 18px 54px 14px 22px; border-bottom: 1px solid var(--border); }
+.chat-head .c-t { font-size: 17px; letter-spacing: 0.08em; }
+.chat-head .c-s { font-size: 11px; letter-spacing: 0.1em; color: var(--muted); margin-top: 4px; }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 16px 16px 4px; display: flex; flex-direction: column; gap: 9px; -webkit-overflow-scrolling: touch; text-transform: none; }
+.chat-msgs .msg, .chat-input input, .chat-chip { text-transform: none; }
+.msg { max-width: 84%; padding: 10px 13px; border-radius: 16px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; word-wrap: break-word; }
+.msg.bot { align-self: flex-start; background: var(--card); color: var(--text); border-bottom-left-radius: 5px; }
+.msg.user { align-self: flex-end; background: var(--accent); color: var(--accent-fg); border-bottom-right-radius: 5px; }
+.msg a { color: inherit; text-decoration: underline; }
+.msg.rich { white-space: normal; }
+.msg.rich > div { margin: 3px 0; }
+.msg.rich > div:first-child { margin-top: 0; }
+.msg.rich > div:last-child { margin-bottom: 0; }
+.msg.rich .msg-ul { margin: 5px 0 3px; padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.msg.rich .msg-ul li { position: relative; padding-left: 15px; line-height: 1.4; }
+.msg.rich .msg-ul li::before { content: "•"; position: absolute; left: 2px; color: var(--muted); }
+.chat-cards { align-self: flex-start; max-width: 100%; display: flex; gap: 9px; overflow-x: auto; padding: 1px 1px 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.chat-cards::-webkit-scrollbar { display: none; }
+.chat-card { flex: none; width: 116px; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: transform 0.15s; }
+.chat-card:active { transform: scale(0.96); }
+.chat-card img, .chat-card .cc-ph { width: 100%; height: 138px; object-fit: cover; display: block; background: var(--border); }
+.chat-card .cc-name { font-size: 11.5px; letter-spacing: 0.03em; padding: 7px 9px 1px; line-height: 1.2; }
+.chat-card .cc-sub { font-size: 10px; color: var(--muted); padding: 0 9px 8px; }
+.chat-typing { align-self: flex-start; color: var(--text2); font-size: 20px; letter-spacing: 2px; padding: 2px 10px; }
+.chat-typing span { animation: blink 1.2s infinite both; }
+.chat-typing span:nth-child(2){animation-delay:.2s} .chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink { 0%,80%,100%{opacity:.25} 40%{opacity:1} }
+.chat-chips { flex: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 14px 4px; }
+.chat-chip { font-size: 12px; letter-spacing: 0.02em; padding: 8px 13px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); background: var(--card); }
+.chat-chip:active { transform: scale(0.96); }
+.chat-input { flex: none; display: flex; gap: 10px; align-items: center; padding: 12px 14px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); }
+.chat-input input { flex: 1; border: 1px solid var(--border); border-radius: 999px; padding: 12px 16px; font: inherit; font-size: 14px; background: var(--card); color: var(--text); }
+.chat-input input:focus { outline: none; border-color: var(--text2); }
+.chat-send { width: 46px; height: 46px; border-radius: 50%; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; flex: none; }
+.chat-send svg { width: 20px; height: 20px; }
+.chat-send:active { transform: scale(0.92); }
+
+/* ---------- ADD TO HOME SCREEN (iOS) ---------- */
+.a2hs {
+  position: fixed;
+  left: 12px; right: 12px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  z-index: 80;
+  background: rgba(26,24,20,0.96);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: #f5f5f3;
+  border-radius: 18px;
+  padding: 14px 16px 13px;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.35);
+  animation: a2hsUp 0.5s var(--ease) both;
+}
+@keyframes a2hsUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.a2hs-x {
+  position: absolute; top: 8px; right: 10px;
+  width: 26px; height: 26px;
+  color: rgba(245,245,243,0.6);
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.a2hs-row { display: flex; align-items: center; gap: 12px; padding-right: 20px; }
+.a2hs-icon { width: 40px; height: 40px; border-radius: 10px; flex: none; }
+.a2hs-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.a2hs-text b { font-size: 13.5px; letter-spacing: 0.02em; }
+.a2hs-text span { font-size: 11.5px; color: rgba(245,245,243,0.7); line-height: 1.3; }
+.a2hs-how {
+  margin-top: 11px; padding-top: 10px;
+  border-top: 1px solid rgba(245,245,243,0.14);
+  font-size: 12px; color: rgba(245,245,243,0.82);
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px; line-height: 1.5;
+}
+.a2hs-share { width: 17px; height: 17px; color: #4a9eff; vertical-align: middle; animation: a2hsBounce 1.6s var(--ease) infinite; }
+@keyframes a2hsBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.a2hs-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f5f5f3;
+  color: #1a1814;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: transform 0.2s var(--spring), filter 0.2s;
+}
+.a2hs-btn:active { transform: scale(0.97); filter: brightness(0.95); }
+
+/* ---------- CONTACTS SHEET ---------- */
+.contacts {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18,18,18,0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.26s var(--ease);
+}
+.contacts.show { opacity: 1; pointer-events: auto; }
+.ct-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 22px;
+  padding: 30px 26px calc(30px + env(safe-area-inset-bottom));
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.3s var(--spring);
+}
+.contacts.show .ct-sheet { transform: none; }
+.ct-notify {
+  width: 100%;
+  margin: 4px 0 20px;
+  padding: 13px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  transition: transform 0.2s var(--spring), filter 0.2s, opacity 0.2s;
+}
+.ct-notify:active { transform: scale(0.98); }
+.ct-notify:disabled { opacity: 0.55; }
+.ct-notify.subscribed { background: #4f7a63; }
+/* лента новостей */
+.news-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.news-item:last-child { border-bottom: none; }
+.news-date { font-size: 10.5px; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 4px; }
+.news-title { font-size: 13.5px; letter-spacing: 0.02em; margin-bottom: 4px; }
+.news-text { font-size: 12.5px; line-height: 1.45; color: var(--text2); }
+.news-link {
+  margin-top: 10px; font-size: 11.5px; letter-spacing: 0.04em; font-weight: 600;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--accent-fg); transition: transform 0.15s, opacity 0.2s;
+}
+.news-link:active { transform: scale(0.96); opacity: 0.85; }
+.news-empty { text-align: center; color: var(--text2); padding: 26px 0; font-size: 13px; }
+.ct-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-size: 15px;
+  color: var(--text2);
+  background: rgba(0,0,0,0.05);
+}
+.ct-title { font-size: 20px; letter-spacing: 0.1em; }
+.ct-sub { font-size: 10px; letter-spacing: 0.18em; color: var(--muted); margin-top: 5px; margin-bottom: 22px; }
+.ct-msgrs { margin-bottom: 24px; }
+.ct-block-label { font-size: 10px; letter-spacing: 0.16em; color: var(--muted); margin: 0 0 10px; }
+.ct-phones { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.ct-phone {
+  display: block;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.04);
+  transition: background 0.2s;
+}
+.ct-phone:active { background: rgba(0,0,0,0.09); }
+.ct-addrs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.ct-addr {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  line-height: 1.4;
+  text-transform: none;
+}
+.ct-addr-n {
+  flex: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+}
+.ct-email {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--text2);
+  text-transform: none;
+}
+
+/* ---------- RELATED ---------- */
+.related-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin-top: 12px;
+  padding-bottom: 6px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.related-row::-webkit-scrollbar { display: none; }
+.rel-card {
+  flex: none;
+  width: 96px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  border-radius: 6px;
+  transition: transform 0.25s var(--spring);
+}
+.rel-card:active { transform: scale(0.93); }
+.rel-img { aspect-ratio: 3/4; background: var(--card); overflow: hidden; }
+.rel-img img { width: 100%; height: 100%; object-fit: cover; }
+.rel-id {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  text-align: center;
+  padding: 5px 4px;
+}
+
+/* ---------- QUICK LOOK ---------- */
+.ql {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.55);
+  -webkit-backdrop-filter: blur(26px);
+  backdrop-filter: blur(26px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease);
+}
+.ql.show { opacity: 1; }
+.ql img {
+  width: 78%;
+  max-width: 360px;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+  transform: scale(0.85);
+  transition: transform 0.3s var(--spring);
+}
+.ql.show img { transform: scale(1); }
+.ql-id {
+  margin-top: 16px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--text);
+}
+
+/* ---------- ZOOM LIGHTBOX ---------- */
+.zoombox {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18,18,18,0.86);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s var(--ease);
+  cursor: zoom-out;
+  overflow: auto;
+}
+.zoombox.show { opacity: 1; pointer-events: auto; }
+.zoombox img {
+  max-width: 100%;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.5);
+  transform: scale(0.94);
+  transition: transform 0.32s var(--spring);
+}
+.zoombox.show img { transform: scale(1); }
+.zoombox-close {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top));
+  right: 16px;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-size: 18px;
+  color: #fff;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.3);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.detail-img { cursor: zoom-in; }
+
+/* ---------- SCROLL TOP ---------- */
+.to-top {
+  position: fixed;
+  right: 14px;
+  bottom: calc(82px + env(safe-area-inset-bottom));
+  z-index: 60;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s var(--ease);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+}
+.to-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* скрытые кнопки действительно скрыты */
+.cart-fab[hidden] { display: none !important; }
+/* ---------- РОЗНИЦА: цена и выбор размера ---------- */
+.card-price { font-size: 13px; letter-spacing: 0.05em; margin-top: 5px; color: var(--text); }
+.price-big { font-size: 24px; letter-spacing: 0.05em; margin-bottom: 18px; }
+.sz-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.sz {
+  flex: 1 1 0; min-width: 44px; max-width: 72px; height: 46px; padding: 0 6px;
+  border-radius: 999px; border: 1px solid rgba(26,24,20,0.22);
+  background: rgba(255,255,255,0.55); color: var(--text);
+  font-size: 15px; letter-spacing: 0.04em;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s var(--spring);
+}
+.sz:active { transform: scale(0.93); }
+.sz.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.sz-row.shake { animation: szShake 0.4s; }
+@keyframes szShake { 0%,100% { transform: none; } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+.cart-item-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cart-item-price { font-size: 13px; letter-spacing: 0.03em; margin-top: 9px; white-space: nowrap; }
+.cart-hint { font-size: 11px; color: var(--text2); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
+</style>
+<!-- Yandex.Metrika: впиши номер счётчика в YM_ID (сейчас 0 — счётчик выключен) -->
+<script type="text/javascript">
+(function(){
+  var YM_ID = 0; /* ← ЗАМЕНИ 0 на номер счётчика из Яндекс.Метрики */
+  if (!YM_ID) return;
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+  ym(YM_ID, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+  window.__YM_ID = YM_ID;
+})();
+</script>
+</head>
+<body>
+<canvas id="auroraCanvas"></canvas>
+<div class="grain"></div>
+<div class="ptr"><div class="ptr-inner" id="ptrInner">GABILEEN</div></div>
+
+<div class="header" id="header">
+  <div class="header-top">
+    <div class="brand">GABILEEN</div>
+    <button class="lang-btn" id="langBtn">EN</button>
+  </div>
+  <div class="subtitle" id="subtitle"></div>
+</div>
+<div class="layout">
+  <main class="main">
+    <div class="count-wrap" id="countWrap">
+      <div class="count-num" id="countNum">0</div>
+      <div class="count-label" id="countLabel"></div>
+    </div>
+    <div id="content"></div>
+  </main>
+  <aside class="sidebar" id="sidebar">
+    <div class="search-wrap" id="searchWrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg>
+      <input type="text" class="search-input" id="search" autocomplete="off">
+      <button class="search-clear" id="searchClear">&#10005;</button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div class="lining-bar" id="liningBar"></div>
+    <div class="fabric-bar" id="fabricBar"></div>
+    <div class="color-bar" id="colorBar"></div>
+  </aside>
+</div>
+
+<button class="to-top" id="toTop">&#8593;</button>
+<button class="contact-fab" id="contactFab" aria-label="Контакты">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+<div class="contacts" id="contacts"></div>
+
+<button class="cart-fab" id="cartFab" aria-label="Корзина" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.3 12.2a1.6 1.6 0 0 0 1.6 1.3h8.9a1.6 1.6 0 0 0 1.6-1.3L21.5 7H5.3"/></svg>
+  <span class="cart-badge" id="cartBadge">0</span>
+</button>
+<div class="contacts" id="cart"></div>
+<div class="contacts" id="qadd"></div>
+<div class="contacts" id="news"></div>
+<div class="contacts" id="chat"></div>
+
+<!-- Подсказка «добавить на экран Домой» / установка приложения -->
+<div class="a2hs" id="a2hs" hidden>
+  <button class="a2hs-x" id="a2hsClose" aria-label="Закрыть">&#10005;</button>
+  <div class="a2hs-row">
+    <img class="a2hs-icon" src="./apple-touch-icon.png?v=1" alt="">
+    <div class="a2hs-text">
+      <b>Установите магазин на телефон</b>
+      <span>Открывайте GABILEEN как приложение — одним касанием.</span>
+    </div>
+  </div>
+  <!-- Android: установка в один тап -->
+  <button class="a2hs-btn" id="a2hsInstall" hidden>Установить приложение</button>
+  <!-- iOS: инструкция (Apple не позволяет установить из кода) -->
+  <div class="a2hs-how" id="a2hsHow" hidden>
+    Нажмите <svg class="a2hs-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> внизу, затем выберите «На экран „Домой"»
+  </div>
+</div>
+
+<div class="detail" id="detail" data-lenis-prevent>
+  <div class="detail-top">
+    <div class="drag-pill"></div>
+    <button class="back-btn" id="backBtn" aria-label="Назад">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <span class="detail-art" id="detailArt"></span>
+    <button class="detail-cart" id="detailCart" aria-label="Корзина">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.3 12.2a1.6 1.6 0 0 0 1.6 1.3h8.9a1.6 1.6 0 0 0 1.6-1.3L21.5 7H5.3"/></svg>
+      <span class="cart-badge" id="detailCartBadge">0</span>
+    </button>
+  </div>
+  <div id="detailContent"></div>
+</div>
+
+<div class="ql" id="ql"></div>
+<div class="zoombox" id="zoomBox"></div>
+
+<script>
+const DATA_URL = './data/products.json';
+
+const CONTACTS = {
+  company: 'GABILEEN',
+  phones: ['+7 916 259 1643', '+7 926 136 5535', '+7 903 538 8887'],
+  wa: '79162591643',
+  tg: '79162591643',
+  max: 'https://max.ru/u/f9LHodD0cOIlXvXC5mnCHMCtTl2CfgFDoTLVj_M9Z-R5CqJycCxygXcoflc',
+  email: 'vanvion@yandex.com',
+  addresses: [
+    'Россия, Москва, ТЦ «Садовод», корпус Б, 1 этаж, линия В, пав. 50–52',
+    'Россия, Москва, ТЦ «Садовод», 16 линия, пав. 72'
+  ]
+};
+function orderLinks(msg) {
+  const t = encodeURIComponent(msg);
+  return {
+    wa: 'https://wa.me/' + CONTACTS.wa + '?text=' + t,
+    tg: 'https://t.me/+' + CONTACTS.tg,
+    max: CONTACTS.max
+  };
+}
+
+const PALETTE = {
+  charcoal: { hex: '#4a4a48', ru: 'УГОЛЬНЫЙ', en: 'CHARCOAL', tr: 'ANTRASİT', az: 'ANTRASİT' },
+  navy: { hex: '#1c2744', ru: 'ТЁМНО-СИНИЙ', en: 'NAVY', tr: 'LACİVERT', az: 'TÜND GÖY' },
+  black: { hex: '#18181a', ru: 'ЧЁРНЫЙ', en: 'BLACK', tr: 'SİYAH', az: 'QARA' },
+  camel: { hex: '#c2935a', ru: 'КЭМЕЛ', en: 'CAMEL', tr: 'CAMEL', az: 'DƏVƏ RƏNGİ' },
+  beige: { hex: '#d4c4a8', ru: 'БЕЖЕВЫЙ', en: 'BEIGE', tr: 'BEJ', az: 'BEJ' },
+  grey: { hex: '#9a9a98', ru: 'СЕРЫЙ', en: 'GREY', tr: 'GRİ', az: 'BOZ' },
+  brown: { hex: '#6b4226', ru: 'КОРИЧНЕВЫЙ', en: 'BROWN', tr: 'KAHVERENGİ', az: 'QƏHVƏYİ' },
+  green: { hex: '#2d3d2e', ru: 'ЗЕЛЁНЫЙ', en: 'GREEN', tr: 'YEŞİL', az: 'YAŞIL' },
+  lightgrey: { hex: '#c8c6c2', ru: 'СВЕТЛО-СЕРЫЙ', en: 'LIGHT GREY', tr: 'AÇIK GRİ', az: 'AÇIQ BOZ' },
+  burgundy: { hex: '#5c1a2a', ru: 'БОРДОВЫЙ', en: 'BURGUNDY', tr: 'BORDO', az: 'BORDO' },
+  sand: { hex: '#e0d4b8', ru: 'ПЕСОЧНЫЙ', en: 'SAND', tr: 'KUM RENGİ', az: 'QUM RƏNGİ' },
+  slate: { hex: '#5a6472', ru: 'СЛАНЦЕВЫЙ', en: 'SLATE', tr: 'ARDUVAZ', az: 'BOZ-MAVİ' },
+  taba: { hex: '#8b5e3a', ru: 'ТАБА', en: 'TABA', tr: 'TABA', az: 'TABA' },
+  kiremit: { hex: '#b5462a', ru: 'КИРПИЧНЫЙ', en: 'KIREMIT', tr: 'KİREMİT', az: 'KƏRPİC' },
+  kkiremit: { hex: '#7a3020', ru: 'Т.КИРПИЧНЫЙ', en: 'K.KIREMIT', tr: 'KOYU KİREMİT', az: 'TÜND KƏRPİC' },
+  kahve: { hex: '#4a2e1a', ru: 'КОФЕ', en: 'KAHVE', tr: 'KAHVE', az: 'QƏHVƏ' },
+  antrasit: { hex: '#3a3a3c', ru: 'АНТРАЦИТ', en: 'ANTRASIT', tr: 'ANTRASİT', az: 'ANTRASİT' },
+  yesil: { hex: '#1e3528', ru: 'ЗЕЛЁНЫЙ', en: 'YESIL', tr: 'YEŞİL', az: 'YAŞIL' },
+  murdum: { hex: '#4a1f3a', ru: 'СЛИВОВЫЙ', en: 'MURDUM', tr: 'MÜRDÜM', az: 'GAVALI RƏNGİ' },
+  laci: { hex: '#1c2a4a', ru: 'СИНИЙ', en: 'LACI', tr: 'MAVİ', az: 'GÖY' },
+  klaci: { hex: '#111e36', ru: 'ТЁМНО-СИНИЙ', en: 'K.LACI', tr: 'LACİVERT', az: 'TÜND GÖY' },
+  siyah: { hex: '#141414', ru: 'ЧЁРНЫЙ', en: 'SIYAH', tr: 'SİYAH', az: 'QARA' },
+  haki: { hex: '#3d5a47', ru: 'ХАКИ', en: 'HAKI', tr: 'HAKİ', az: 'XAKİ' },
+  alaci: { hex: '#4a72a8', ru: 'СВЕТЛО-СИНИЙ', en: 'A.LACI', tr: 'AÇIK MAVİ', az: 'AÇIQ GÖY' },
+  c295: { hex: '#7a7a7d', ru: 'СЕРЫЙ', en: 'GREY', tr: 'GRİ', az: 'BOZ' },
+  c671: { hex: '#89b4d4', ru: 'ГОЛУБОЙ', en: 'BLUE', tr: 'AÇIK MAVİ', az: 'MAVİ' },
+  abej: { hex: '#d4c4b0', ru: 'СВЕТЛО-БЕЖЕВЫЙ', en: 'A.BEJ', tr: 'AÇIK BEJ', az: 'AÇIQ BEJ' },
+  bej: { hex: '#c4a882', ru: 'БЕЖЕВЫЙ', en: 'BEJ', tr: 'BEJ', az: 'BEJ' },
+  ekru: { hex: '#ede0c8', ru: 'ЭКРЮ', en: 'EKRU', tr: 'EKRU', az: 'EKRÜ' },
+  beyaz: { hex: '#f0f0f0', ru: 'БЕЛЫЙ', en: 'BEYAZ', tr: 'BEYAZ', az: 'AĞ' },
+  vizon: { hex: '#83726d', ru: 'ВИЗОН', en: 'VIZON', tr: 'VİZON', az: 'VİZON' },
+  gri: { hex: '#787e91', ru: 'СЕРЫЙ', en: 'GRI', tr: 'GRİ', az: 'BOZ' },
+  skahve: { hex: '#8a6f57', ru: 'СВЕТЛО-КОРИЧНЕВЫЙ', en: 'S.KAHVE', tr: 'AÇIK KAHVE', az: 'AÇIQ QƏHVƏ' }
+};
+
+/* основные цветовые семейства для фильтра каталога */
+const FAMILIES = {
+  black:  { hex: '#18181a', ru: 'ЧЁРНЫЙ',     en: 'BLACK'  },
+  grey:   { hex: '#8a8a88', ru: 'СЕРЫЙ',      en: 'GREY'   },
+  blue:   { hex: '#1f3468', ru: 'СИНИЙ',      en: 'BLUE'   },
+  green:  { hex: '#2d4a34', ru: 'ЗЕЛЁНЫЙ',    en: 'GREEN'  },
+  brown:  { hex: '#6b4226', ru: 'КОРИЧНЕВЫЙ', en: 'BROWN'  },
+  red:    { hex: '#a83a2a', ru: 'КРАСНЫЙ',    en: 'RED'    },
+  purple: { hex: '#4a1f3a', ru: 'ФИОЛЕТОВЫЙ', en: 'PURPLE' },
+  beige:  { hex: '#d3c1a0', ru: 'БЕЖЕВЫЙ',    en: 'BEIGE'  },
+  white:  { hex: '#f2f2ef', ru: 'БЕЛЫЙ',      en: 'WHITE'  }
+};
+/* к какому основному семейству относится каждый оттенок */
+const FAMILY_OF = {
+  charcoal:'grey', navy:'blue', black:'black', camel:'brown', beige:'beige',
+  grey:'grey', brown:'brown', green:'green', lightgrey:'grey', burgundy:'red',
+  sand:'beige', slate:'grey', taba:'brown', kiremit:'red', kkiremit:'red',
+  kahve:'brown', antrasit:'grey', yesil:'green', murdum:'purple', laci:'blue',
+  klaci:'blue', siyah:'black', haki:'green', alaci:'blue', c295:'grey',
+  c671:'blue', abej:'beige', bej:'beige', ekru:'beige', beyaz:'white',
+  vizon:'brown', gri:'grey', skahve:'brown'
+};
+/* Срок действия плашки «НОВИНКА»: снимается автоматически через NEW_DAYS дней
+   после даты new_since (YYYY-MM-DD). Без new_since модель считается новинкой. */
+const NEW_DAYS = 30;
+function isNewActive(v) {
+  if (!v || !v.isnew) return false;
+  const ds = v.new_since;
+  if (!ds) return true;
+  const t = Date.parse(ds);
+  if (isNaN(t)) return true;
+  return (Date.now() - t) <= NEW_DAYS * 24 * 60 * 60 * 1000;
+}
+function familyOf(p) {
+  const c = colorList(p.colors)[0];
+  return c ? (FAMILY_OF[c] || null) : null;
+}
+
+const I18N = {
+  ru: {
+    subtitle: 'МАГАЗИН · МУЖСКАЯ КЛАССИКА',
+    search: 'ПОИСК ПО АРТИКУЛУ ИЛИ НАЗВАНИЮ',
+    tabs: { all: 'ВСЕ', bryuki: 'БРЮКИ', pidzhaki: 'ПИДЖАКИ', palto: 'ПАЛЬТО' },
+    count: n => n + ' ' + plural(n, 'ПОЗИЦИЯ', 'ПОЗИЦИИ', 'ПОЗИЦИЙ'),
+    cat: { bryuki: 'БРЮКИ', pidzhaki: 'ПИДЖАКИ', palto: 'ПАЛЬТО' },
+    specs: ['СОСТАВ', 'СИЛУЭТ', 'РОСТ', 'ПОДКЛАДКА', 'ПУГОВИЦЫ', 'СТРАНА', 'РАЗМЕРЫ'],
+    colors: 'ЦВЕТА',
+    related: 'ПОХОЖИЕ МОДЕЛИ',
+    newin: 'НОВИНКИ',
+    view: 'СМОТРЕТЬ',
+    share: 'ПОДЕЛИТЬСЯ',
+    reset: 'СБРОС',
+    zoom: 'ZOOM',
+    empty: 'НИЧЕГО НЕ НАЙДЕНО',
+    loading: 'ЗАГРУЗКА...',
+    error: 'ОШИБКА ЗАГРУЗКИ',
+    retry: 'ПОВТОРИТЬ'
+  },
+  en: {
+    subtitle: 'STORE · MENSWEAR',
+    search: 'SEARCH BY ARTICLE OR NAME',
+    tabs: { all: 'ALL', bryuki: 'TROUSERS', pidzhaki: 'JACKETS', palto: 'COATS' },
+    count: n => n + ' ' + (n === 1 ? 'ITEM' : 'ITEMS'),
+    cat: { bryuki: 'TROUSERS', pidzhaki: 'JACKETS', palto: 'COATS' },
+    specs: ['COMPOSITION', 'SILHOUETTE', 'HEIGHT', 'LINING', 'BUTTONS', 'COUNTRY', 'SIZES'],
+    colors: 'COLORS',
+    related: 'SIMILAR STYLES',
+    newin: 'NEW IN',
+    view: 'VIEW',
+    share: 'SHARE',
+    reset: 'RESET',
+    zoom: 'ZOOM',
+    empty: 'NOTHING FOUND',
+    loading: 'LOADING...',
+    error: 'LOADING ERROR',
+    retry: 'RETRY'
+  },
+  tr: {
+    subtitle: 'MAĞAZA · ERKEK KLASİK',
+    search: 'ÜRÜN KODU VEYA ADIYLA ARA',
+    tabs: { all: 'TÜMÜ', bryuki: 'PANTOLON', pidzhaki: 'CEKET', palto: 'PALTO' },
+    count: n => n + ' ÜRÜN',
+    cat: { bryuki: 'PANTOLON', pidzhaki: 'CEKET', palto: 'PALTO' },
+    specs: ['KUMAŞ', 'SİLUET', 'BOY', 'ASTAR', 'DÜĞME', 'ÜLKE', 'BEDENLER'],
+    colors: 'RENKLER',
+    related: 'BENZER MODELLER',
+    newin: 'YENİLİKLER',
+    view: 'GÖR',
+    share: 'PAYLAŞ',
+    reset: 'SIFIRLA',
+    zoom: 'ZOOM',
+    empty: 'HİÇBİR ŞEY BULUNAMADI',
+    loading: 'YÜKLENİYOR...',
+    error: 'YÜKLEME HATASI',
+    retry: 'TEKRAR DENE'
+  },
+  az: {
+    subtitle: 'MAĞAZA · KİŞİ KLASSİK',
+    search: 'ARTİKUL VƏ YA AD ÜZRƏ AXTARIŞ',
+    tabs: { all: 'HAMISI', bryuki: 'ŞALVAR', pidzhaki: 'PİDJAK', palto: 'PALTO' },
+    count: n => n + ' MƏHSUL',
+    cat: { bryuki: 'ŞALVAR', pidzhaki: 'PİDJAK', palto: 'PALTO' },
+    specs: ['TƏRKİB', 'SİLUET', 'BOY', 'ASTAR', 'DÜYMƏ', 'ÖLKƏ', 'ÖLÇÜLƏR'],
+    colors: 'RƏNGLƏR',
+    related: 'OXŞAR MODELLƏR',
+    newin: 'YENİLİKLƏR',
+    view: 'BAX',
+    share: 'PAYLAŞ',
+    reset: 'SIFIRLA',
+    zoom: 'ZOOM',
+    empty: 'HEÇ NƏ TAPILMADI',
+    loading: 'YÜKLƏNİR...',
+    error: 'YÜKLƏMƏ XƏTASI',
+    retry: 'TƏKRAR CƏHD'
+  }
+};
+
+function plural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+  return many;
+}
+
+const PH_SVG = '<svg viewBox="0 0 64 96" fill="none" stroke="#1a1a18" stroke-width="1.5"><path d="M20 12 L32 8 L44 12 L48 28 L40 30 L40 86 L24 86 L24 30 L16 28 Z"/></svg>';
+
+const LANGS = ['ru', 'en', 'tr', 'az'];
+const LANG_LABEL = { ru: 'RU', en: 'EN', tr: 'TR', az: 'AZ' };
+let LANG = (function(){ try { const v = localStorage.getItem('gb-lang'); return LANGS.indexOf(v) >= 0 ? v : 'ru'; } catch(e){ return 'ru'; } })();
+/* словарь переводов интерфейса: ключ — русская строка, значения — tr/az (en берётся из вызова L) */
+const DICT = {
+  'АДРЕСА · ТЦ САДОВОД': { tr: 'ADRESLER · SADOVOD AVM', az: 'ÜNVANLAR · SADOVOD' },
+  'БЫСТРЫЙ ЗАКАЗ': { tr: 'HIZLI SİPARİŞ', az: 'SÜRƏTLİ SİFARİŞ' },
+  'В КОРЗИНУ': { tr: 'SEPETE', az: 'SƏBƏTƏ' },
+  'ВСЕ ТКАНИ': { tr: 'TÜM KUMAŞLAR', az: 'BÜTÜN PARÇALAR' },
+  'Выберите чат менеджера — заказ уже вставлен': { tr: 'Yönetici sohbetini seçin — sipariş hazır', az: 'Menecer söhbətini seçin — sifariş hazırdır' },
+  'ДА': { tr: 'EVET', az: 'BƏLİ' },
+  'ЗАКАЗАТЬ · УЗНАТЬ ЦЕНУ': { tr: 'SİPARİŞ · FİYAT ÖĞREN', az: 'SİFARİŞ · QİYMƏTİ ÖYRƏN' },
+  'Заказ скопирован — вставьте в чат': { tr: 'Sipariş kopyalandı — sohbete yapıştırın', az: 'Sifariş kopyalandı — söhbətə yapışdırın' },
+  'ИТОГО': { tr: 'TOPLAM', az: 'CƏMİ' },
+  'КОММЕНТАРИЙ К ЗАКАЗУ': { tr: 'SİPARİŞ NOTU', az: 'SİFARİŞ QEYDİ' },
+  'КОНТАКТЫ': { tr: 'İLETİŞİM', az: 'ƏLAQƏ' },
+  'КОРЗИНА': { tr: 'SEPET', az: 'SƏBƏT' },
+  'Комментарий: ': { tr: 'Yorum: ', az: 'Qeyd: ' },
+  'Корзина пуста.<br>Добавьте модели из каталога.': { tr: 'Sepet boş.<br>Katalogdan modeller ekleyin.', az: 'Səbət boşdur.<br>Kataloqdan modellər əlavə edin.' },
+  'НЕТ': { tr: 'HAYIR', az: 'XEYR' },
+  'НОВИНКА': { tr: 'YENİ', az: 'YENİ' },
+  'НОВИНКИ': { tr: 'YENİLİKLER', az: 'YENİLİKLƏR' },
+  'Напишите вопрос…': { tr: 'Soru yazın…', az: 'Sualınızı yazın…' },
+  'Не удалось скопировать ссылку': { tr: 'Bağlantı kopyalanamadı', az: 'Keçid kopyalanmadı' },
+  'МАГАЗИН · МУЖСКАЯ КЛАССИКА': { tr: 'MAĞAZA · ERKEK KLASİK', az: 'MAĞAZA · KİŞİ KLASSİK' },
+  'МАГАЗИН · ОТВЕЧУ НА ВОПРОСЫ': { tr: 'MAĞAZA · SORULARINIZI YANITLARIM', az: 'MAĞAZA · SUALLARA CAVAB VERİRƏM' },
+  'ОФОРМИТЬ ЗАКАЗ ЧЕРЕЗ': { tr: 'SİPARİŞ VER', az: 'SİFARİŞ VER' },
+  'ВЫБЕРИТЕ РАЗМЕР': { tr: 'BEDEN SEÇİN', az: 'ÖLÇÜ SEÇİN' },
+  'ВЫБОР РАЗМЕРА': { tr: 'BEDEN SEÇİMİ', az: 'ÖLÇÜ SEÇİMİ' },
+  'РАЗМЕР': { tr: 'BEDEN', az: 'ÖLÇÜ' },
+  'Выберите размер': { tr: 'Beden seçin', az: 'Ölçü seçin' },
+  'Добавлено в корзину': { tr: 'Sepete eklendi', az: 'Səbətə əlavə edildi' },
+  'ВАШ ЗАКАЗ': { tr: 'SİPARİŞİNİZ', az: 'SİFARİŞİNİZ' },
+  'ШТ.': { tr: 'ADET', az: 'ƏDƏD' },
+  'ЗАДАТЬ ВОПРОС ПО МОДЕЛИ': { tr: 'MODEL HAKKINDA SORU SOR', az: 'MODEL HAQQINDA SUAL VER' },
+  'Имя, телефон, город и адрес доставки…': { tr: 'Ad, telefon, şehir ve teslimat adresi…', az: 'Ad, telefon, şəhər və çatdırılma ünvanı…' },
+  'Менеджер подтвердит наличие, оплату и доставку': { tr: 'Yönetici stok, ödeme ve teslimatı onaylayacak', az: 'Menecer mövcudluğu, ödənişi və çatdırılmanı təsdiqləyəcək' },
+  'Открыть карточку полностью': { tr: 'Kartı tam aç', az: 'Kartı tam aç' },
+  'Очистить корзину': { tr: 'Sepeti temizle', az: 'Səbəti təmizlə' },
+  'ПОМОЩНИК': { tr: 'ASİSTAN', az: 'ASSİSTENT' },
+  'ПОСЛЕДНИЕ НОВОСТИ': { tr: 'SON HABERLER', az: 'SON XƏBƏRLƏR' },
+  'ПОСТУПЛЕНИЯ И НОВОСТИ': { tr: 'YENİ ÜRÜNLER VE HABERLER', az: 'YENİ MƏHSULLAR VƏ XƏBƏRLƏR' },
+  'Подписаться на уведомления': { tr: 'Bildirimlere abone ol', az: 'Bildirişlərə abunə ol' },
+  'Пожелания, сроки, город доставки…': { tr: 'İstekler, teslim süresi, şehir…', az: 'İstəklər, müddət, çatdırılma şəhəri…' },
+  'Пока новостей нет.': { tr: 'Henüz haber yok.', az: 'Hələ xəbər yoxdur.' },
+  'Смотреть в каталоге →': { tr: 'Katalogda gör →', az: 'Kataloqda bax →' },
+  'Ссылка на модель скопирована': { tr: 'Model bağlantısı kopyalandı', az: 'Model keçidi kopyalandı' },
+  'ТЕЛЕФОНЫ': { tr: 'TELEFONLAR', az: 'TELEFONLAR' },
+  'Уведомления о новинках': { tr: 'Yeni ürün bildirimleri', az: 'Yeni məhsul bildirişləri' },
+  'ХИТ': { tr: 'HİT', az: 'HİT' },
+  'ЭЛЕКТРОННАЯ ПОЧТА (E-MAIL)': { tr: 'E-POSTA (E-MAIL)', az: 'E-POÇT (E-MAIL)' },
+  '✓ Вы подписаны на уведомления': { tr: '✓ Bildirimlere abonesiniz', az: '✓ Bildirişlərə abunəsiniz' },
+  '✓ ДОБАВЛЕНО': { tr: '✓ EKLENDİ', az: '✓ ƏLAVƏ EDİLDİ' },
+  '🔔 Сначала добавьте на экран «Домой»': { tr: '🔔 Önce Ana Ekrana ekleyin', az: '🔔 Əvvəlcə Ana Ekrana əlavə edin' },
+  '🔔 Уведомления недоступны': { tr: '🔔 Bildirimler kullanılamıyor', az: '🔔 Bildirişlər əlçatan deyil' },
+  'Добавлено': { tr: 'Eklendi', az: 'Əlavə edildi' },
+  'Как заказать': { tr: 'Nasıl sipariş verilir', az: 'Necə sifariş vermək' },
+  'Размеры и цены': { tr: 'Bedenler ve fiyatlar', az: 'Ölçülər və qiymətlər' },
+  'Контакты и адрес': { tr: 'İletişim ve adres', az: 'Əlaqə və ünvan' },
+  'Про уведомления': { tr: 'Bildirimler hakkında', az: 'Bildirişlər haqqında' },
+  'Здравствуйте! Я помощник GABILEEN 🤍\nПодскажу по моделям, размерам и как оформить заказ. Что вас интересует?': {
+    tr: 'Merhaba! Ben GABILEEN asistanıyım 🤍\nModeller, bedenler ve sipariş konusunda yardımcı olurum. Nasıl yardımcı olabilirim?',
+    az: 'Salam! Mən GABILEEN köməkçisiyəm 🤍\nModellər, ölçülər və sifariş barədə kömək edərəm. Sizə necə kömək edə bilərəm?'
+  }
+};
+/* L('русский','english') -> строка на текущем языке (tr/az — из DICT) */
+function L(ru, en) {
+  if (LANG === 'ru') return ru;
+  if (LANG === 'en') return en;
+  const d = DICT[ru];
+  return (d && d[LANG]) || en || ru;
+}
+/* словарь характеристик товара (ткани, силуэт, пуговицы, страна, ростовки) */
+const SPEC = {
+  'ХЛОПОК': { tr: 'PAMUK', az: 'PAMBIQ' },
+  'ВИСКОЗА': { tr: 'VİSKON', az: 'VİSKOZ' },
+  'ЛЁН': { tr: 'KETEN', az: 'KƏTAN' }, 'ЛЕН': { tr: 'KETEN', az: 'KƏTAN' },
+  'ШЕРСТЬ': { tr: 'YÜN', az: 'YUN' },
+  'ПОЛИЭСТЕР': { tr: 'POLYESTER', az: 'POLYESTER' },
+  'ЛАЙКРА': { tr: 'LİKRA', az: 'LİKRA' },
+  'ЛАВСАН': { tr: 'LAVSAN', az: 'LAVSAN' },
+  'ТЕНСЕЛ': { tr: 'TENCEL', az: 'TENSEL' },
+  'ЭЛАСТАН': { tr: 'ELASTAN', az: 'ELASTAN' },
+  'ШИРОКИЙ СВОБОДНЫЙ': { tr: 'GENİŞ BOL KESİM', az: 'GENİŞ SƏRBƏST' },
+  'СВОБОДНЫЙ, КУЛИСКА': { tr: 'BOL KESİM, İP BEL', az: 'SƏRBƏST, İP BEL' },
+  'ПРИТАЛЕННЫЙ': { tr: 'DAR KESİM', az: 'DAR KƏSİM' },
+  'СВОБОДНЫЙ': { tr: 'BOL KESİM', az: 'SƏRBƏST' },
+  'ОБЫЧНЫЙ': { tr: 'NORMAL', az: 'NORMAL' },
+  'ОВЕРСАЙЗ': { tr: 'OVERSIZE', az: 'OVERSIZE' },
+  '2 ПУГОВИЦЫ': { tr: '2 DÜĞME', az: '2 DÜYMƏ' },
+  'ДВУБОРТНЫЙ': { tr: 'KRUVAZE', az: 'İKİ SIRA DÜYMƏ' },
+  'ПУГОВИЦА · МОЛНИЯ': { tr: 'DÜĞME · FERMUAR', az: 'DÜYMƏ · FERMUAR' },
+  'КУЛИСКА': { tr: 'İP BEL', az: 'İP BEL' },
+  'ТУРЦИЯ': { tr: 'TÜRKİYE', az: 'TÜRKİYƏ' },
+  'БЕЗ ПОДКЛАДКИ': { tr: 'ASTARSIZ', az: 'ASTARSIZ' },
+  'БЕЗ ПОДКЛАДА': { tr: 'ASTARSIZ', az: 'ASTARSIZ' }
+};
+const SPEC_KEYS = Object.keys(SPEC).sort((a, b) => b.length - a.length);
+/* перевод строки характеристики для tr/az (замена известных слов/фраз) */
+function trSpec(val) {
+  if (!val || LANG === 'ru' || LANG === 'en') return val;
+  let s = String(val);
+  for (const k of SPEC_KEYS) {
+    if (s.indexOf(k) >= 0) {
+      const re = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+      s = s.replace(re, SPEC[k][LANG] || k);
+    }
+  }
+  return s;
+}
+/* значение характеристики: ru -> ruVal, en -> enVal, tr/az -> перевод ruVal */
+function specVal(ruVal, enVal) {
+  if (LANG === 'ru') return ruVal;
+  if (LANG === 'en') return enVal || ruVal;
+  return trSpec(ruVal);
+}
+let CAT = (function(){ try { return localStorage.getItem('gb-cat') || 'all'; } catch(e){ return 'all'; } })();
+let QUERY = '';
+let COLOR = '';
+let FABRIC = ''; // '', 'len', 'hlopok', 'sherst', 'poli' — основная ткань
+let LINING = ''; // '', 'lined', 'nolining' — подклад (только для пиджаков)
+let PRODUCTS = [];
+
+let tg = window.Telegram && window.Telegram.WebApp;
+const $ = id => document.getElementById(id);
+
+function t() { return I18N[LANG]; }
+
+function haptic(style) {
+  try {
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style || 'light');
+  } catch (e) {}
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function parseCSV(text) {
+  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim() !== '');
+  if (!lines.length) return [];
+  const split = line => {
+    const out = [];
+    let cur = '', q = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') {
+        if (q && line[i + 1] === '"') { cur += '"'; i++; }
+        else q = !q;
+      } else if (c === ',' && !q) { out.push(cur); cur = ''; }
+      else cur += c;
+    }
+    out.push(cur);
+    return out;
+  };
+  const headers = split(lines[0]).map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const cells = split(line);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (cells[i] || '').trim(); });
+    return obj;
+  });
+}
+
+function renderSkeleton() {
+  let cards = '';
+  for (let i = 0; i < 6; i++) {
+    cards += '<div class="sk-card"><div class="sk-img shimmer"></div><div class="sk-line shimmer"></div><div class="sk-line s2 shimmer"></div></div>';
+  }
+  $('content').innerHTML = '<div class="sk-grid">' + cards + '</div>';
+  $('countNum').textContent = '';
+  $('countLabel').textContent = '';
+}
+
+async function loadData() {
+  renderSkeleton();
+  try {
+    const bust = DATA_URL.includes('?') ? '&' : '?';
+    const res = await fetch(DATA_URL + bust + '_=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('http ' + res.status);
+    const text = await res.text();
+    PRODUCTS = DATA_URL.includes('spreadsheets') ? parseCSV(text) : JSON.parse(text);
+    render();
+    if (!booted) { booted = true; openFromHash(); }
+  } catch (e) {
+    renderError();
+  }
+}
+let booted = false;
+
+function colorList(str) {
+  return (str || '').split(',').map(c => c.trim()).filter(c => PALETTE[c]);
+}
+
+function getName(p) { return LANG === 'ru' ? (p.name_ru || p.name_en || '') : (p.name_en || p.name_ru || ''); }
+
+function byCatAndQuery() {
+  const q = QUERY.trim().toLowerCase();
+  return PRODUCTS.filter(p => {
+    if (CAT !== 'all' && p.cat !== CAT) return false;
+    if (q) {
+      const hay = ((p.id || '') + ' ' + (p.name_ru || '') + ' ' + (p.name_en || '')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+/* основная (доминирующая) ткань модели — по первому слову состава */
+const FABRICS = {
+  len:    { key: ['ЛЁН', 'ЛЕН'], ru: 'ЛЁН', en: 'LINEN' },
+  hlopok: { key: ['ХЛОПОК'],     ru: 'ХЛОПОК', en: 'COTTON' },
+  sherst: { key: ['ШЕРСТЬ'],     ru: 'ШЕРСТЬ', en: 'WOOL' },
+  poli:   { key: ['ПОЛИЭСТЕР'],  ru: 'ПОЛИЭСТЕР', en: 'POLYESTER' },
+};
+function fabricOf(p) {
+  const comp = ((p.comp_ru || '') + '').toUpperCase();
+  if (!comp) return '';
+  for (const k in FABRICS) {
+    if (FABRICS[k].key.some(w => comp.startsWith(w))) return k;
+  }
+  return '';
+}
+
+function filtered() {
+  return byCatAndQuery().filter(p => {
+    if (COLOR && familyOf(p) !== COLOR) return false;
+    if (FABRIC && fabricOf(p) !== FABRIC) return false;
+    if (CAT === 'pidzhaki' && LINING) {
+      if (LINING === 'lined' && p.lined === false) return false;
+      if (LINING === 'nolining' && p.lined !== false) return false;
+    }
+    return true;
+  });
+}
+
+function renderError() {
+  $('content').innerHTML = '<div class="state">' + t().error +
+    '<br><button class="retry" id="retryBtn">' + t().retry + '</button></div>';
+  $('countNum').textContent = '';
+  $('countLabel').textContent = '';
+  $('retryBtn').onclick = loadData;
+}
+
+let observer = null;
+
+let HAS_GSAP = typeof gsap !== 'undefined';
+
+function observeCards() {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        const el = en.target;
+        const delay = (el.dataset.stagger || 0) * 0.06;
+        if (HAS_GSAP) {
+          gsap.fromTo(el,
+            { opacity: 0, y: 26, scale: 0.97 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.7, delay: delay, ease: 'power3.out',
+              onStart: () => { el.style.transition = 'none'; el.style.transform = ''; } }
+          );
+        } else {
+          setTimeout(() => el.classList.add('vis'), (el.dataset.stagger || 0) * 60);
+        }
+        observer.unobserve(el);
+      }
+    });
+  }, { rootMargin: '60px' });
+  document.querySelectorAll('.card').forEach(el => observer.observe(el));
+}
+
+function bindImages(scope) {
+  (scope || document).querySelectorAll('img[data-fade]').forEach(img => {
+    if (img.complete && img.naturalWidth) img.classList.add('loaded');
+    else img.onload = () => img.classList.add('loaded');
+  });
+}
+
+/* ленивая загрузка фото карточек: качаем только те, что подъезжают к экрану */
+let imgObserver = null;
+function observeImages() {
+  const imgs = document.querySelectorAll('.card-img img[data-src]');
+  if (!('IntersectionObserver' in window)) {
+    imgs.forEach(img => { img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); });
+    return;
+  }
+  if (imgObserver) imgObserver.disconnect();
+  imgObserver = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        const img = en.target;
+        const src = img.getAttribute('data-src');
+        if (src) { img.src = src; img.removeAttribute('data-src'); }
+        imgObserver.unobserve(img);
+      }
+    });
+  }, { rootMargin: '700px' });
+  imgs.forEach(img => imgObserver.observe(img));
+}
+
+function render() {
+  $('subtitle').textContent = t().subtitle;
+  $('search').placeholder = t().search;
+  $('langBtn').textContent = LANG_LABEL[LANG];
+  renderTabs();
+  renderLiningBar();
+  renderFabricBar();
+  renderColorBar();
+
+  const items = filtered();
+  const groups = groupByModel(items);
+  /* хиты каталога — вверх (порядок внутри сохраняется, т.к. сортировка стабильная) */
+  const grank = g => g.some(isNewActive) ? 2 : g.some(v => v.hit) ? 1 : 0;
+  groups.sort((a, b) => grank(b) - grank(a));
+  animateCount(groups.length);
+
+  if (!groups.length) {
+    $('content').innerHTML = '<div class="state">' + t().empty + '</div>';
+    return;
+  }
+
+  $('content').innerHTML = '<div class="grid">' +
+    groups.map(modelCardHTML).join('') + '</div>';
+  document.querySelectorAll('.card').forEach((el, i) => {
+    el.dataset.stagger = i % 6;
+    attachCardEvents(el);
+  });
+  observeCards();
+  observeImages();
+  bindImages($('content'));
+  setupParallax();
+  setupAmbientScroll();
+}
+
+/* ---------- анимированный счётчик ---------- */
+let countTween = null;
+function animateCount(n) {
+  const numEl = $('countNum');
+  const labelEl = $('countLabel');
+  const labelText = LANG === 'ru' ? plural(n, 'МОДЕЛЬ', 'МОДЕЛИ', 'МОДЕЛЕЙ')
+    : LANG === 'tr' ? 'MODEL' : LANG === 'az' ? 'MODEL' : 'MODELS';
+  if (!HAS_GSAP) { numEl.textContent = n; labelEl.textContent = labelText; return; }
+  labelEl.textContent = labelText;
+  const obj = { v: parseInt(numEl.textContent) || 0 };
+  if (countTween) countTween.kill();
+  countTween = gsap.to(obj, {
+    v: n, duration: 1.1, ease: 'power3.out',
+    onUpdate: () => { numEl.textContent = Math.round(obj.v); }
+  });
+}
+
+/* ---------- ambient scroll color ---------- */
+function setupAmbientScroll() {
+  if (!HAS_ST) return;
+  document.querySelectorAll('.card[data-id]').forEach(card => {
+    const p = PRODUCTS.find(x => x.id === card.dataset.id);
+    if (!p) return;
+    const list = colorList(p.colors);
+    if (!list.length) return;
+    const hex = PALETTE[list[0]].hex;
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    ScrollTrigger.create({
+      trigger: card,
+      start: 'top 50%',
+      end: 'bottom 50%',
+      onEnter: () => gsap.to(document.documentElement, { '--bg-tint': `rgba(${r},${g},${b},0.04)`, duration: 0.8, ease: 'power2.out' }),
+      onEnterBack: () => gsap.to(document.documentElement, { '--bg-tint': `rgba(${r},${g},${b},0.04)`, duration: 0.8, ease: 'power2.out' })
+    });
+  });
+}
+
+/* ---------- параллакс фото в карточках при скролле ---------- */
+let parallaxTriggers = [];
+function setupParallax() {
+  if (!HAS_ST) return;
+  parallaxTriggers.forEach(t => t.kill());
+  parallaxTriggers = [];
+  document.querySelectorAll('.card-img img').forEach(img => {
+    const tw = gsap.fromTo(img,
+      { yPercent: -8 },
+      { yPercent: 8, ease: 'none',
+        scrollTrigger: { trigger: img.closest('.card'), start: 'top bottom', end: 'bottom top', scrub: true }
+      }
+    );
+    if (tw.scrollTrigger) parallaxTriggers.push(tw.scrollTrigger);
+  });
+}
+
+/* ---------- hero showcase (Swiper) ---------- */
+let heroSwiperInst = null;
+
+function renderHero() {
+  const box = $('hero');
+  if (heroSwiperInst) { heroSwiperInst.destroy(true, true); heroSwiperInst = null; }
+  if (CAT !== 'all' || QUERY.trim() || COLOR) { box.innerHTML = ''; return; }
+  const heroItems = PRODUCTS.filter(p => p.image).slice(0, 5);
+  if (heroItems.length < 2) { box.innerHTML = ''; return; }
+
+  box.innerHTML =
+    '<div class="hero-wrap">' +
+      '<span class="hero-tag">' + t().newin + '</span>' +
+      '<div class="swiper hero-swiper">' +
+        '<div class="swiper-wrapper">' +
+          heroItems.map(p =>
+            '<div class="swiper-slide" data-id="' + esc(p.id) + '">' +
+              '<img src="' + esc(p.image) + '" alt="" onerror="this.style.display=\'none\'">' +
+              '<div class="hero-info">' +
+                '<div class="hero-kicker">' + esc(p.id) + '</div>' +
+                '<div class="hero-title">' + esc(getName(p)) + '</div>' +
+                '<span class="hero-cta">' + t().view + ' &#8594;</span>' +
+              '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>' +
+        '<div class="swiper-pagination"></div>' +
+      '</div>' +
+    '</div>';
+
+  if (typeof Swiper !== 'undefined') {
+    heroSwiperInst = new Swiper('.hero-swiper', {
+      loop: true,
+      autoplay: { delay: 3800, disableOnInteraction: false },
+      speed: 700,
+      effect: 'slide',
+      pagination: { el: '.hero-swiper .swiper-pagination', clickable: true },
+      on: {
+        click: (sw) => {
+          const slide = sw.slides[sw.activeIndex];
+          const id = slide && slide.getAttribute('data-id');
+          if (id) { haptic('light'); openDetail(id); }
+        }
+      }
+    });
+  }
+}
+
+/* ---------- card events: photo opens detail, dots switch color ---------- */
+function attachCardEvents(el) {
+  const cid = () => el.getAttribute('data-id');
+  const imgZone = el.querySelector('.card-img');
+  let lpTimer = null, lpFired = false, sx = 0, sy = 0, lastDx = 0, lastDy = 0, swiped = false;
+
+  /* листать варианты модели (цвета) свайпом по фото */
+  const gids = () => Array.from(el.querySelectorAll('.mdot[data-goto]')).map(d => d.getAttribute('data-goto'));
+  const cycleVariant = dir => {
+    const list = gids();
+    if (list.length < 2) return;
+    let i = list.indexOf(cid());
+    if (i < 0) i = 0;
+    const next = list[(i + dir + list.length) % list.length];
+    selectTileColor(el, next);
+  };
+
+  /* --- зона фото: тап открывает карточку, долгий тап — превью, свайп — цвета --- */
+  if (imgZone) {
+    imgZone.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) return;
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+      lastDx = 0; lastDy = 0; swiped = false; lpFired = false;
+      lpTimer = setTimeout(() => {
+        lpFired = true;
+        haptic('medium');
+        openQuickLook(cid());
+      }, 420);
+    }, { passive: true });
+
+    imgZone.addEventListener('touchmove', e => {
+      lastDx = e.touches[0].clientX - sx;
+      lastDy = e.touches[0].clientY - sy;
+      if (Math.abs(lastDx) > 10 || Math.abs(lastDy) > 10) clearTimeout(lpTimer);
+      if (Math.abs(lastDx) > 28 && Math.abs(lastDx) > Math.abs(lastDy)) swiped = true;
+    }, { passive: true });
+
+    imgZone.addEventListener('touchend', () => {
+      clearTimeout(lpTimer);
+      if (lpFired) { closeQuickLook(); return; }
+      if (swiped && Math.abs(lastDx) > 40 && Math.abs(lastDx) > Math.abs(lastDy)) {
+        cycleVariant(lastDx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+    imgZone.addEventListener('touchcancel', () => {
+      clearTimeout(lpTimer);
+      if (lpFired) closeQuickLook();
+    }, { passive: true });
+
+    imgZone.addEventListener('click', e => {
+      if (lpFired || swiped) { swiped = false; e.preventDefault(); return; }
+      haptic('light');
+      openDetail(cid(), el);
+    });
+  }
+
+  /* --- кружки: сменить цвет модели прямо в каталоге --- */
+  el.querySelectorAll('.mdot[data-goto]').forEach(dot => {
+    dot.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      selectTileColor(el, dot.getAttribute('data-goto'));
+    });
+  });
+
+  /* --- кнопка «в корзину»: выбор размера в мини-окне --- */
+  el.querySelectorAll('.card-pack').forEach(b => {
+    b.addEventListener('touchstart', e => { e.stopPropagation(); clearTimeout(lpTimer); }, { passive: true });
+    b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      haptic('light');
+      openQuickAdd(cid());
+    });
+  });
+}
+
+/* сменить фото/цвет плитки в каталоге без открытия карточки */
+function selectTileColor(el, gid) {
+  const v = PRODUCTS.find(x => x.id === gid);
+  if (!v) return;
+  if (el.getAttribute('data-id') === gid) return;
+  haptic('light');
+  el.setAttribute('data-id', gid);
+  const img = el.querySelector('.card-img img');
+  if (img && v.image) {
+    img.classList.remove('loaded');
+    img.removeAttribute('data-src');
+    img.onload = () => img.classList.add('loaded');
+    img.src = v.image;
+  }
+  el.querySelectorAll('.mdot').forEach(d =>
+    d.classList.toggle('active', d.getAttribute('data-goto') === gid));
+}
+
+/* ---------- quick look ---------- */
+function openQuickLook(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p || !p.image) return;
+  $('ql').innerHTML = '<img src="' + esc(p.image) + '" alt=""><div class="ql-id">' + esc(p.id) + ' · ' + esc(getName(p)) + '</div>';
+  $('ql').classList.add('show');
+}
+function closeQuickLook() {
+  $('ql').classList.remove('show');
+}
+
+function renderTabs() {
+  const order = ['all', 'bryuki', 'pidzhaki', 'palto'];
+  // Скрываем категорию, если в ней нет товаров (напр. ПАЛЬТО). Вкладка вернётся
+  // автоматически, как только для неё появятся товары — ничего удалять не нужно.
+  $('tabs').innerHTML = order.map(c => {
+    const n = c === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === c).length;
+    if (c !== 'all' && n === 0) return '';
+    return '<button class="tab' + (CAT === c ? ' active' : '') + '" data-cat="' + c + '">' +
+      t().tabs[c] + (n ? '<span class="tab-n">' + n + '</span>' : '') + '</button>';
+  }).join('');
+  document.querySelectorAll('.tab').forEach(el => {
+    el.onclick = () => {
+      haptic('light');
+      CAT = el.getAttribute('data-cat');
+      try { localStorage.setItem('gb-cat', CAT); } catch(e){}
+      render();
+    };
+  });
+}
+
+function renderLiningBar() {
+  const bar = $('liningBar');
+  if (CAT !== 'pidzhaki') { bar.innerHTML = ''; return; }
+  const L = LANG === 'ru'
+    ? { all: 'ВСЕ', lined: 'С ПОДКЛАДОМ', nolining: 'БЕЗ ПОДКЛАДА' }
+    : { all: 'ALL', lined: 'LINED', nolining: 'UNLINED' };
+  const opts = [['', L.all], ['lined', L.lined], ['nolining', L.nolining]];
+  bar.innerHTML = opts.map(([v, label]) =>
+    '<button class="ln' + (LINING === v ? ' active' : '') + '" data-ln="' + v + '">' + esc(label) + '</button>'
+  ).join('');
+  bar.querySelectorAll('.ln').forEach(el => {
+    el.onclick = () => { haptic('light'); LINING = el.getAttribute('data-ln'); render(); };
+  });
+}
+
+function renderFabricBar() {
+  const bar = $('fabricBar');
+  if (!bar) return;
+  /* какие ткани реально есть в текущей категории (с учётом поиска) */
+  const present = new Set();
+  byCatAndQuery().forEach(p => { const f = fabricOf(p); if (f) present.add(f); });
+  if (FABRIC && !present.has(FABRIC)) FABRIC = '';
+  const list = Object.keys(FABRICS).filter(f => present.has(f));
+  if (list.length < 2) { bar.innerHTML = ''; return; }
+  const all = L('ВСЕ ТКАНИ', 'ALL FABRICS');
+  bar.innerHTML = '<button class="ln' + (FABRIC === '' ? ' active' : '') + '" data-fab="">' + all + '</button>' +
+    list.map(f => '<button class="ln' + (FABRIC === f ? ' active' : '') + '" data-fab="' + f + '">' +
+      esc(FABRICS[f][LANG]) + '</button>').join('');
+  bar.querySelectorAll('.ln').forEach(el => {
+    el.onclick = () => { haptic('light'); FABRIC = el.getAttribute('data-fab'); render(); };
+  });
+}
+
+function renderColorBar() {
+  const present = new Set();
+  byCatAndQuery().forEach(p => { const f = familyOf(p); if (f) present.add(f); });
+  const list = Object.keys(FAMILIES).filter(f => present.has(f));
+  if (list.length < 2) { $('colorBar').innerHTML = ''; return; }
+  $('colorBar').innerHTML = list.map(f =>
+    '<button class="cf' + (COLOR === f ? ' active' : '') + '" data-c="' + f + '" title="' + esc(FAMILIES[f][LANG]) + '">' +
+      '<span class="cf-dot" style="background:' + FAMILIES[f].hex + '"></span>' +
+      '<span class="cf-name">' + esc(FAMILIES[f][LANG]) + '</span>' +
+    '</button>'
+  ).join('') + '<button class="cf-reset' + (COLOR ? ' show' : '') + '" id="cfReset">' + t().reset + '</button>';
+  document.querySelectorAll('.cf').forEach(el => {
+    el.onclick = () => {
+      haptic('light');
+      const c = el.getAttribute('data-c');
+      COLOR = COLOR === c ? '' : c;
+      render();
+    };
+  });
+  const r = $('cfReset');
+  if (r) r.onclick = () => { haptic('light'); COLOR = ''; render(); };
+}
+
+function dotHTML(c) {
+  return '<span class="dot" style="background:' + PALETTE[c].hex + '"></span>';
+}
+
+function imgHTML(p, lazy) {
+  if (!p.image) return '<div class="ph">' + PH_SVG + '</div>';
+  const srcAttr = lazy ? 'data-src="' + esc(p.image) + '"' : 'src="' + esc(p.image) + '"';
+  return '<img ' + srcAttr + ' alt="" data-fade decoding="async" onerror="this.style.display=\'none\'">';
+}
+
+function cardHTML(p) {
+  const c = colorList(p.colors)[0];
+  const colorHex = c ? PALETTE[c].hex : '#cccccc';
+  const colorName = c ? PALETTE[c][LANG] : '';
+  return '<div class="card" data-id="' + esc(p.id) + '">' +
+    '<div class="card-press">' +
+      '<div class="card-img">' + imgHTML(p, true) +
+        '<span class="art-tag">' + esc(p.id) + '</span>' +
+      '</div>' +
+      '<div class="card-info">' +
+        '<div class="card-name">' + esc(getName(p)) + '</div>' +
+        '<div class="card-color">' +
+          '<span class="card-swatch" style="background:' + colorHex + '"></span>' +
+          '<span class="card-color-name">' + esc(colorName) + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+/* модель товара: явное поле model из данных, иначе — название без последнего слова */
+function modelKey(p) {
+  if (p.model) return String(p.model).toLowerCase();
+  const n = (p.name_en || p.name_ru || '').trim();
+  return n.replace(/\s+\S+$/, '').toLowerCase();
+}
+const CAT_WORD = {
+  pidzhaki: { ru: 'ПИДЖАК', en: 'JACKET', tr: 'CEKET', az: 'PİDJAK' },
+  bryuki: { ru: 'БРЮКИ', en: 'TROUSERS', tr: 'PANTOLON', az: 'ŞALVAR' },
+  palto: { ru: 'ПАЛЬТО', en: 'COAT', tr: 'PALTO', az: 'PALTO' }
+};
+function catWordOf(cat) { const w = CAT_WORD[cat]; return w ? (w[LANG] || w.en) : ''; }
+
+/* группировка отфильтрованных товаров по модели (порядок — первого появления) */
+function groupByModel(items) {
+  const map = new Map();
+  items.forEach(p => {
+    const k = modelKey(p);
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push(p);
+  });
+  return [...map.values()];
+}
+
+/* карточка-модель: одно фото на модель + кликабельные кружки всех её цветов */
+function hashStr(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+function modelCardHTML(group) {
+  const variants = modelVariants(group[0]);
+  const n = variants.length;
+  /* цвет по умолчанию — разный у каждой модели (пёстрый разнобой), но стабильный */
+  const rep = COLOR ? group[0] : variants[hashStr(modelKey(group[0])) % n];
+  const dots = variants.map(v => {
+    const c = colorList(v.colors)[0];
+    const hex = c ? PALETTE[c].hex : '#cccccc';
+    const label = c ? PALETTE[c][LANG] : v.id;
+    return '<button class="mdot' + (v.id === rep.id ? ' active' : '') + '" data-goto="' + esc(v.id) +
+           '" style="background:' + hex + '" title="' + esc(label) + '" aria-label="' + esc(label) + '"></button>';
+  }).join('');
+  const modelName = (catWordOf(rep.cat) + ' ' + (rep.model || '')).trim();
+  const colorWord = LANG === 'ru' ? plural(n, 'ЦВЕТ', 'ЦВЕТА', 'ЦВЕТОВ')
+    : LANG === 'tr' ? 'RENK' : LANG === 'az' ? 'RƏNG' : ('COLOR' + (n > 1 ? 'S' : ''));
+  const colorsLabel = n + ' ' + colorWord;
+  return '<div class="card" data-id="' + esc(rep.id) + '">' +
+    '<div class="card-press">' +
+      '<div class="card-img">' + imgHTML(rep, true) +
+        '<span class="art-tag">' + esc(colorsLabel) + '</span>' +
+        '<div class="card-tags">' +
+          (group.some(isNewActive) ? '<span class="new-tag">' + (L('НОВИНКА', 'NEW')) + '</span>' : '') +
+          (group.some(v => v.hit) ? '<span class="hit-tag">' + (L('ХИТ', 'TOP')) + '</span>' : '') +
+        '</div>' +
+        '<div class="card-packs"><button class="card-pack" data-quick="1">' +
+          '<span class="cp-plus">+</span>' + L('В КОРЗИНУ', 'ADD') + '</button></div>' +
+      '</div>' +
+      '<div class="card-info">' +
+        '<div class="card-name">' + esc(modelName) + '</div>' +
+        (priceOf(rep) ? '<div class="card-price">' + fmtPrice(priceOf(rep)) + '</div>' : '') +
+        '<div class="mdots">' + dots + '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+const PALETTE_ORDER = Object.keys(PALETTE);
+/* сортировка цветов по градиенту: тёмные → светлые (по яркости) */
+function colorRank(p) {
+  const c = colorList(p.colors)[0];
+  const hex = c && PALETTE[c] ? PALETTE[c].hex : null;
+  if (!hex) return 9999;
+  const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+  return 0.299 * r + 0.587 * g + 0.114 * b;  // luminance 0..255
+}
+function modelVariants(p) {
+  const key = modelKey(p);
+  return PRODUCTS.filter(x => modelKey(x) === key)
+    .sort((a, b) => colorRank(a) - colorRank(b) || (a.id < b.id ? -1 : 1));
+}
+
+/* ---------- adaptive accent ---------- */
+function setAccent(p) {
+  const list = colorList(p.colors);
+  let hex = '#161614';
+  if (list.length) hex = PALETTE[list[0]].hex;
+  const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  document.documentElement.style.setProperty('--accent', hex);
+  document.documentElement.style.setProperty('--accent-fg', lum > 0.72 ? '#161614' : '#ffffff');
+}
+
+/* ---------- detail + hero transition ---------- */
+let currentDetailId = null;
+function openDetail(id, cardEl, opts) {
+  opts = opts || {};
+  const noAnim = !!opts.noAnim;
+  const fromHash = !!opts.fromHash;
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const wasOpen = $('detail').classList.contains('open');
+  if (!wasOpen) lockScroll();
+  currentDetailId = id;
+  if (!fromHash) {
+    const target = '#p=' + id;
+    if (location.hash !== target) {
+      // при смене цвета внутри модели заменяем запись истории, а не добавляем —
+      // чтобы «назад» вело сразу в каталог, а не по цветам
+      if (opts.replace) history.replaceState({ p: id }, '', target);
+      else history.pushState({ p: id }, '', target);
+    }
+  }
+  const ru = LANG === 'ru';
+  const specs = [
+    specVal(p.comp_ru, p.comp_en),
+    specVal(p.sil_ru, p.sil_en),
+    specVal(p.ros_ru, p.ros_en),
+    (typeof p.lined === 'boolean') ? (p.lined ? (L('ДА', 'YES')) : (L('НЕТ', 'NO'))) : '',
+    specVal(p.btn_ru, p.btn_en),
+    specVal(p.country_ru, p.country_en),
+    trSpec(p.sizes)
+  ];
+  const variants = modelVariants(p);
+  const swatches = variants.map(x => {
+    const c = colorList(x.colors)[0];
+    const hex = c ? PALETTE[c].hex : '#cccccc';
+    const label = c ? PALETTE[c][LANG] : x.id;
+    return '<button class="cv' + (x.id === p.id ? ' active' : '') + '" data-goto="' + esc(x.id) + '" aria-label="' + esc(label) + '">' +
+             '<span class="cv-dot" style="background:' + hex + '"></span>' +
+           '</button>';
+  }).join('');
+  const curColor = colorList(p.colors)[0];
+  const curLabel = curColor ? PALETTE[curColor][LANG] : '';
+  const rows = t().specs.map((k, i) => {
+    /* строку РОСТ показываем только если значение есть (у брюк/оверсайза её нет) */
+    if ((k === 'РОСТ' || k === 'HEIGHT' || k === 'ПОДКЛАДКА' || k === 'LINING') && !specs[i]) return '';
+    return '<div class="spec-row"><div class="spec-key">' + k + '</div><div class="spec-val">' + esc(specs[i] || '—') + '</div></div>';
+  }).join('');
+
+  setAccent(p);
+
+  $('detailArt').textContent = p.id;
+  $('detailContent').innerHTML =
+    '<div class="detail-img' + (p.image2 ? ' duo' : '') + '" id="detailImg">' + imgHTML(p) +
+      (p.image2 ? '<img src="' + esc(p.image2) + '" alt="" data-fade decoding="async" onerror="this.style.display=\'none\'">' : '') +
+      (p.image ? '<span class="zoom-hint">' + t().zoom + '</span>' : '') +
+    '</div>' +
+    '<div class="detail-body">' +
+      '<div class="detail-cat d-anim d1">' + (t().cat[p.cat] || esc(p.cat)) + ' · GABILEEN</div>' +
+      '<div class="detail-name d-anim d1">' + esc(getName(p)) + '</div>' +
+      '<div class="accent-line d-anim d1"></div>' +
+      '<div class="section-label d-anim d2">' + t().colors + ' · ' + variants.length + '</div>' +
+      '<div class="cv-row d-anim d2">' + swatches + '</div>' +
+      '<div class="cv-current d-anim d2">' + esc(curLabel) + '</div>' +
+      '<div class="addcart d-anim d3">' + addcartHTML(p) + '</div>' +
+      '<div class="order-block d-anim d3">' + orderHTML(p) + '</div>' +
+      '<div class="specs d-anim d4">' + rows + '</div>' +
+      '<button class="share-btn d-anim d4" id="shareBtn">' + t().share + '</button>' +
+    '</div>';
+
+  $('shareBtn').onclick = () => { haptic('medium'); shareProduct(p); };
+  setupAddCart(p, $('detailContent'));
+  document.querySelectorAll('.cv').forEach(el => {
+    el.onclick = () => {
+      const gid = el.getAttribute('data-goto');
+      if (gid && gid !== p.id) { haptic('light'); openDetail(gid, null, { noAnim: true, replace: true }); }
+    };
+  });
+
+  bindImages($('detailContent'));
+  setupZoom();
+  $('detail').scrollTop = 0;
+
+  if (noAnim) {
+    $('detailContent').querySelectorAll('.d-anim').forEach(el => {
+      el.style.animation = 'none';
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  } else {
+    if (HAS_GSAP) {
+      const all = $('detailContent').querySelectorAll('.d-anim');
+      all.forEach(el => el.style.animation = 'none');
+      const nameEl = $('detailContent').querySelector('.detail-name');
+      const els = Array.from(all).filter(el => el !== nameEl);
+      gsap.fromTo(els,
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.07, delay: 0.12, ease: 'power3.out' }
+      );
+      if (nameEl && !(HAS_SPLIT)) {
+        gsap.fromTo(nameEl, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.12, ease: 'power3.out' });
+      }
+    }
+    revealDetailName();
+  }
+
+  /* hero transition from card image (mobile only, и не при смене цвета) */
+  const srcImg = (cardEl && !noAnim) ? cardEl.querySelector('.card-img img') : null;
+  if (srcImg && srcImg.classList.contains('loaded') && p.image && window.innerWidth < 900) {
+    const rect = srcImg.getBoundingClientRect();
+    const clone = document.createElement('img');
+    clone.className = 'hero-clone';
+    clone.src = p.image;
+    clone.style.top = rect.top + 'px';
+    clone.style.left = rect.left + 'px';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    clone.style.borderRadius = '0px';
+    document.body.appendChild(clone);
+
+    const targetW = window.innerWidth;
+    /* высота совпадает с реальным блоком фото: дуо (3:2) или одиночное (3:4) */
+    const targetH = p.image2 ? targetW * 2 / 3 : targetW * 4 / 3;
+    /* верх совпадает с нижней гранью панели (с учётом «чёлки»), чтобы фото не налезало на кнопки */
+    const topBar = document.querySelector('.detail-top');
+    const barH = topBar ? Math.round(topBar.getBoundingClientRect().height) : 52;
+
+    const detailImgEl = $('detailImg').querySelector('img');
+    if (detailImgEl) detailImgEl.style.visibility = 'hidden';
+
+    const finish = () => {
+      if (detailImgEl) detailImgEl.style.visibility = '';
+      clone.remove();
+    };
+
+    if (HAS_GSAP) {
+      clone.style.transition = 'none';
+      gsap.to(clone, {
+        top: barH, left: 0, width: targetW, height: targetH,
+        duration: 0.6, ease: 'power3.inOut', onComplete: finish
+      });
+    } else {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          clone.style.top = barH + 'px';
+          clone.style.left = '0px';
+          clone.style.width = targetW + 'px';
+          clone.style.height = targetH + 'px';
+        });
+      });
+      setTimeout(finish, 480);
+    }
+
+    $('detail').classList.add('open');
+    if (tg && tg.BackButton) tg.BackButton.show();
+  } else {
+    $('detail').classList.add('open');
+    if (tg && tg.BackButton) tg.BackButton.show();
+  }
+}
+
+let savedScrollY = 0;
+function lockScroll() {
+  if (document.body.classList.contains('locked')) return;
+  savedScrollY = window.scrollY || window.pageYOffset || 0;
+  if (lenis) lenis.stop();
+  document.body.style.top = -savedScrollY + 'px';
+  document.body.classList.add('locked');
+}
+function unlockScroll() {
+  if (!document.body.classList.contains('locked')) return;
+  document.body.classList.remove('locked');
+  document.body.style.top = '';
+  if (lenis) lenis.start();
+  const y = savedScrollY;
+  window.scrollTo(0, y);
+  // закрепляем позицию в следующем кадре (на случай, если раскладка/браузер сдвинули её)
+  requestAnimationFrame(() => window.scrollTo(0, y));
+}
+
+function closeDetail(fromPop) {
+  if (!$('detail').classList.contains('open')) return;
+  $('detail').classList.remove('open');
+  $('detail').style.transform = '';
+  $('detail').style.opacity = '';
+  unlockScroll();
+  currentDetailId = null;
+  if (tg && tg.BackButton) tg.BackButton.hide();
+  if (!fromPop) {
+    if (history.state && history.state.p) history.back();
+    else if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  }
+}
+
+/* ---------- URL routing: keep product open on refresh / back ---------- */
+/* позицией каталога управляем сами — отключаем авто-восстановление браузера,
+   иначе оно перекрывает наш возврат на прежнее место */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+function hashProductId() {
+  const m = location.hash.match(/^#p=(.+)$/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+window.addEventListener('popstate', () => {
+  const id = hashProductId();
+  if (id) {
+    if (currentDetailId !== id) openDetail(id, null, { fromHash: true, noAnim: true });
+  } else {
+    closeDetail(true);
+  }
+});
+function openFromHash() {
+  const id = hashProductId();
+  if (id && PRODUCTS.find(x => x.id === id)) {
+    openDetail(id, null, { fromHash: true, noAnim: true });
+  }
+}
+
+/* ---------- drag to dismiss (vertical, from top) ---------- */
+(function() {
+  const d = $('detail');
+  let y0 = null, x0 = null, dragging = false, dy = 0;
+
+  d.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    if (d.scrollTop > 2) { y0 = null; return; }
+    y0 = e.touches[0].clientY;
+    x0 = e.touches[0].clientX;
+    dy = 0;
+    dragging = false;
+  }, { passive: true });
+
+  d.addEventListener('touchmove', e => {
+    if (y0 === null) return;
+    const curY = e.touches[0].clientY;
+    const curX = e.touches[0].clientX;
+    dy = curY - y0;
+    const dx = Math.abs(curX - x0);
+    if (!dragging && dy > 14 && dy > dx * 1.4 && d.scrollTop <= 0) {
+      dragging = true;
+      d.classList.add('dragging');
+    }
+    if (dragging) {
+      const damp = Math.max(0, dy) * 0.55;
+      d.style.transform = 'translateY(' + damp + 'px) scale(' + Math.max(0.94, 1 - damp / 2400) + ')';
+      d.style.opacity = Math.max(0.5, 1 - damp / 900);
+    }
+  }, { passive: true });
+
+  function release() {
+    if (y0 === null) return;
+    if (dragging) {
+      d.classList.remove('dragging');
+      if (dy * 0.55 > 110) {
+        haptic('medium');
+        d.style.transform = '';
+        d.style.opacity = '';
+        closeDetail();
+      } else {
+        d.style.transform = '';
+        d.style.opacity = '';
+      }
+    }
+    y0 = null;
+    dragging = false;
+  }
+  d.addEventListener('touchend', release, { passive: true });
+  d.addEventListener('touchcancel', release, { passive: true });
+
+  /* горизонтальный свайп — предыдущий / следующий товар */
+  let sx = null, sy = null, multi = false;
+  d.addEventListener('touchstart', e => {
+    multi = e.touches.length > 1;
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+  d.addEventListener('touchend', e => {
+    if (sx === null || multi) { sx = sy = null; return; }
+    const dx = e.changedTouches[0].clientX - sx;
+    const dyAbs = Math.abs(e.changedTouches[0].clientY - sy);
+    if (Math.abs(dx) > 60 && Math.abs(dx) > dyAbs * 1.5) {
+      navigateDetail(dx < 0 ? 1 : -1);   // влево = следующий, вправо = предыдущий
+    }
+    sx = sy = null;
+  }, { passive: true });
+})();
+
+/* ---------- переход между товарами (свайп / стрелки) ---------- */
+let navBusy = false;
+function navigateDetail(dir) {
+  if (navBusy || !currentDetailId || !$('detail').classList.contains('open')) return;
+  const list = filtered();
+  const i = list.findIndex(p => p.id === currentDetailId);
+  if (i < 0 || list.length < 2) return;
+  const j = (i + dir + list.length) % list.length;
+  const id = list[j].id;
+  haptic('light');
+  const content = $('detailContent');
+  if (!HAS_GSAP) { openDetail(id, null, { noAnim: true, replace: true }); return; }
+  navBusy = true;
+  const out = dir > 0 ? -70 : 70;   // следующий уезжает влево, приходит справа
+  gsap.to(content, {
+    x: out, opacity: 0, duration: 0.16, ease: 'power2.in',
+    onComplete: () => {
+      openDetail(id, null, { noAnim: true, replace: true });
+      gsap.fromTo(content,
+        { x: -out, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.28, ease: 'power3.out',
+          onComplete: () => { content.style.transform = ''; navBusy = false; } }
+      );
+    }
+  });
+}
+document.addEventListener('keydown', e => {
+  if (!$('detail').classList.contains('open')) return;
+  if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); navigateDetail(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); navigateDetail(-1); }
+});
+
+/* ---------- fullscreen zoom lightbox (клик/тап по фото) ---------- */
+function openZoom(src) {
+  if (!src) return;
+  const zb = $('zoomBox');
+  zb.innerHTML = '<img src="' + esc(src) + '" alt="">' +
+    '<button class="zoombox-close" id="zoomClose" aria-label="Закрыть">&#10005;</button>';
+  requestAnimationFrame(() => zb.classList.add('show'));
+  zb.onclick = () => closeZoom();
+  haptic('light');
+}
+function closeZoom() {
+  const zb = $('zoomBox');
+  if (!zb.classList.contains('show')) return;
+  zb.classList.remove('show');
+  setTimeout(() => { zb.innerHTML = ''; }, 280);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeZoom(); });
+
+/* ---------- pinch zoom on detail image ---------- */
+function setupZoom() {
+  const wrap = $('detailImg');
+  if (!wrap) return;
+  const img = wrap.querySelector('img');
+  if (!img) return;
+  let d0 = 0, scale = 1, ox = 50, oy = 50, zooming = false, moved = false, sx = 0, sy = 0;
+
+  /* клик/тап по фото — открыть полноэкранный зум (если это не свайп/пинч) */
+  wrap.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; moved = false; });
+  wrap.addEventListener('pointermove', e => { if (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8) moved = true; });
+  wrap.addEventListener('click', e => {
+    if (moved || zooming) return;
+    const tgt = (e.target && e.target.tagName === 'IMG') ? e.target : img;
+    openZoom(tgt.currentSrc || tgt.src);
+  });
+
+  wrap.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      zooming = true;
+      img.classList.remove('zoom-reset');
+      img.classList.add('zooming');
+      d0 = dist(e.touches);
+      const r = wrap.getBoundingClientRect();
+      ox = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left) / r.width * 100;
+      oy = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top) / r.height * 100;
+      img.style.transformOrigin = ox + '% ' + oy + '%';
+    }
+  }, { passive: false });
+
+  wrap.addEventListener('touchmove', e => {
+    if (zooming && e.touches.length === 2) {
+      e.preventDefault();
+      scale = Math.min(3.2, Math.max(1, dist(e.touches) / d0));
+      img.style.transform = 'scale(' + scale + ')';
+    }
+  }, { passive: false });
+
+  function end() {
+    if (!zooming) return;
+    zooming = false;
+    img.classList.remove('zooming');
+    img.classList.add('zoom-reset');
+    img.style.transform = 'scale(1)';
+    scale = 1;
+  }
+  wrap.addEventListener('touchend', end, { passive: true });
+  wrap.addEventListener('touchcancel', end, { passive: true });
+
+  function dist(t) {
+    const dx = t[0].clientX - t[1].clientX;
+    const dy = t[0].clientY - t[1].clientY;
+    return Math.hypot(dx, dy);
+  }
+}
+
+/* ---------- tilt parallax ---------- */
+(function() {
+  let enabled = false;
+  function handler(e) {
+    if (e.gamma == null || e.beta == null) return;
+    const x = Math.max(-1, Math.min(1, e.gamma / 30));
+    const y = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+    const img = document.querySelector('.detail-img img');
+    if (img && !img.classList.contains('zooming') && $('detail').classList.contains('open')) {
+      img.style.transform = 'translate3d(' + (x * 8) + 'px,' + (y * 8) + 'px,0) scale(1.06)';
+    }
+  }
+  function enable() {
+    if (enabled) return;
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(s => {
+        if (s === 'granted') { window.addEventListener('deviceorientation', handler, true); enabled = true; }
+      }).catch(() => {});
+    } else {
+      window.addEventListener('deviceorientation', handler, true);
+      enabled = true;
+    }
+  }
+  document.addEventListener('touchstart', enable, { once: true, passive: true });
+})();
+
+/* ---------- pull to refresh ---------- */
+(function() {
+  const inner = $('ptrInner');
+  let y0 = null, pulling = false, pulled = 0, busy = false;
+
+  window.addEventListener('touchstart', e => {
+    if (busy || $('detail').classList.contains('open')) { y0 = null; return; }
+    if (window.scrollY > 0) { y0 = null; return; }
+    y0 = e.touches[0].clientY;
+    pulled = 0;
+    pulling = false;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (y0 === null || busy) return;
+    const dy = e.touches[0].clientY - y0;
+    if (dy > 8 && window.scrollY <= 0) {
+      pulling = true;
+      pulled = Math.min(110, dy * 0.45);
+      inner.style.opacity = Math.min(1, pulled / 60);
+      inner.style.transform = 'translateY(' + (pulled - 20) + 'px)';
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', async () => {
+    if (y0 === null) return;
+    if (pulling && pulled > 62) {
+      busy = true;
+      haptic('medium');
+      inner.classList.add('spin');
+      inner.style.opacity = 1;
+      inner.style.transform = 'translateY(46px)';
+      await loadData();
+      setTimeout(() => {
+        inner.classList.remove('spin');
+        inner.style.opacity = 0;
+        inner.style.transform = 'translateY(-20px)';
+        busy = false;
+      }, 350);
+    } else if (pulling) {
+      inner.style.opacity = 0;
+      inner.style.transform = 'translateY(-20px)';
+    }
+    y0 = null;
+    pulling = false;
+  }, { passive: true });
+})();
+
+/* ---------- кнопки заказа в карточке + окно контактов ---------- */
+function orderHTML(p) {
+  const l = orderLinks('Здравствуйте! Интересует ' + getName(p) + ', арт. ' + p.id);
+  const label = L('ЗАДАТЬ ВОПРОС ПО МОДЕЛИ', 'ASK ABOUT THIS STYLE');
+  return '<div class="order-label">' + label + '</div>' +
+    '<div class="order-btns">' +
+      '<a class="ob ob-wa" href="' + l.wa + '" target="_blank" rel="noopener">WhatsApp</a>' +
+      '<a class="ob ob-tg" href="' + l.tg + '" target="_blank" rel="noopener">Telegram</a>' +
+      '<a class="ob ob-mx" href="' + l.max + '" target="_blank" rel="noopener">MAX</a>' +
+    '</div>';
+}
+function openContacts() {
+  haptic('light');
+  const l = orderLinks('Здравствуйте! Пишу по магазину GABILEEN');
+  const ru = LANG === 'ru';
+  const phones = CONTACTS.phones.map(ph =>
+    '<a class="ct-phone" href="tel:' + ph.replace(/[^+\d]/g, '') + '">' + esc(ph) + '</a>'
+  ).join('');
+  const addrs = CONTACTS.addresses.map((a, i) =>
+    '<div class="ct-addr"><span class="ct-addr-n">' + (i + 1) + '</span>' + esc(a) + '</div>'
+  ).join('');
+  $('contacts').innerHTML =
+    '<div class="ct-sheet">' +
+      '<button class="ct-close" id="ctClose" aria-label="Закрыть">&#10005;</button>' +
+      '<div class="ct-title">' + (L('КОНТАКТЫ', 'CONTACTS')) + ' · GABILEEN</div>' +
+      '<div class="ct-sub">' + (L('МАГАЗИН · МУЖСКАЯ КЛАССИКА', 'STORE · MENSWEAR')) + '</div>' +
+      '<div class="order-btns ct-msgrs">' +
+        '<a class="ob ob-wa" href="' + l.wa + '" target="_blank" rel="noopener">WhatsApp</a>' +
+        '<a class="ob ob-tg" href="' + l.tg + '" target="_blank" rel="noopener">Telegram</a>' +
+        '<a class="ob ob-mx" href="' + l.max + '" target="_blank" rel="noopener">MAX</a>' +
+      '</div>' +
+      '<div class="ct-block-label">' + (L('ТЕЛЕФОНЫ', 'PHONES')) + '</div>' +
+      '<div class="ct-phones">' + phones + '</div>' +
+      '<div class="ct-block-label">' + (L('АДРЕСА · ТЦ САДОВОД', 'ADDRESSES')) + '</div>' +
+      '<div class="ct-addrs">' + addrs + '</div>' +
+      '<div class="ct-block-label">' + (L('ЭЛЕКТРОННАЯ ПОЧТА (E-MAIL)', 'E-MAIL')) + '</div>' +
+      '<a class="ct-email" href="mailto:' + CONTACTS.email + '">' + esc(CONTACTS.email) + '</a>' +
+    '</div>';
+  const box = $('contacts');
+  box.classList.add('show');
+  $('ctClose').onclick = () => closeContacts();
+  box.onclick = e => { if (e.target === box) closeContacts(); };
+  setupNotifyButton();
+}
+function closeContacts() { $('contacts').classList.remove('show'); }
+
+/* ---------- ЧАТ-ПОМОЩНИК (FAQ сейчас, ИИ — после подключения воркера) ---------- */
+const CHAT_WORKER_URL = '';   /* ИИ-воркер не подключён — отвечает встроенный FAQ */
+let CHAT_MSGS = [];
+let CHAT_BUSY = false;
+function openChat() {
+  haptic('light');
+  if (!CHAT_MSGS.length) {
+    CHAT_MSGS.push({ role: 'bot', text: L('Здравствуйте! Я помощник GABILEEN 🤍\nПодскажу по моделям, размерам и как оформить заказ. Что вас интересует?', 'Hello! I am the GABILEEN assistant 🤍\nI can help with models, sizes and placing an order. How can I help?') });
+  }
+  renderChat();
+  $('chat').classList.add('show');
+  ymGoal('chat_open');
+}
+function closeChat() { $('chat').classList.remove('show'); }
+/* чипы чата: ru — каноничный текст (для FAQ/ИИ), label — перевод для показа */
+function chatChips() {
+  return [
+    { ru: 'Как заказать', label: L('Как заказать', 'How to order') },
+    { ru: 'Размеры и ростовки', label: L('Размеры и ростовки', 'Sizes & packs') },
+    { ru: 'Контакты и адрес', label: L('Контакты и адрес', 'Contacts & address'), contacts: true },
+    { ru: 'Про уведомления', label: L('Про уведомления', 'Notifications') }
+  ];
+}
+function chatMsgHTML(m) {
+  if (m.role === 'user') return '<div class="msg user">' + linkify(esc(m.text)) + '</div>';
+  let h = '<div class="msg bot rich">' + fmtBot(m.text) + '</div>';
+  if (m.models && m.models.length) {
+    h += '<div class="chat-cards">' + m.models.map(p => {
+      const cnt = PRODUCTS.filter(x => x.model === p.model).length;
+      const img = p.image ? '<img src="' + esc(p.image) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<span class="cc-ph"></span>';
+      return '<button class="chat-card" data-id="' + esc(p.id) + '">' + img +
+        '<div class="cc-name">' + esc(p.model) + '</div>' +
+        '<div class="cc-sub">' + cnt + ' ' + plural(cnt, 'цвет', 'цвета', 'цветов') + '</div></button>';
+    }).join('') + '</div>';
+  }
+  return h;
+}
+/* лёгкое форматирование ответа бота: абзацы, списки, жирный */
+function fmtBot(text) {
+  const lines = esc(text).split('\n');
+  let html = '', inList = false;
+  const inline = s => linkify(s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'));
+  for (const ln of lines) {
+    const bl = ln.match(/^\s*[\*\-•]\s+(.*)$/);
+    if (bl) { if (!inList) { html += '<ul class="msg-ul">'; inList = true; } html += '<li>' + inline(bl[1]) + '</li>'; }
+    else { if (inList) { html += '</ul>'; inList = false; } if (ln.trim()) html += '<div>' + inline(ln) + '</div>'; }
+  }
+  if (inList) html += '</ul>';
+  return html || esc(text);
+}
+function renderChat(typing) {
+  const ru = LANG === 'ru';
+  const msgs = CHAT_MSGS.map(chatMsgHTML).join('')
+    + (typing ? '<div class="chat-typing"><span>•</span><span>•</span><span>•</span></div>' : '');
+  const chips = chatChips().map((c, i) => '<button class="chat-chip" data-ci="' + i + '">' + esc(c.label) + '</button>').join('');
+  $('chat').innerHTML =
+    '<div class="chat-sheet">' +
+      '<button class="ct-close" id="chatClose" aria-label="Закрыть">&#10005;</button>' +
+      '<div class="chat-head"><div class="c-t">' + (L('ПОМОЩНИК', 'ASSISTANT')) + ' · GABILEEN</div>' +
+        '<div class="c-s">' + (L('ОПТ · ОТВЕЧУ НА ВОПРОСЫ', 'WHOLESALE · ASK ME')) + '</div></div>' +
+      '<div class="chat-msgs" id="chatMsgs">' + msgs + '</div>' +
+      '<div class="chat-chips" id="chatChips">' + chips + '</div>' +
+      '<form class="chat-input" id="chatForm" autocomplete="off">' +
+        '<input id="chatInput" type="text" placeholder="' + (L('Напишите вопрос…', 'Type your question…')) + '">' +
+        '<button class="chat-send" type="submit" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>' +
+      '</form>' +
+    '</div>';
+  $('chatClose').onclick = closeChat;
+  $('chat').onclick = e => { if (e.target === $('chat')) closeChat(); };
+  const mz = $('chatMsgs'); mz.scrollTop = mz.scrollHeight;
+  $('chatForm').onsubmit = e => { e.preventDefault(); const v = $('chatInput').value.trim(); if (v) sendChatText(v); };
+  const chipDefs = chatChips();
+  $('chatChips').querySelectorAll('.chat-chip').forEach(b => b.onclick = () => {
+    const c = chipDefs[+b.getAttribute('data-ci')];
+    if (c && c.contacts) { closeChat(); openContacts(); }
+    else if (c) sendChatText(c.ru);
+  });
+  mz.querySelectorAll('.chat-card').forEach(b => b.onclick = () => {
+    const id = b.getAttribute('data-id'); closeChat(); openDetail(id);
+  });
+}
+/* вытаскиваем служебную строку "МОДЕЛИ: A | B" и сопоставляем с каталогом */
+function parseChatModels(text) {
+  const m = text.match(/(^|\n)\s*МОДЕЛИ\s*:\s*(.+)\s*$/i);
+  if (!m) return { text: text, models: [] };
+  const names = m[2].split(/[|,;]/).map(x => x.trim()).filter(Boolean);
+  const clean = text.replace(m[0], '').trim();
+  const found = [];
+  for (const nm of names) {
+    const low = nm.toLowerCase();
+    const prod = PRODUCTS.find(p => p.model && p.model.toLowerCase() === low)
+      || PRODUCTS.find(p => p.model && (p.model.toLowerCase().includes(low) || low.includes(p.model.toLowerCase())));
+    if (prod && !found.some(f => f.model === prod.model)) found.push(prod);
+  }
+  return { text: clean, models: found };
+}
+function sendChatText(text) {
+  if (CHAT_BUSY) return;
+  CHAT_MSGS.push({ role: 'user', text: text });
+  renderChat(true);
+  CHAT_BUSY = true;
+  getChatAnswer(text).then(ans => {
+    const pm = parseChatModels(ans);
+    CHAT_MSGS.push({ role: 'bot', text: pm.text, models: pm.models });
+    CHAT_BUSY = false;
+    renderChat();
+  }).catch(() => {
+    CHAT_MSGS.push({ role: 'bot', text: 'Извините, не получилось ответить. Напишите менеджеру в WhatsApp/Telegram/MAX — кнопки в контактах.' });
+    CHAT_BUSY = false; renderChat();
+  });
+}
+async function getChatAnswer(text) {
+  if (CHAT_WORKER_URL) {
+    const history = CHAT_MSGS.slice(-10).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text }));
+    /* text/plain — «простой» запрос без CORS-preflight (важно для iOS Safari); воркер всё равно читает тело как JSON */
+    const r = await fetch(CHAT_WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: JSON.stringify({ messages: history }) });
+    const d = await r.json();
+    return (d && d.reply) ? d.reply : faqAnswer(text);
+  }
+  await new Promise(r => setTimeout(r, 500 + Math.random() * 500)); // имитация «печатает»
+  return faqAnswer(text);
+}
+/* простые ответы на частые вопросы + поиск модели по названию */
+function faqAnswer(q) {
+  const s = q.toLowerCase();
+  const has = (...k) => k.some(x => s.includes(x));
+  // поиск модели по названию
+  const models = [...new Set(PRODUCTS.map(p => p.model).filter(Boolean))];
+  let model = null;
+  for (const m of models) {
+    const key = m.toLowerCase(), tok = key.split(' ')[0];
+    if (s.includes(key) || (tok.length >= 4 && s.includes(tok))) { model = m; break; }
+  }
+  if (model) {
+    const vs = PRODUCTS.filter(p => p.model === model);
+    const p0 = vs[0];
+    return 'ПИДЖАК ' + model + ' — ' + vs.length + ' ' + plural(vs.length, 'цвет', 'цвета', 'цветов') +
+      '.\nЦена: ' + (priceOf(p0) ? fmtPrice(priceOf(p0)) : 'по запросу') +
+      '.\nРазмеры: ' + sizeList(p0).join(', ') +
+      '.\nСостав: ' + (p0.comp_ru || '—') +
+      '.\nСилуэт: ' + (p0.sil_ru || '—') +
+      '.\nОткройте модель, выберите цвет и размер → «В корзину» → оформите заказ.' +
+      '\nМОДЕЛИ: ' + model;
+  }
+  if (has('как заказ', 'оформ', 'сделать заказ', 'заказать', 'купить')) return 'Оформить заказ просто:\n1. Выберите модель и цвет.\n2. Выберите размер: 50, 52, 54, 56 или 58.\n3. Нажмите «В КОРЗИНУ».\n4. В корзине 🛒 укажите имя, телефон и адрес доставки и отправьте заказ в WhatsApp, Telegram или MAX.\nМенеджер подтвердит наличие, оплату и доставку.';
+  if (has('размер', 'сетк', 'какой размер', 'подобрать', 'рост')) return 'Каждый пиджак доступен в размерах 50, 52, 54, 56 и 58.\nНе уверены в размере — напишите менеджеру свои рост и обхват груди, поможем подобрать.';
+  if (has('цен', 'стоит', 'прайс', 'почём', 'сколько')) return 'Цена каждого пиджака — 25 000 ₽.\nДобавьте модели в корзину 🛒 — там будет итоговая сумма заказа.';
+  if (has('контакт', 'адрес', 'телефон', 'где вы', 'садовод', 'как связат', 'позвонит')) return 'Телефоны: ' + CONTACTS.phones.join(', ') + '.\nАдреса: ' + CONTACTS.addresses.join('; ') + '.\nНапишите нам в WhatsApp / Telegram / MAX — кнопки в разделе контактов и в карточке товара.';
+  if (has('приложени', 'на экран', 'домой', 'установ', 'ярлык')) return 'Чтобы открывать магазин как приложение:\n• iPhone (Safari): «Поделиться» → «На экран „Домой"».\n• Android (Chrome): всплывёт кнопка «Установить приложение».';
+  if (has('налич', 'есть ли', 'склад', 'в наличии', 'остат')) return 'Наличие нужного размера и цвета уточнит менеджер — напишите в WhatsApp / Telegram / MAX или отправьте заказ из корзины.';
+  if (has('доставк', 'отправ', 'привоз', 'сдэк', 'курьер')) return 'По доставке в ваш город проконсультирует менеджер — укажите адрес в комментарии к заказу или напишите в WhatsApp / Telegram / MAX.';
+  if (has('оплат', 'оплач', 'карт', 'нал', 'перевод')) return 'Способы оплаты менеджер подтвердит при оформлении заказа.';
+  if (has('возврат', 'обмен', 'не подош')) return 'По обмену и возврату напишите менеджеру в WhatsApp / Telegram / MAX — подскажем, как поступить.';
+  if (has('привет', 'здравств', 'добрый', 'hello', 'хай')) return 'Здравствуйте! Чем помочь? Спросите про размеры, цену, конкретную модель или как оформить заказ 🤍';
+  if (has('спасиб', 'благодар')) return 'Пожалуйста! Будут вопросы — пишите. Спасибо, что выбираете GABILEEN 🤍';
+  return 'Отвечаю на частые вопросы: как заказать, размеры, цена, конкретные модели, контакты, доставка.\nПо остальному напишите менеджеру в WhatsApp / Telegram / MAX — кнопки в контактах.';
+}
+/* превратить ссылки/телефоны в кликабельные (после esc) */
+function linkify(t) {
+  return t.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+}
+
+/* ---------- КОРЗИНА (розница: модель + размер) ---------- */
+const CURRENCY = '₽';
+let CART = [];
+try { CART = JSON.parse(localStorage.getItem('gabileen_cart') || '[]') || []; } catch (e) { CART = []; }
+CART = CART.filter(i => i && i.id && i.size && i.qty > 0);
+let CART_COMMENT = '';
+function saveCart() { try { localStorage.setItem('gabileen_cart', JSON.stringify(CART)); } catch (e) {} }
+function prodById(id) { return PRODUCTS.find(p => p.id === id); }
+function cartCount() { return CART.reduce((s, i) => s + i.qty, 0); }
+/* цена товара из поля price (число или строка «25 000») */
+function priceOf(p) {
+  const n = parseInt(String((p && p.price) || '').replace(/[^\d]/g, ''), 10);
+  return n > 0 ? n : 0;
+}
+function fmtPrice(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + CURRENCY; }
+function cartSum() {
+  return CART.reduce((s, i) => { const p = prodById(i.id); return s + (p ? priceOf(p) * i.qty : 0); }, 0);
+}
+/* размеры для выбора: «50, 52, 54, 56, 58» или диапазон «50–58» (шаг 2) */
+function sizeList(p) {
+  const s = String((p && p.sizes) || '');
+  const nums = (s.match(/\d+/g) || []).map(Number);
+  if (nums.length === 2 && /[–—-]/.test(s) && nums[1] > nums[0]) {
+    const out = [];
+    for (let n = nums[0]; n <= nums[1]; n += 2) out.push(n);
+    return out;
+  }
+  return nums;
+}
+function cartAdd(id, size, qty) {
+  qty = Math.max(1, qty | 0);
+  size = String(size);
+  const e = CART.find(i => i.id === id && i.size === size);
+  if (e) e.qty += qty; else CART.push({ id: id, size: size, qty: qty });
+  saveCart(); renderCartFab(); ymGoal('add_to_cart');
+}
+function cartSet(id, size, qty) {
+  const idx = CART.findIndex(i => i.id === id && i.size === size); if (idx < 0) return;
+  qty = qty | 0;
+  if (qty <= 0) CART.splice(idx, 1); else CART[idx].qty = qty;
+  saveCart(); renderCartFab(); renderCart();
+}
+function cartRemove(id, size) { CART = CART.filter(i => !(i.id === id && i.size === size)); saveCart(); renderCartFab(); renderCart(); }
+function cartClear() { CART = []; CART_COMMENT = ''; saveCart(); renderCartFab(); renderCart(); }
+function renderCartFab() {
+  const n = cartCount();
+  const fab = $('cartFab');
+  if (fab) { fab.hidden = n === 0; const b = $('cartBadge'); if (b) b.textContent = n; }
+  const db = $('detailCartBadge'); if (db) { db.textContent = n; db.style.display = n ? 'flex' : 'none'; }
+}
+/* блок «цена + выбор размера + в корзину» */
+function addcartHTML(p) {
+  const price = priceOf(p);
+  const sizes = sizeList(p);
+  return (price ? '<div class="price-big">' + fmtPrice(price) + '</div>' : '') +
+    '<div class="addcart-label">' + L('ВЫБЕРИТЕ РАЗМЕР', 'SELECT SIZE') + '</div>' +
+    '<div class="sz-row">' + sizes.map(s =>
+      '<button class="sz" data-size="' + s + '">' + s + '</button>'
+    ).join('') + '</div>' +
+    '<button class="addcart-btn ac-go" style="width:100%">' + L('В КОРЗИНУ', 'ADD TO CART') + '</button>';
+}
+function setupAddCart(p, root, onAdded) {
+  if (!root) return;
+  const btn = root.querySelector('.ac-go'); if (!btn) return;
+  const row = root.querySelector('.sz-row');
+  let sel = null;
+  root.querySelectorAll('.sz').forEach(b => b.onclick = () => {
+    haptic('light');
+    sel = b.getAttribute('data-size');
+    root.querySelectorAll('.sz').forEach(x => x.classList.toggle('active', x === b));
+  });
+  btn.onclick = () => {
+    if (!sel) {
+      toast(L('Выберите размер', 'Please select a size'));
+      if (row) { row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); }
+      return;
+    }
+    cartAdd(p.id, sel, 1);
+    haptic('light');
+    btn.classList.add('added'); btn.textContent = L('✓ ДОБАВЛЕНО', '✓ ADDED');
+    toast(L('Добавлено в корзину', 'Added to cart') + ' · ' + L('РАЗМЕР', 'SIZE') + ' ' + sel);
+    setTimeout(() => { btn.classList.remove('added'); btn.textContent = L('В КОРЗИНУ', 'ADD TO CART'); }, 1600);
+    if (typeof onAdded === 'function') setTimeout(onAdded, 450);
+  };
+}
+/* ---------- БЫСТРЫЙ ВЫБОР РАЗМЕРА ИЗ СЕТКИ ---------- */
+let QA_ID = null;
+function openQuickAdd(id) {
+  const p = prodById(id); if (!p) return;
+  QA_ID = id;
+  renderQuickAdd();
+  $('qadd').classList.add('show');
+}
+function closeQuickAdd() { $('qadd').classList.remove('show'); QA_ID = null; }
+function renderQuickAdd() {
+  const box = $('qadd'); if (!box) return;
+  const p = prodById(QA_ID); if (!p) return;
+  const variants = modelVariants(p);
+  const dots = variants.map(v => {
+    const c = colorList(v.colors)[0];
+    const hex = c ? PALETTE[c].hex : '#cccccc';
+    const label = c ? PALETTE[c][LANG] : v.id;
+    return '<button class="qa-dot' + (v.id === p.id ? ' active' : '') + '" data-qc="' + esc(v.id) + '" style="background:' + hex + '" title="' + esc(label) + '" aria-label="' + esc(label) + '"></button>';
+  }).join('');
+  const curColor = colorList(p.colors)[0];
+  const curLabel = curColor ? PALETTE[curColor][LANG] : '';
+  const modelName = (catWordOf(p.cat) + ' ' + (p.model || '')).trim();
+  box.innerHTML = '<div class="ct-sheet qa-sheet">' +
+    '<button class="ct-close" id="qaClose" aria-label="Закрыть">&#10005;</button>' +
+    '<div class="ct-title">' + L('ВЫБОР РАЗМЕРА', 'CHOOSE SIZE') + '</div>' +
+    '<div class="ct-sub">' + esc(modelName) + '</div>' +
+    '<div class="qa-top">' +
+      '<img class="qa-img" src="' + esc(p.image) + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
+      '<div class="qa-colors"><div class="qa-cur" id="qaCur">' + esc(curLabel) + '</div><div class="qa-dots">' + dots + '</div></div>' +
+    '</div>' +
+    '<div class="addcart">' + addcartHTML(p) + '</div>' +
+    '<button class="cart-clear" id="qaOpenFull">' + L('Открыть карточку полностью', 'Open full card') + '</button>' +
+  '</div>';
+  $('qaClose').onclick = closeQuickAdd;
+  box.onclick = e => { if (e.target === box) closeQuickAdd(); };
+  box.querySelectorAll('.qa-dot').forEach(d => d.onclick = () => {
+    const gid = d.getAttribute('data-qc'); if (gid === QA_ID) return;
+    QA_ID = gid; renderQuickAdd();
+  });
+  $('qaOpenFull').onclick = () => { const id = QA_ID; closeQuickAdd(); openDetail(id); };
+  setupAddCart(p, box, () => { closeQuickAdd(); });
+}
+function openCart() { haptic('light'); renderCart(); $('cart').classList.add('show'); }
+function closeCart() { $('cart').classList.remove('show'); }
+function pcsWord(n) { return LANG === 'ru' ? plural(n, 'ТОВАР', 'ТОВАРА', 'ТОВАРОВ') : L('ШТ.', n === 1 ? 'ITEM' : 'ITEMS'); }
+function renderCart() {
+  const box = $('cart'); if (!box) return;
+  let body;
+  if (!CART.length) {
+    body = '<div class="cart-empty">' + L('Корзина пуста.<br>Добавьте модели из каталога.', 'Your cart is empty.') + '</div>';
+  } else {
+    const items = CART.map(ci => {
+      const p = prodById(ci.id); if (!p) return '';
+      const c = colorList(p.colors)[0];
+      const col = c && PALETTE[c] ? PALETTE[c][LANG] : '';
+      const price = priceOf(p);
+      const sub = esc(col) + ' · ' + esc(p.id) + ' · <b>' + L('РАЗМЕР', 'SIZE') + ' ' + esc(ci.size) + '</b>';
+      return '<div class="cart-item">' +
+        '<img src="' + esc(p.image) + '" alt="" loading="lazy">' +
+        '<div class="cart-item-info">' +
+          '<div class="cart-item-name">' + esc(getName(p)) + '</div>' +
+          '<div class="cart-item-sub">' + sub + '</div>' +
+          '<div class="cart-item-row">' +
+            '<div class="qty" data-id="' + esc(p.id) + '" data-size="' + esc(ci.size) + '"><button data-d="-1">−</button><span>' + ci.qty + '</span><button data-d="1">+</button></div>' +
+            (price ? '<div class="cart-item-price">' + fmtPrice(price * ci.qty) + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<button class="cart-item-rm" data-rm="' + esc(p.id) + '" data-rms="' + esc(ci.size) + '" aria-label="Удалить">&#10005;</button>' +
+      '</div>';
+    }).join('');
+    const n = cartCount();
+    body = items +
+      '<div class="cart-total"><span>' + L('ИТОГО', 'TOTAL') + ' · ' + n + ' ' + pcsWord(n) + '</span><b>' + fmtPrice(cartSum()) + '</b></div>' +
+      '<div class="addcart-label">' + L('КОММЕНТАРИЙ К ЗАКАЗУ', 'ORDER COMMENT') + '</div>' +
+      '<textarea class="cart-note" id="cartNote" rows="2" placeholder="' + L('Имя, телефон, город и адрес доставки…', 'Name, phone, delivery city and address…') + '">' + esc(CART_COMMENT) + '</textarea>' +
+      '<div class="addcart-label">' + L('ОФОРМИТЬ ЗАКАЗ ЧЕРЕЗ', 'PLACE ORDER VIA') + '</div>' +
+      '<div class="order-btns ct-msgrs">' +
+        '<button class="ob ob-wa" id="cartWa">WhatsApp</button>' +
+        '<button class="ob ob-tg" id="cartTg">Telegram</button>' +
+        '<button class="ob ob-mx" id="cartMx">MAX</button>' +
+      '</div>' +
+      '<div class="cart-hint">' + L('Менеджер подтвердит наличие, оплату и доставку', 'A manager will confirm availability, payment and delivery') + '</div>' +
+      '<button class="cart-clear" id="cartClear">' + L('Очистить корзину', 'Clear cart') + '</button>';
+  }
+  box.innerHTML = '<div class="ct-sheet">' +
+    '<button class="ct-close" id="cartClose" aria-label="Закрыть">&#10005;</button>' +
+    '<div class="ct-title">' + L('КОРЗИНА', 'CART') + ' · GABILEEN</div>' +
+    '<div class="ct-sub">' + L('ВАШ ЗАКАЗ', 'YOUR ORDER') + '</div>' +
+    body +
+  '</div>';
+  $('cartClose').onclick = closeCart;
+  box.onclick = e => { if (e.target === box) closeCart(); };
+  box.querySelectorAll('.qty').forEach(q => {
+    const id = q.getAttribute('data-id'), size = q.getAttribute('data-size');
+    q.querySelectorAll('button').forEach(b => b.onclick = () => {
+      const cur = CART.find(i => i.id === id && i.size === size); if (cur) cartSet(id, size, cur.qty + (+b.getAttribute('data-d')));
+    });
+  });
+  box.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { haptic('light'); cartRemove(b.getAttribute('data-rm'), b.getAttribute('data-rms')); });
+  const clr = $('cartClear'); if (clr) clr.onclick = () => cartClear();
+  const note = $('cartNote'); if (note) note.oninput = e => { CART_COMMENT = e.target.value; };
+  const wa = $('cartWa'), tg = $('cartTg'), mx = $('cartMx');
+  if (wa) wa.onclick = () => sendCart('wa');
+  if (tg) tg.onclick = () => sendCart('tg');
+  if (mx) mx.onclick = () => sendCart('mx');
+}
+function cartMessage() {
+  /* заказ менеджеру всегда формируем по-русски — его читает русскоязычный менеджер */
+  const lines = ['Здравствуйте! Хочу оформить заказ GABILEEN:', ''];
+  CART.forEach((ci, i) => {
+    const p = prodById(ci.id); if (!p) return;
+    const c = colorList(p.colors)[0];
+    const col = c && PALETTE[c] ? PALETTE[c].ru : '';
+    const nm = p.name_ru || p.name_en || p.model || '';
+    const price = priceOf(p);
+    lines.push((i + 1) + '. ' + nm + ' (' + col + ', арт. ' + p.id + ') — размер ' + ci.size + ' × ' + ci.qty + ' шт.' +
+      (price ? ' — ' + fmtPrice(price * ci.qty) : ''));
+  });
+  lines.push('');
+  const n = cartCount();
+  lines.push('Итого: ' + n + ' ' + plural(n, 'товар', 'товара', 'товаров') + ' на сумму ' + fmtPrice(cartSum()));
+  if (CART_COMMENT.trim()) {
+    lines.push('');
+    lines.push('Комментарий: ' + CART_COMMENT.trim());
+  }
+  return lines.join('\n');
+}
+function copyText(txt) {
+  try { if (navigator.clipboard) { navigator.clipboard.writeText(txt); return; } } catch (e) {}
+  try {
+    const ta = document.createElement('textarea'); ta.value = txt;
+    ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove();
+  } catch (e) {}
+}
+function sendCart(channel) {
+  if (!CART.length) return;
+  haptic('medium');
+  ymGoal('order_sent_' + channel);
+  const msg = cartMessage();
+  copyText(msg);
+  if (channel === 'wa') {
+    window.open('https://wa.me/' + CONTACTS.wa + '?text=' + encodeURIComponent(msg), '_blank');
+    return;
+  }
+  if (channel === 'tg') {
+    // Telegram: открываем диалог «Поделиться» с уже готовым текстом заказа
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(location.origin + location.pathname) +
+      '&text=' + encodeURIComponent(msg), '_blank');
+    toast(L('Выберите чат менеджера — заказ уже вставлен', 'Pick the manager chat — order is prefilled'));
+    return;
+  }
+  // MAX предзаполнение текста не поддерживает — копируем и открываем чат
+  toast(L('Заказ скопирован — вставьте в чат', 'Order copied — paste it in the chat'));
+  setTimeout(() => window.open(CONTACTS.max, '_blank'), 800);
+}
+/* цель Яндекс.Метрики (работает только когда счётчик включён) */
+function ymGoal(name) {
+  try { if (window.__YM_ID && window.ym) window.ym(window.__YM_ID, 'reachGoal', name); } catch (e) {}
+}
+let TOAST_T;
+function toast(msg) {
+  let el = $('toast');
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; document.body.appendChild(el); }
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(TOAST_T); TOAST_T = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+/* ---------- push-уведомления о новинках (OneSignal) ---------- */
+let PUSH_SUBSCRIBED = false;
+function pushSupported() {
+  return 'serviceWorker' in navigator && 'PushManager' in window && typeof window.OneSignalDeferred !== 'undefined';
+}
+function iosNeedsInstall() {
+  const ua = navigator.userAgent || '';
+  const isIOS = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
+  const standalone = ('standalone' in navigator && navigator.standalone) ||
+                     (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  return isIOS && !standalone;
+}
+function openInstallBanner() {
+  const a = $('a2hs');
+  if (a) { a.hidden = false; try { localStorage.removeItem('gb_a2hs_dismissed'); } catch (e) {} }
+}
+/* подписаться (или на iPhone-Safari — сначала подсказать установку) */
+function requestPush() {
+  if (iosNeedsInstall()) { openInstallBanner(); closeContacts(); return; }
+  if (!pushSupported()) return;
+  window.OneSignalDeferred.push(async (OneSignal) => {
+    try {
+      await OneSignal.Notifications.requestPermission();
+      await OneSignal.User.PushSubscription.optIn();
+    } catch (e) {}
+  });
+}
+/* обновить вид кнопки в контактах и плавающего FAB */
+/* единая настройка любой кнопки подписки (в контактах и в «Новинках») */
+function wireNotifyBtn(btn) {
+  if (!btn) return;
+  const ru = LANG === 'ru';
+  if (iosNeedsInstall()) {
+    btn.classList.remove('subscribed'); btn.disabled = false;
+    btn.textContent = L('🔔 Сначала добавьте на экран «Домой»', '🔔 Add to Home Screen first');
+    btn.onclick = () => { openInstallBanner(); closeNews(); closeContacts(); };
+  } else if (!pushSupported()) {
+    btn.disabled = true;
+    btn.textContent = L('🔔 Уведомления недоступны', '🔔 Notifications unavailable');
+    btn.onclick = null;
+  } else {
+    btn.disabled = false;
+    btn.classList.toggle('subscribed', PUSH_SUBSCRIBED);
+    btn.textContent = PUSH_SUBSCRIBED
+      ? (L('✓ Вы подписаны на уведомления', '✓ Subscribed'))
+      : ('🔔 ' + (L('Подписаться на уведомления', 'Subscribe to notifications')));
+    btn.onclick = () => {
+      if (PUSH_SUBSCRIBED) {
+        window.OneSignalDeferred.push(async (OneSignal) => { try { await OneSignal.User.PushSubscription.optOut(); } catch (e) {} });
+      } else { requestPush(); }
+    };
+  }
+}
+function updateNotifyUI() {
+  wireNotifyBtn($('ctNotify'));
+  wireNotifyBtn($('newsNotify'));
+  /* FAB «Новинки» видна всегда — это центр новостей и подписки */
+}
+/* следим за статусом подписки один раз */
+function initPush() {
+  if (typeof window.OneSignalDeferred === 'undefined') { updateNotifyUI(); return; }
+  window.OneSignalDeferred.push(async (OneSignal) => {
+    try {
+      PUSH_SUBSCRIBED = !!OneSignal.User.PushSubscription.optedIn;
+      updateNotifyUI();
+      OneSignal.User.PushSubscription.addEventListener('change', e => {
+        PUSH_SUBSCRIBED = !!(e && e.current && e.current.optedIn);
+        updateNotifyUI();
+      });
+    } catch (e) {}
+  });
+  updateNotifyUI();
+}
+function setupNotifyButton() { wireNotifyBtn($('ctNotify')); }
+
+/* ---------- НОВИНКИ (новости + подписка) ---------- */
+let NEWS = [];
+function openNews() { haptic('light'); renderNews(); $('news').classList.add('show'); }
+function closeNews() { $('news').classList.remove('show'); }
+function renderNews() {
+  const ru = LANG === 'ru';
+  const list = NEWS.length
+    ? NEWS.map(n => {
+        const pid = newsProductId(n);
+        const btn = pid ? '<button class="news-link" data-id="' + esc(pid) + '">' + (L('Смотреть в каталоге →', 'View in catalogue →')) + '</button>' : '';
+        return '<div class="news-item"><div class="news-date">' + esc(n.date || '') + '</div><div class="news-title">' + esc(n.title || '') + '</div><div class="news-text">' + esc(n.text || '').replace(/\n/g, '<br>') + '</div>' + btn + '</div>';
+      }).join('')
+    : '<div class="news-empty">' + (L('Пока новостей нет.', 'No news yet.')) + '</div>';
+  $('news').innerHTML = '<div class="ct-sheet">' +
+    '<button class="ct-close" id="newsClose" aria-label="Закрыть">&#10005;</button>' +
+    '<div class="ct-title">' + (L('НОВИНКИ', 'NEWS')) + ' · GABILEEN</div>' +
+    '<div class="ct-sub">' + (L('ПОСТУПЛЕНИЯ И НОВОСТИ', 'NEW ARRIVALS & NEWS')) + '</div>' +
+    '<button class="ct-notify" id="newsNotify"></button>' +
+    '<div class="ct-block-label">' + (L('ПОСЛЕДНИЕ НОВОСТИ', 'LATEST')) + '</div>' +
+    list +
+  '</div>';
+  $('newsClose').onclick = closeNews;
+  $('news').onclick = e => { if (e.target === $('news')) closeNews(); };
+  wireNotifyBtn($('newsNotify'));
+  $('news').querySelectorAll('.news-link').forEach(b => b.onclick = () => {
+    const id = b.getAttribute('data-id'); haptic('light'); closeNews(); openDetail(id);
+  });
+}
+/* находим карточку модели, о которой новость: по полю model или по названию */
+function newsProductId(n) {
+  let name = (n && n.model || '').trim();
+  if (!name && n && n.title) {
+    const m = n.title.split('—');  // «Новинка — MODEL»
+    if (m.length > 1) name = m[m.length - 1].trim();
+  }
+  if (!name) return null;
+  const low = name.toLowerCase();
+  const p = PRODUCTS.find(x => x.model && x.model.toLowerCase() === low)
+    || PRODUCTS.find(x => x.model && (x.model.toLowerCase().includes(low) || low.includes(x.model.toLowerCase())));
+  return p ? p.id : null;
+}
+
+async function shareProduct(p) {
+  const text = 'GABILEEN · ' + p.id + ' · ' + getName(p);
+  const url = location.href;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'GABILEEN', text: text, url: url }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; /* пользователь отменил */ }
+  }
+  if (tg && tg.openLink) {
+    try {
+      tg.openLink('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text));
+      return;
+    } catch (e) {}
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    toast(L('Ссылка на модель скопирована', 'Model link copied'));
+  } catch (e) {
+    toast(L('Не удалось скопировать ссылку', 'Could not copy link'));
+  }
+}
+
+function setLang(code) {
+  if (LANGS.indexOf(code) < 0) return;
+  LANG = code;
+  try { localStorage.setItem('gb-lang', code); } catch (e) {}
+  closeLangMenu();
+  render();
+}
+function closeLangMenu() { const m = $('langMenu'); if (m) m.remove(); }
+function openLangMenu() {
+  closeLangMenu();
+  const names = { ru: 'Русский', en: 'English', tr: 'Türkçe', az: 'Azərbaycan' };
+  const menu = document.createElement('div');
+  menu.id = 'langMenu';
+  menu.className = 'lang-menu';
+  menu.innerHTML = LANGS.map(c =>
+    '<button class="lang-opt' + (c === LANG ? ' active' : '') + '" data-l="' + c + '">' +
+      '<b>' + LANG_LABEL[c] + '</b> <span>' + names[c] + '</span></button>'
+  ).join('');
+  document.body.appendChild(menu);
+  const r = $('langBtn').getBoundingClientRect();
+  menu.style.top = (r.bottom + 8) + 'px';
+  menu.style.right = (window.innerWidth - r.right) + 'px';
+  menu.querySelectorAll('.lang-opt').forEach(b => b.onclick = () => { haptic('light'); setLang(b.getAttribute('data-l')); });
+  setTimeout(() => document.addEventListener('click', onLangOutside), 0);
+}
+function onLangOutside(e) {
+  if (!e.target.closest('#langMenu') && e.target.id !== 'langBtn') { closeLangMenu(); document.removeEventListener('click', onLangOutside); }
+}
+$('langBtn').onclick = e => { e.stopPropagation(); haptic('light'); if ($('langMenu')) closeLangMenu(); else openLangMenu(); };
+$('search').oninput = e => {
+  QUERY = e.target.value;
+  $('searchClear').classList.toggle('show', QUERY.length > 0);
+  render();
+};
+$('search').onfocus = () => $('searchWrap').classList.add('focused');
+$('search').onblur = () => $('searchWrap').classList.remove('focused');
+$('searchClear').onclick = () => {
+  haptic('light');
+  QUERY = '';
+  $('search').value = '';
+  $('searchClear').classList.remove('show');
+  render();
+};
+$('backBtn').onclick = () => { haptic('light'); closeDetail(); };
+
+/* регистрируем service worker (нужен для установки приложения и push-уведомлений) */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+/* подсказка установки: Android — кнопка в один тап, iOS — инструкция */
+(function initA2HS() {
+  const el = $('a2hs');
+  if (!el) return;
+  const ua = navigator.userAgent || '';
+  const isIOS = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
+  const isStandalone = ('standalone' in navigator && navigator.standalone) ||
+                       (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  let dismissed = false;
+  try { dismissed = localStorage.getItem('gb_a2hs_dismissed') === '1'; } catch (e) {}
+  if (isStandalone || dismissed) return;
+
+  const close = () => {
+    el.hidden = true;
+    try { localStorage.setItem('gb_a2hs_dismissed', '1'); } catch (e) {}
+  };
+  $('a2hsClose').onclick = close;
+
+  // Android / Chrome: нативная установка в один тап
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = $('a2hsInstall');
+    btn.hidden = false;
+    $('a2hsHow').hidden = true;
+    el.hidden = false;
+    btn.onclick = async () => {
+      btn.hidden = true;
+      deferredPrompt.prompt();
+      try { await deferredPrompt.userChoice; } catch (err) {}
+      deferredPrompt = null;
+      close();
+    };
+  });
+  window.addEventListener('appinstalled', () => { close(); });
+
+  // iOS Safari: установить из кода нельзя (ограничение Apple) — показываем инструкцию
+  if (isIOS) {
+    $('a2hsHow').hidden = false;
+    setTimeout(() => { el.hidden = false; }, 2500);
+  }
+})();
+
+window.addEventListener('scroll', () => {
+  $('toTop').classList.toggle('show', window.scrollY > 600);
+}, { passive: true });
+$('toTop').onclick = () => {
+  haptic('light');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+$('contactFab').onclick = () => openChat();
+/* кнопка «Новинки» (push-уведомления) в магазине отключена */
+$('cartFab').onclick = () => openCart();
+$('detailCart').onclick = () => openCart();
+initPush();
+renderCartFab();
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContacts(); closeCart(); closeNews(); closeChat(); closeQuickAdd(); } });
+
+/* ---------- premium libs: Lenis + Splitting + ScrollTrigger ---------- */
+const HAS_LENIS = typeof Lenis !== 'undefined';
+let HAS_SPLIT = typeof Splitting !== 'undefined';
+const HAS_ST = false; /* ScrollTrigger removed: not essential, kept guards harmless */
+let lenis = null;
+
+/* ---------- canvas aurora mesh ---------- */
+function initAurora() {
+  const canvas = $('auroraCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  /* нейтральные молочно-белые блобы */
+  const blobs = [
+    { x: 0.18, y: 0.08, tx: 0.18, ty: 0.08, r: 0.70, h: 40,  s: 12, l: 94, a: 0.90 },
+    { x: 0.82, y: 0.28, tx: 0.82, ty: 0.28, r: 0.65, h: 200, s:  8, l: 92, a: 0.85 },
+    { x: 0.45, y: 0.72, tx: 0.45, ty: 0.72, r: 0.60, h: 30,  s: 10, l: 95, a: 0.80 },
+    { x: 0.10, y: 0.85, tx: 0.10, ty: 0.85, r: 0.50, h: 0,   s:  0, l: 96, a: 0.75 },
+    { x: 0.85, y: 0.80, tx: 0.85, ty: 0.80, r: 0.45, h: 220, s:  6, l: 93, a: 0.70 },
+  ];
+
+  const W0 = () => canvas.width, H0 = () => canvas.height;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    paint();
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  function paint() {
+    const W = W0(), H = H0();
+    ctx.clearRect(0, 0, W, H);
+    blobs.forEach(b => {
+      const gx = b.tx * W, gy = b.ty * H, gr = b.r * Math.max(W, H);
+      const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
+      g.addColorStop(0,    'hsla(' + b.h + ',' + b.s + '%,' + b.l + '%,' + b.a + ')');
+      g.addColorStop(0.45, 'hsla(' + b.h + ',' + b.s + '%,' + (b.l + 10) + '%,' + (b.a * 0.4) + ')');
+      g.addColorStop(1,    'hsla(' + b.h + ',' + b.s + '%,' + (b.l + 18) + '%,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    });
+  }
+
+  if (HAS_GSAP) {
+    blobs.forEach((b, i) => {
+      const ox = b.x, oy = b.y;
+      const range = 0.20 + i * 0.03;
+      const dur   = 10 + i * 3.5;
+      gsap.to(b, {
+        tx: ox + range, ty: oy - range * 0.7,
+        duration: dur,
+        ease: 'sine.inOut',
+        yoyo: true, repeat: -1,
+        delay: -(i * dur / blobs.length)
+      });
+    });
+    gsap.ticker.add(paint);   // один общий проход рисования за кадр
+  } else {
+    const loop = () => { paint(); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  }
+}
+
+function initEnhancements() {
+  if (HAS_ST) gsap.registerPlugin(ScrollTrigger);
+  initAurora();
+
+  /* Lenis отключён намеренно: нативный скролл работает везде надёжно
+     (колесо мыши над любым элементом, тач на телефоне). */
+
+  /* буквенное появление логотипа GABILEEN (fashion editorial) */
+  if (HAS_SPLIT && HAS_GSAP) {
+    const brand = document.querySelector('.brand');
+    if (brand) {
+      const res = Splitting({ target: brand, by: 'chars' })[0];
+      if (res && res.chars) {
+        gsap.fromTo(res.chars,
+          { opacity: 0, y: '0.5em', rotateX: -90 },
+          { opacity: 1, y: '0em', rotateX: 0, duration: 0.6, stagger: 0.05, ease: 'power3.out', delay: 0.2 }
+        );
+      }
+    }
+  }
+}
+
+/* буквенное появление названия товара при открытии карточки */
+function revealDetailName() {
+  if (!(HAS_SPLIT && HAS_GSAP)) return;
+  const el = $('detailContent').querySelector('.detail-name');
+  if (!el) return;
+  const res = Splitting({ target: el, by: 'chars' })[0];
+  if (res && res.chars) {
+    gsap.fromTo(res.chars,
+      { opacity: 0, y: '0.6em' },
+      { opacity: 1, y: '0em', duration: 0.5, stagger: 0.025, ease: 'power3.out', delay: 0.18 }
+    );
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Async CDN scripts may have finished loading after parse time — recompute flags.
+  HAS_GSAP  = typeof gsap !== 'undefined';
+  HAS_SPLIT = typeof Splitting !== 'undefined';
+  tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    if (tg.BackButton) tg.BackButton.onClick(closeDetail);
+  }
+  // The catalogue is the priority — render it first, enhancements are optional.
+  loadData();
+  try { initEnhancements(); } catch (e) { /* enhancements are non-critical */ }
+});
+</script>
+</body>
+</html>
