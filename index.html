@@ -1638,7 +1638,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 .fav-banner button { font-size: 11px; letter-spacing: 0.06em; text-decoration: underline; text-underline-offset: 3px; color: var(--text2); }
 .fav-empty { padding: 60px 30px; text-align: center; color: var(--text2); font-size: 13px; line-height: 1.6; text-transform: none; }
 /* ===================== ЛИПКАЯ КНОПКА «В КОРЗИНУ» ===================== */
-.sticky-buy { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 1150; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(255,255,255,0.86); -webkit-backdrop-filter: blur(20px) saturate(1.8); backdrop-filter: blur(20px) saturate(1.8); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 12px 34px rgba(0,0,0,0.16); transform: translateY(calc(100% + 60px)); opacity: 0; visibility: hidden; pointer-events: none; transition: transform 0.45s var(--ease), opacity 0.3s, visibility 0s 0.45s; }
+.sticky-buy { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 300; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(255,255,255,0.86); -webkit-backdrop-filter: blur(20px) saturate(1.8); backdrop-filter: blur(20px) saturate(1.8); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 12px 34px rgba(0,0,0,0.16); transform: translateY(calc(100% + 60px)); opacity: 0; visibility: hidden; pointer-events: none; transition: transform 0.45s var(--ease), opacity 0.3s, visibility 0s 0.45s; }
 .sticky-buy.show { transform: none; opacity: 1; visibility: visible; pointer-events: auto; transition: transform 0.45s var(--ease), opacity 0.3s, visibility 0s; }
 .sb-info { flex: 1; min-width: 0; }
 .sb-name { font-size: 10.5px; letter-spacing: 0.08em; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1649,6 +1649,20 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 /* корзина «подпрыгивает» при добавлении */
 .cart-fab.bump, .detail-cart.bump { animation: bump 0.5s var(--spring); }
 @keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.22); } 100% { transform: scale(1); } }
+.pick-bar { padding-bottom: 0; }
+.thanks { text-align: center; }
+.th-ico { width: 64px; height: 64px; margin: 6px auto 14px; color: #4f7a63; }
+.th-ico svg { width: 100%; height: 100%; }
+.th-ico path { stroke-dasharray: 40; stroke-dashoffset: 40; animation: thDraw 0.6s 0.25s var(--ease) forwards; }
+@keyframes thDraw { to { stroke-dashoffset: 0; } }
+.th-h { font-size: 22px; letter-spacing: 0.04em; text-transform: none; }
+.th-sub { font-size: 11px; letter-spacing: 0.14em; color: var(--muted); margin: 18px 0 10px; }
+.th-steps { list-style: none; counter-reset: st; margin: 0 0 20px; padding: 0; text-align: left; text-transform: none; }
+.th-steps li { counter-increment: st; position: relative; padding: 10px 0 10px 40px; font-size: 13.5px; line-height: 1.4; border-bottom: 1px solid rgba(26,24,20,0.07); }
+.th-steps li::before { content: counter(st); position: absolute; left: 0; top: 8px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--text); font-size: 12px; display: flex; align-items: center; justify-content: center; }
+.cart-remind { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 30px); opacity: 0; z-index: 1100; display: flex; align-items: center; gap: 14px; padding: 12px 16px 12px 20px; border-radius: 999px; background: #1a1814; color: #fff; font-size: 12px; letter-spacing: 0.04em; box-shadow: 0 14px 36px rgba(0,0,0,0.28); white-space: nowrap; transition: transform 0.5s var(--ease), opacity 0.4s; text-transform: none; }
+.cart-remind.show { transform: translate(-50%, 0); opacity: 1; }
+.cart-remind b { font-weight: 400; padding: 7px 12px; border-radius: 999px; background: #fff; color: #1a1814; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
 .cart-hint { font-size: 11px; color: var(--text2); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
 /* широкий экран: 3 пиджака в ряд */
 @media (min-width: 1200px) {
@@ -1703,6 +1717,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
     </div>
     <div class="tabs" id="tabs"></div>
     <div class="lining-bar" id="liningBar"></div>
+    <div class="fabric-bar pick-bar" id="pickBar"></div>
     <div class="fabric-bar" id="fabricBar"></div>
     <div class="color-bar" id="colorBar"></div>
   </aside>
@@ -2045,6 +2060,12 @@ const DICT = {
   'Добавлено в избранное': { tr: 'Favorilere eklendi', az: 'Seçilmişlərə əlavə edildi' },
   'СМОТРЕТЬ МОДЕЛИ': { tr: 'MODELLERİ GÖR', az: 'MODELLƏRƏ BAX' },
   'ВЫБРАТЬ РАЗМЕР': { tr: 'BEDEN SEÇ', az: 'ÖLÇÜ SEÇ' },
+  'ВСЕ МОДЕЛИ': { tr: 'TÜM MODELLER', az: 'BÜTÜN MODELLƏR' },
+  'ХИТЫ': { tr: 'ÇOK SATANLAR', az: 'HİTLƏR' },
+  'НА ЛЕТО': { tr: 'YAZLIK', az: 'YAY ÜÇÜN' },
+  'НА ХОЛОДА': { tr: 'SOĞUK GÜNLER', az: 'SOYUQ GÜNLƏR' },
+  'СОБРАТЬ ОБРАЗ СО СТИЛИСТОМ': { tr: 'STİLİSTLE KOMBİN', az: 'STİLİSTLƏ OBRAZ' },
+  'ПРОДОЛЖИТЬ ПОКУПКИ': { tr: 'ALIŞVERİŞE DEVAM', az: 'ALIŞ-VERİŞƏ DAVAM' },
   'ВЫБОР РАЗМЕРА': { tr: 'BEDEN SEÇİMİ', az: 'ÖLÇÜ SEÇİMİ' },
   'РАЗМЕР': { tr: 'BEDEN', az: 'ÖLÇÜ' },
   'Выберите размер': { tr: 'Beden seçin', az: 'Ölçü seçin' },
@@ -2232,6 +2253,23 @@ const FABRICS = {
   sherst: { key: ['ШЕРСТЬ'],     ru: 'ШЕРСТЬ', en: 'WOOL' },
   poli:   { key: ['ПОЛИЭСТЕР'],  ru: 'ПОЛИЭСТЕР', en: 'POLYESTER' },
 };
+/* быстрые подборки: новинки, хиты, по сезону */
+let PICK = '';
+const PICKS = {
+  'new':    { ru: 'НОВИНКИ',    en: 'NEW IN',     test: p => isNewActive(p) },
+  'hit':    { ru: 'ХИТЫ',       en: 'BESTSELLERS', test: p => !!p.hit },
+  'summer': { ru: 'НА ЛЕТО',    en: 'SUMMER',     test: p => ['len', 'hlopok'].indexOf(fabricOf(p)) >= 0 },
+  'winter': { ru: 'НА ХОЛОДА',  en: 'COLD DAYS',  test: p => fabricOf(p) === 'sherst' || /ВЕЛЬВЕТ|KADIFE|ФЛАНЕЛ/i.test((p.comp_ru || '') + ' ' + (p.model || '')) }
+};
+function renderPickBar() {
+  const bar = $('pickBar'); if (!bar) return;
+  const base = byCatAndQuery();
+  const keys = Object.keys(PICKS).filter(k => base.some(PICKS[k].test));
+  if (!keys.length) { bar.innerHTML = ''; return; }
+  bar.innerHTML = '<button class="ln' + (PICK === '' ? ' active' : '') + '" data-pick="">' + L('ВСЕ МОДЕЛИ', 'ALL STYLES') + '</button>' +
+    keys.map(k => '<button class="ln' + (PICK === k ? ' active' : '') + '" data-pick="' + k + '">' + esc(L(PICKS[k].ru, PICKS[k].en)) + '</button>').join('');
+  bar.querySelectorAll('.ln').forEach(el => el.onclick = () => { haptic('light'); PICK = el.getAttribute('data-pick'); render(); });
+}
 function fabricOf(p) {
   const comp = ((p.comp_ru || '') + '').toUpperCase();
   if (!comp) return '';
@@ -2244,6 +2282,7 @@ function fabricOf(p) {
 function filtered() {
   return byCatAndQuery().filter(p => {
     if (COLOR && familyOf(p) !== COLOR) return false;
+    if (PICK && PICKS[PICK] && !PICKS[PICK].test(p)) return false;
     if (FABRIC && fabricOf(p) !== FABRIC) return false;
     if (CAT === 'pidzhaki' && LINING) {
       if (LINING === 'lined' && p.lined === false) return false;
@@ -2323,6 +2362,7 @@ function render() {
   $('langBtn').textContent = LANG_LABEL[LANG];
   renderTabs();
   renderLiningBar();
+  renderPickBar();
   renderFabricBar();
   renderColorBar();
 
@@ -2840,13 +2880,29 @@ function wearHTML(p) {
     '</div>' +
     '<div class="wear-grid" id="wearGrid">' + wearGridHTML(p, WEAR_TAB) + '</div>' +
     '<div class="wear-note">' + L('Подборка-подсказка: вещи для образа можно взять из своего гардероба', 'Styling idea: pair it with pieces from your wardrobe') + '</div>' +
+    '<div class="addcart-label" style="margin-top:16px">' + L('СОБРАТЬ ОБРАЗ СО СТИЛИСТОМ', 'ASK OUR STYLIST') + '</div>' +
+    '<div class="order-btns ct-msgrs" id="wearAsk">' +
+      '<a class="ob ob-wa" target="_blank" rel="noopener" data-ch="wa">WhatsApp</a>' +
+      '<a class="ob ob-tg" target="_blank" rel="noopener" data-ch="tg">Telegram</a>' +
+      '<a class="ob ob-mx" target="_blank" rel="noopener" data-ch="max">MAX</a>' +
+    '</div>' +
   '</div>';
 }
+function wearAskLinks(p) {
+  const fam = familyOf(p) || 'blue';
+  const look = (LOOKS[fam] || LOOKS.blue)[WEAR_TAB].map(k => W[k][2].toLowerCase()).join(', ');
+  const msg = 'Здравствуйте! Помогите собрать образ: ' + (p.name_ru || p.model || '') + ' (арт. ' + p.id + '). ' +
+    (WEAR_TAB ? 'Образ в офис' : 'Образ на каждый день') + ': ' + look + '.';
+  const l = orderLinks(msg);
+  document.querySelectorAll('#wearAsk [data-ch]').forEach(a => { a.href = l[a.getAttribute('data-ch')]; });
+}
 function setupWear(p) {
+  wearAskLinks(p);
   document.querySelectorAll('.wear-tab').forEach(b => b.onclick = () => {
     haptic('light'); WEAR_TAB = +b.getAttribute('data-wt');
     document.querySelectorAll('.wear-tab').forEach(x => x.classList.toggle('active', x === b));
     $('wearGrid').innerHTML = wearGridHTML(p, WEAR_TAB);
+    wearAskLinks(p);
   });
 }
 /* ---------- ПОХОЖИЕ МОДЕЛИ: тот же цвет или ткань, другие модели ---------- */
@@ -2917,7 +2973,7 @@ const USP_ICONS = {
   size: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16 16 3l5 5L8 21z"/><path d="m7 12 2 2M10 9l2 2M13 6l2 2"/></svg>',
   chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
 };
-function homeActive() { return !FAV_MODE && !QUERY.trim() && !COLOR && !FABRIC && !LINING; }
+function homeActive() { return !FAV_MODE && !QUERY.trim() && !COLOR && !FABRIC && !LINING && !PICK; }
 function renderHome() {
   const box = $('home'); if (!box) return;
   clearInterval(HERO_T);
@@ -4034,6 +4090,31 @@ function copyText(txt) {
     ta.select(); document.execCommand('copy'); ta.remove();
   } catch (e) {}
 }
+function showThanks(channel) {
+  const box = $('cart'); if (!box) return;
+  const name = (CUST.name || '').trim().split(' ')[0];
+  const ch = channel === 'wa' ? 'WhatsApp' : channel === 'tg' ? 'Telegram' : 'MAX';
+  const steps = [
+    L('Отправьте сообщение в открывшемся чате ' + ch + ' — заказ уже вставлен', 'Send the message in the ' + ch + ' chat — the order is prefilled'),
+    L('Менеджер подтвердит наличие размеров и стоимость доставки', 'The manager will confirm sizes and delivery cost'),
+    curDelivery().key === 'fitting'
+      ? L('Договоримся о дне и времени примерки', 'We will agree a day and time for the try-on')
+      : L('Согласуем оплату и отправим заказ', 'We will agree payment and send the order')
+  ];
+  box.innerHTML = '<div class="ct-sheet thanks">' +
+    '<button class="ct-close" id="thClose" aria-label="Закрыть">&#10005;</button>' +
+    '<div class="th-ico"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 27l7 7 15-16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+    '<div class="th-h">' + (name ? esc(name) + ', ' + L('спасибо!', 'thank you!') : L('Спасибо за заказ!', 'Thank you!')) + '</div>' +
+    '<div class="th-sub">' + L('Что будет дальше', 'What happens next') + '</div>' +
+    '<ol class="th-steps">' + steps.map(s => '<li>' + esc(s) + '</li>').join('') + '</ol>' +
+    '<button class="addcart-btn" id="thDone" style="width:100%">' + L('ПРОДОЛЖИТЬ ПОКУПКИ', 'CONTINUE SHOPPING') + '</button>' +
+    '<button class="cart-clear" id="thBack">' + L('Вернуться к корзине', 'Back to cart') + '</button>' +
+  '</div>';
+  box.classList.add('show');
+  $('thClose').onclick = closeCart;
+  $('thBack').onclick = () => renderCart();
+  $('thDone').onclick = () => { CART = []; CART_COMMENT = ''; saveCart(); renderCartFab(); closeCart(); toast(L('Ждём вас снова в GABILEEN', 'See you again at GABILEEN')); };
+}
 function sendCart(channel) {
   if (!CART.length) return;
   const need = [['cfName', CUST.name], ['cfPhone', CUST.phone]];
@@ -4051,6 +4132,7 @@ function sendCart(channel) {
   copyText(msg);
   if (channel === 'wa') {
     window.open('https://wa.me/' + CONTACTS.wa + '?text=' + encodeURIComponent(msg), '_blank');
+    setTimeout(() => showThanks('wa'), 600);
     return;
   }
   if (channel === 'tg') {
@@ -4058,11 +4140,13 @@ function sendCart(channel) {
     window.open('https://t.me/share/url?url=' + encodeURIComponent(location.origin + location.pathname) +
       '&text=' + encodeURIComponent(msg), '_blank');
     toast(L('Выберите чат менеджера — заказ уже вставлен', 'Pick the manager chat — order is prefilled'));
+    setTimeout(() => showThanks('tg'), 600);
     return;
   }
   // MAX предзаполнение текста не поддерживает — копируем и открываем чат
   toast(L('Заказ скопирован — вставьте в чат', 'Order copied — paste it in the chat'));
   setTimeout(() => window.open(CONTACTS.max, '_blank'), 800);
+  setTimeout(() => showThanks('mx'), 1200);
 }
 /* цель Яндекс.Метрики (работает только когда счётчик включён) */
 function ymGoal(name) {
@@ -4320,6 +4404,21 @@ $('toTop').onclick = () => {
 $('contactFab').onclick = () => openChat();
 /* кнопка «Новинки» (push-уведомления) в магазине отключена */
 $('cartFab').onclick = () => openCart();
+/* напоминание: в корзине остались товары с прошлого визита */
+setTimeout(() => {
+  let shown = false; try { shown = sessionStorage.getItem('gb_cart_hint') === '1'; } catch (e) {}
+  if (shown || !CART.length || !PRODUCTS.length || $('detail').classList.contains('open')) return;
+  try { sessionStorage.setItem('gb_cart_hint', '1'); } catch (e) {}
+  const n = cartCount();
+  const el = document.createElement('button');
+  el.className = 'cart-remind';
+  el.innerHTML = '<span>' + L('В корзине', 'In your cart') + ' ' + n + ' ' + pcsWord(n).toLowerCase() + ' · ' + fmtPrice(cartSum()) + '</span><b>' + L('Оформить', 'Checkout') + ' &#8594;</b>';
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  const hide = () => { el.classList.remove('show'); setTimeout(() => el.remove(), 500); };
+  el.onclick = () => { hide(); openCart(); };
+  setTimeout(hide, 8000);
+}, 2500);
 $('favBtn').onclick = () => { haptic('light'); FAV_MODE = !FAV_MODE; updateFavUI(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 updateFavUI();
 $('detailCart').onclick = () => openCart();
