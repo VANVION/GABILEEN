@@ -4278,8 +4278,9 @@ function newsProductId(n) {
 }
 
 async function shareProduct(p) {
-  const text = 'GABILEEN · ' + p.id + ' · ' + getName(p);
-  const url = location.href;
+  const text = getName(p) + ' — ' + (priceOf(p) ? fmtPrice(priceOf(p)) : 'GABILEEN');
+  /* своя страница модели: в мессенджерах покажется фото и название этого пиджака */
+  const url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'p/' + encodeURIComponent(p.id) + '.html';
   if (navigator.share) {
     try { await navigator.share({ title: 'GABILEEN', text: text, url: url }); return; }
     catch (e) { if (e && e.name === 'AbortError') return; /* пользователь отменил */ }
