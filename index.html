@@ -6,8 +6,8 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>GABILEEN — мужские пиджаки 50–58</title>
-<meta name="description" content="Пиджаки на каждый день и на особый случай. Размеры 50–58, 25 000 ₽. Доставка по Москве и России, примерка с выездом к вам.">
+<title>GABILEEN — мужские пиджаки</title>
+<meta name="description" content="Пиджаки на каждый день и на особый случай. Примерка с выездом — бесплатно при покупке. Доставка по Москве и всей России.">
 <meta name="theme-color" content="#1a1814">
 <!-- Favicon / app icons -->
 <link rel="icon" type="image/png" href="./favicon.png?v=1">
@@ -23,16 +23,16 @@
 <!-- Link preview (Open Graph / Twitter) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GABILEEN">
-<meta property="og:title" content="GABILEEN — мужские пиджаки 50–58">
-<meta property="og:description" content="Пиджаки на каждый день и на особый случай. Размеры 50–58, 25 000 ₽. Доставка по Москве и России, примерка с выездом к вам.">
+<meta property="og:title" content="GABILEEN — мужские пиджаки">
+<meta property="og:description" content="Пиджаки на каждый день и на особый случай. Примерка с выездом — бесплатно при покупке. Доставка по Москве и всей России.">
 <meta property="og:url" content="https://vanvion.github.io/GABILEEN/">
 <meta property="og:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="GABILEEN — мужские пиджаки 50–58">
-<meta name="twitter:description" content="Пиджаки на каждый день и на особый случай. Размеры 50–58, 25 000 ₽. Доставка и примерка с выездом.">
+<meta name="twitter:title" content="GABILEEN — мужские пиджаки">
+<meta name="twitter:description" content="Пиджаки на каждый день и на особый случай. Примерка с выездом — бесплатно при покупке. Доставка по Москве и всей России.">
 <meta name="twitter:image" content="https://vanvion.github.io/GABILEEN/og-image.jpg?v=2">
 
 <!-- Структурированные данные для поиска (Яндекс / Google) -->
@@ -1565,6 +1565,77 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 .fit-rules li::before { content: ''; position: absolute; left: 3px; top: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--text); }
 .fit-box { border: 1px solid rgba(26,24,20,0.12); border-radius: 16px; padding: 12px 14px 2px; margin: -6px 0 16px; background: rgba(255,255,255,0.45); }
 .fit-more { display: inline; padding: 0; font-size: 11.5px; text-transform: none; text-decoration: underline; text-underline-offset: 2px; color: var(--text); letter-spacing: 0.02em; }
+
+/* ===================== ГЛАВНАЯ: баннер, преимущества, «вы смотрели» ===================== */
+.hero2 { position: relative; margin: 12px 12px 0; aspect-ratio: 4 / 5; max-height: 72vh; overflow: hidden; background: #d9d4cc; }
+.hero2-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
+.hero2-slide.on { opacity: 1; }
+.hero2-slide img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; transform: scale(1.08); transition: transform 7s linear; }
+.hero2-slide.on img { transform: scale(1); }
+.hero2::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 32%, rgba(10,9,8,0.8) 100%); pointer-events: none; }
+.hero2-txt { position: absolute; left: 22px; right: 22px; bottom: 24px; z-index: 2; color: #fff; }
+.hero2-kick { font-size: 10.5px; letter-spacing: 0.24em; opacity: 0.85; }
+.hero2-h { font-size: 30px; line-height: 1.12; letter-spacing: 0.02em; margin: 10px 0 10px; text-transform: none; }
+.hero2-sub { font-size: 12.5px; letter-spacing: 0.04em; opacity: 0.9; text-transform: none; line-height: 1.45; }
+.hero2-cta { margin-top: 16px; display: inline-flex; align-items: center; gap: 10px; padding: 13px 22px; border-radius: 999px; background: #fff; color: #1a1814; font-size: 11.5px; letter-spacing: 0.12em; }
+.hero2-cta:active { transform: scale(0.96); }
+.hero2-dots { position: absolute; top: 16px; left: 22px; right: 22px; z-index: 2; display: flex; gap: 6px; }
+.hero2-dots i { flex: 1; height: 2px; background: rgba(255,255,255,0.35); overflow: hidden; border-radius: 2px; }
+.hero2-dots i b { display: block; height: 100%; width: 0; background: #fff; }
+.hero2-dots i.on b { animation: heroBar 5s linear forwards; }
+.hero2-dots i.done b { width: 100%; }
+@keyframes heroBar { to { width: 100%; } }
+.usp { display: flex; gap: 8px; overflow-x: auto; padding: 14px 12px 4px; scrollbar-width: none; }
+.usp::-webkit-scrollbar { display: none; }
+.usp-i { flex: none; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 16px; background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 16px rgba(0,0,0,0.04); text-align: left; }
+.usp-i svg { width: 22px; height: 22px; flex: none; }
+.usp-i b { display: block; font-weight: 400; font-size: 11px; letter-spacing: 0.08em; }
+.usp-i small { display: block; font-size: 11px; color: var(--text2); text-transform: none; letter-spacing: 0.01em; margin-top: 2px; }
+.home-sec { padding: 22px 12px 4px; }
+.home-sec-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.home-sec-t { font-size: 17px; letter-spacing: 0.08em; }
+.home-sec-a { font-size: 11px; letter-spacing: 0.06em; color: var(--text2); text-decoration: underline; text-underline-offset: 3px; }
+.home-sec .rel-row { padding-bottom: 4px; }
+.home-sec .rel-card { width: 34%; }
+#home { position: relative; z-index: 1; }
+@media (min-width: 900px) {
+  #home { margin-right: 300px; }
+  .hero2 { max-width: 936px; margin: 16px auto 0; aspect-ratio: 16 / 9; }
+  .hero2-h { font-size: 44px; }
+  .hero2-txt { left: 44px; bottom: 44px; max-width: 520px; }
+  .usp, .home-sec { max-width: 960px; margin-left: auto; margin-right: auto; }
+  .home-sec .rel-card { width: 22%; }
+}
+/* ===================== ИЗБРАННОЕ ===================== */
+.fav-btn { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text); }
+.fav-btn svg { width: 23px; height: 23px; }
+.fav-btn.on svg { fill: #b33a3a; stroke: #b33a3a; }
+.fav-n { position: absolute; top: 1px; right: -2px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #b33a3a; color: #fff; font-size: 9.5px; line-height: 16px; text-align: center; display: none; }
+.fav-n.show { display: block; }
+.card-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.card-heart { width: 30px; height: 30px; margin: 2px -6px 0 0; display: flex; align-items: center; justify-content: center; color: var(--text); flex: none; }
+.card-heart svg { width: 19px; height: 19px; transition: transform 0.3s var(--spring); }
+.card-heart.on svg { fill: #b33a3a; stroke: #b33a3a; }
+.card-heart.pop svg { transform: scale(1.35); }
+.detail-fav { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; color: var(--text); flex: none; margin-left: auto; }
+.detail-fav + .detail-cart { margin-left: 0; }
+.detail-fav svg { width: 22px; height: 22px; transition: transform 0.3s var(--spring); }
+.detail-fav.on svg { fill: #b33a3a; stroke: #b33a3a; }
+.fav-banner { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 12px 12px 0; padding: 12px 16px; border-radius: 16px; background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.85); font-size: 12px; letter-spacing: 0.08em; }
+.fav-banner button { font-size: 11px; letter-spacing: 0.06em; text-decoration: underline; text-underline-offset: 3px; color: var(--text2); }
+.fav-empty { padding: 60px 30px; text-align: center; color: var(--text2); font-size: 13px; line-height: 1.6; text-transform: none; }
+/* ===================== ЛИПКАЯ КНОПКА «В КОРЗИНУ» ===================== */
+.sticky-buy { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 1150; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(255,255,255,0.86); -webkit-backdrop-filter: blur(20px) saturate(1.8); backdrop-filter: blur(20px) saturate(1.8); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 12px 34px rgba(0,0,0,0.16); transform: translateY(140%); transition: transform 0.45s var(--ease); }
+.sticky-buy.show { transform: none; }
+.sb-info { flex: 1; min-width: 0; }
+.sb-name { font-size: 10.5px; letter-spacing: 0.08em; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-price { font-size: 15px; letter-spacing: 0.03em; margin-top: 1px; }
+.sb-btn { padding: 13px 20px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); font-size: 11.5px; letter-spacing: 0.08em; white-space: nowrap; }
+.sb-btn:active { transform: scale(0.96); }
+@media (min-width: 900px) { .sticky-buy { left: auto; right: 24px; width: 420px; } }
+/* корзина «подпрыгивает» при добавлении */
+.cart-fab.bump, .detail-cart.bump { animation: bump 0.5s var(--spring); }
+@keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.22); } 100% { transform: scale(1); } }
 .cart-hint { font-size: 11px; color: var(--text2); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
 </style>
 <!-- Yandex.Metrika: впиши номер счётчика в YM_ID (сейчас 0 — счётчик выключен) -->
@@ -1588,11 +1659,13 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 
 <div class="header" id="header">
   <div class="header-top">
+    <button class="fav-btn" id="favBtn" aria-label="Избранное"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg><span class="fav-n" id="favN"></span></button>
     <div class="brand">GABILEEN</div>
     <button class="lang-btn" id="langBtn">EN</button>
   </div>
   <div class="subtitle" id="subtitle"></div>
 </div>
+<div id="home"></div>
 <div class="layout">
   <main class="main">
     <div class="count-wrap" id="countWrap">
@@ -1664,6 +1737,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 </div>
 
 <div class="ql" id="ql"></div>
+<div class="sticky-buy" id="stickyBuy"><div class="sb-info"><div class="sb-name" id="sbName"></div><div class="sb-price" id="sbPrice"></div></div><button class="sb-btn" id="sbBtn"></button></div>
 <div class="zoombox" id="zoomBox"></div>
 
 <script>
@@ -1817,7 +1891,7 @@ function familyOf(p) {
 
 const I18N = {
   ru: {
-    subtitle: 'МУЖСКИЕ ПИДЖАКИ · 50–58',
+    subtitle: 'МУЖСКИЕ ПИДЖАКИ · МОСКВА',
     search: 'ПОИСК ПО АРТИКУЛУ ИЛИ НАЗВАНИЮ',
     tabs: { all: 'ВСЕ', bryuki: 'БРЮКИ', pidzhaki: 'ПИДЖАКИ', palto: 'ПАЛЬТО' },
     count: n => n + ' ' + plural(n, 'ПОЗИЦИЯ', 'ПОЗИЦИИ', 'ПОЗИЦИЙ'),
@@ -1836,7 +1910,7 @@ const I18N = {
     retry: 'ПОВТОРИТЬ'
   },
   en: {
-    subtitle: 'MEN\'S JACKETS · 50–58',
+    subtitle: 'MEN\'S JACKETS · MOSCOW',
     search: 'SEARCH BY ARTICLE OR NAME',
     tabs: { all: 'ALL', bryuki: 'TROUSERS', pidzhaki: 'JACKETS', palto: 'COATS' },
     count: n => n + ' ' + (n === 1 ? 'ITEM' : 'ITEMS'),
@@ -1855,7 +1929,7 @@ const I18N = {
     retry: 'RETRY'
   },
   tr: {
-    subtitle: 'ERKEK CEKETLERİ · 50–58',
+    subtitle: 'ERKEK CEKETLERİ · MOSKOVA',
     search: 'ÜRÜN KODU VEYA ADIYLA ARA',
     tabs: { all: 'TÜMÜ', bryuki: 'PANTOLON', pidzhaki: 'CEKET', palto: 'PALTO' },
     count: n => n + ' ÜRÜN',
@@ -1874,7 +1948,7 @@ const I18N = {
     retry: 'TEKRAR DENE'
   },
   az: {
-    subtitle: 'KİŞİ PİDJAKLARI · 50–58',
+    subtitle: 'KİŞİ PİDJAKLARI · MOSKVA',
     search: 'ARTİKUL VƏ YA AD ÜZRƏ AXTARIŞ',
     tabs: { all: 'HAMISI', bryuki: 'ŞALVAR', pidzhaki: 'PİDJAK', palto: 'PALTO' },
     count: n => n + ' MƏHSUL',
@@ -1944,6 +2018,12 @@ const DICT = {
   'НА КАЖДЫЙ ДЕНЬ': { tr: 'GÜNLÜK', az: 'GÜNDƏLİK' },
   'В ОФИС': { tr: 'OFİS', az: 'OFİS' },
   'УСЛОВИЯ ПРИМЕРКИ': { tr: 'PROVA KOŞULLARI', az: 'PROVA ŞƏRTLƏRİ' },
+  'Избранное': { tr: 'Favoriler', az: 'Seçilmişlər' },
+  'ИЗБРАННОЕ': { tr: 'FAVORİLER', az: 'SEÇİLMİŞLƏR' },
+  'Вы смотрели': { tr: 'Son baktıklarınız', az: 'Baxdıqlarınız' },
+  'Добавлено в избранное': { tr: 'Favorilere eklendi', az: 'Seçilmişlərə əlavə edildi' },
+  'СМОТРЕТЬ МОДЕЛИ': { tr: 'MODELLERİ GÖR', az: 'MODELLƏRƏ BAX' },
+  'ВЫБРАТЬ РАЗМЕР': { tr: 'BEDEN SEÇ', az: 'ÖLÇÜ SEÇ' },
   'ВЫБОР РАЗМЕРА': { tr: 'BEDEN SEÇİMİ', az: 'ÖLÇÜ SEÇİMİ' },
   'РАЗМЕР': { tr: 'BEDEN', az: 'ÖLÇÜ' },
   'Выберите размер': { tr: 'Beden seçin', az: 'Ölçü seçin' },
@@ -2225,15 +2305,19 @@ function render() {
   renderFabricBar();
   renderColorBar();
 
-  const items = filtered();
-  const groups = groupByModel(items);
+  let items = filtered();
+  if (FAV_MODE) { const fs = new Set(FAVS); items = PRODUCTS.filter(p => fs.has(p.id)); }
+  const groups = FAV_MODE ? items.map(p => [p]) : groupByModel(items);
   /* хиты каталога — вверх (порядок внутри сохраняется, т.к. сортировка стабильная) */
   const grank = g => g.some(isNewActive) ? 2 : g.some(v => v.hit) ? 1 : 0;
   groups.sort((a, b) => grank(b) - grank(a));
   animateCount(groups.length);
 
+  renderHome();
   if (!groups.length) {
-    $('content').innerHTML = '<div class="state">' + t().empty + '</div>';
+    $('content').innerHTML = FAV_MODE
+      ? '<div class="fav-empty">' + L('Здесь появятся модели, которые вы отметите сердечком ♡', 'Styles you tap ♡ on will appear here') + '</div>'
+      : '<div class="state">' + t().empty + '</div>';
     return;
   }
 
@@ -2418,6 +2502,15 @@ function attachCardEvents(el) {
     });
   });
 
+  /* --- сердечко: в избранное --- */
+  const heart = el.querySelector('.card-heart');
+  if (heart) heart.addEventListener('click', e => {
+    e.preventDefault(); e.stopPropagation();
+    const on = toggleFav(cid());
+    heart.classList.toggle('on', on);
+    heart.classList.add('pop'); setTimeout(() => heart.classList.remove('pop'), 300);
+    if (FAV_MODE && !on) render();
+  });
   /* --- кнопка «в корзину»: выбор размера в мини-окне --- */
   el.querySelectorAll('.card-pack').forEach(b => {
     b.addEventListener('touchstart', e => { e.stopPropagation(); clearTimeout(lpTimer); }, { passive: true });
@@ -2626,7 +2719,8 @@ function modelCardHTML(group) {
       '</div>' +
       '<div class="card-info">' +
         '<div class="card-name">' + esc(modelName) + '</div>' +
-        (priceOf(rep) ? '<div class="card-price">' + fmtPrice(priceOf(rep)) + '</div>' : '') +
+        '<div class="card-row">' + (priceOf(rep) ? '<div class="card-price">' + fmtPrice(priceOf(rep)) + '</div>' : '<span></span>') +
+          '<button class="card-heart' + (group.some(v => isFav(v.id)) ? ' on' : '') + '" aria-label="В избранное">' + HEART + '</button></div>' +
         '<div class="mdots">' + dots + '</div>' +
       '</div>' +
     '</div>' +
@@ -2756,6 +2850,138 @@ function relatedHTML(p) {
   '</div>';
 }
 
+
+/* ===================== ИЗБРАННОЕ ===================== */
+const HEART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg>';
+let FAVS = [];
+try { FAVS = JSON.parse(localStorage.getItem('gabileen_favs') || '[]') || []; } catch (e) { FAVS = []; }
+let FAV_MODE = false;
+function isFav(id) { return FAVS.indexOf(id) >= 0; }
+function toggleFav(id) {
+  const i = FAVS.indexOf(id);
+  if (i >= 0) FAVS.splice(i, 1); else FAVS.unshift(id);
+  try { localStorage.setItem('gabileen_favs', JSON.stringify(FAVS)); } catch (e) {}
+  haptic('light');
+  if (i < 0) toast(L('Добавлено в избранное', 'Added to favourites'));
+  updateFavUI();
+  return i < 0;
+}
+function updateFavUI() {
+  const n = FAVS.length, b = $('favN'), btn = $('favBtn');
+  if (b) { b.textContent = n; b.classList.toggle('show', n > 0); }
+  if (btn) btn.classList.toggle('on', FAV_MODE);
+}
+/* ===================== НЕДАВНО ПРОСМОТРЕННЫЕ ===================== */
+let RECENT = [];
+try { RECENT = JSON.parse(localStorage.getItem('gabileen_recent') || '[]') || []; } catch (e) { RECENT = []; }
+function pushRecent(id) {
+  RECENT = [id].concat(RECENT.filter(x => x !== id)).slice(0, 12);
+  try { localStorage.setItem('gabileen_recent', JSON.stringify(RECENT)); } catch (e) {}
+}
+function miniCardsHTML(list) {
+  return '<div class="rel-row">' + list.map(x =>
+    '<button class="rel-card" data-goto="' + esc(x.id) + '"><img src="' + esc(x.image) + '" alt="" loading="lazy">' +
+      '<div class="rel-name">' + esc((catWordOf(x.cat) + ' ' + (x.model || '')).trim()) + '</div>' +
+      (priceOf(x) ? '<div class="rel-price">' + fmtPrice(priceOf(x)) + '</div>' : '') +
+    '</button>').join('') + '</div>';
+}
+/* ===================== ГЛАВНАЯ ===================== */
+const HERO_IDS = ['GB-4303', 'GB-4412', 'GB-4301', 'GB-4403'];
+let HERO_T = null, HERO_I = 0;
+const USP_ICONS = {
+  fit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7a2 2 0 1 1 2-2c0 1-1 1.5-2 2.3V9"/><path d="M12 9 2.5 16.2A1 1 0 0 0 3.1 18h17.8a1 1 0 0 0 .6-1.8z"/></svg>',
+  truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h13v10H1z"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="5.5" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></svg>',
+  size: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16 16 3l5 5L8 21z"/><path d="m7 12 2 2M10 9l2 2M13 6l2 2"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+};
+function homeActive() { return !FAV_MODE && !QUERY.trim() && !COLOR && !FABRIC && !LINING; }
+function renderHome() {
+  const box = $('home'); if (!box) return;
+  clearInterval(HERO_T);
+  if (FAV_MODE) {
+    box.innerHTML = '<div class="fav-banner"><span>♥ ' + L('ИЗБРАННОЕ', 'FAVOURITES') + ' · ' + FAVS.length + '</span><button id="favExit">' + L('Весь каталог', 'All styles') + '</button></div>';
+    $('favExit').onclick = () => { FAV_MODE = false; updateFavUI(); render(); window.scrollTo({ top: 0 }); };
+    return;
+  }
+  if (!homeActive()) { box.innerHTML = ''; return; }
+  const slides = HERO_IDS.map(id => prodById(id)).filter(Boolean);
+  const usp = [
+    ['fit', L('ПРИМЕРКА С ВЫЕЗДОМ', 'HOME TRY-ON'), L('Бесплатно при покупке', 'Free with purchase'), 'fit'],
+    ['truck', L('ДОСТАВКА', 'DELIVERY'), L('Москва и вся Россия', 'Moscow & all Russia'), 'cart'],
+    ['size', L('ПОДБОР РАЗМЕРА', 'SIZE HELP'), L('По росту и обхвату груди', 'By height and chest'), 'size'],
+    ['chat', L('ЗАКАЗ ЗА МИНУТУ', 'ORDER IN A MINUTE'), L('WhatsApp, Telegram, MAX', 'WhatsApp, Telegram, MAX'), 'chat']
+  ];
+  const recent = [];
+  const seenM = new Set();
+  RECENT.forEach(id => { const p = prodById(id); if (p && p.image && !seenM.has(modelKey(p))) { seenM.add(modelKey(p)); recent.push(p); } });
+  const favs = FAVS.map(prodById).filter(Boolean);
+  box.innerHTML =
+    (slides.length ? '<div class="hero2" id="hero2">' +
+      slides.map((p, i) => '<div class="hero2-slide' + (i === 0 ? ' on' : '') + '" data-id="' + esc(p.id) + '"><img src="' + esc(p.image) + '" alt="" ' + (i ? 'loading="lazy"' : '') + '></div>').join('') +
+      '<div class="hero2-dots">' + slides.map((p, i) => '<i class="' + (i === 0 ? 'on' : '') + '"><b></b></i>').join('') + '</div>' +
+      '<div class="hero2-txt">' +
+        '<div class="hero2-kick">GABILEEN · ' + L('КОЛЛЕКЦИЯ', 'COLLECTION') + '</div>' +
+        '<div class="hero2-h">' + L('Пиджак, в котором<br>вы уверены', 'A jacket you<br>feel sure in') + '</div>' +
+        '<div class="hero2-sub">' + L('Привезём на примерку — платите, только если подошло', 'We bring it to you — pay only if it fits') + '</div>' +
+        '<button class="hero2-cta" id="heroCta">' + L('СМОТРЕТЬ МОДЕЛИ', 'SHOP NOW') + ' <span>&#8594;</span></button>' +
+      '</div>' +
+    '</div>' : '') +
+    '<div class="usp">' + usp.map(u => '<button class="usp-i" data-usp="' + u[3] + '">' + USP_ICONS[u[0]] + '<span><b>' + u[1] + '</b><small>' + u[2] + '</small></span></button>').join('') + '</div>' +
+    (favs.length ? '<div class="home-sec"><div class="home-sec-h"><div class="home-sec-t">' + L('Избранное', 'Favourites') + '</div><button class="home-sec-a" id="favAll">' + L('Все', 'All') + ' · ' + favs.length + '</button></div>' + miniCardsHTML(favs.slice(0, 10)) + '</div>' : '') +
+    (recent.length ? '<div class="home-sec"><div class="home-sec-h"><div class="home-sec-t">' + L('Вы смотрели', 'Recently viewed') + '</div></div>' + miniCardsHTML(recent.slice(0, 10)) + '</div>' : '');
+  /* смена кадров баннера */
+  const hero = $('hero2');
+  if (hero) {
+    HERO_I = 0;
+    const sl = hero.querySelectorAll('.hero2-slide'), dots = hero.querySelectorAll('.hero2-dots i');
+    const go = n => {
+      sl.forEach((s, i) => s.classList.toggle('on', i === n));
+      dots.forEach((d, i) => { d.classList.toggle('on', i === n); d.classList.toggle('done', i < n); });
+      HERO_I = n;
+    };
+    if (sl.length > 1) HERO_T = setInterval(() => go((HERO_I + 1) % sl.length), 5000);
+    hero.onclick = e => {
+      if (e.target.closest('#heroCta')) return;
+      const s = sl[HERO_I]; if (s) { haptic('light'); openDetail(s.getAttribute('data-id')); }
+    };
+    $('heroCta').onclick = () => { haptic('light'); const c = $('countWrap'); if (c) window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - ($('header').offsetHeight || 0), behavior: 'smooth' }); };
+  }
+  box.querySelectorAll('[data-usp]').forEach(b => b.onclick = () => {
+    const k = b.getAttribute('data-usp');
+    if (k === 'fit') openFitting(); else if (k === 'size') openSizeChart(); else if (k === 'chat') openContacts(); else { CUST.delivery = 'courier'; openCart(); }
+  });
+  box.querySelectorAll('.rel-card').forEach(el => el.onclick = () => { haptic('light'); openDetail(el.getAttribute('data-goto')); });
+  const fa = $('favAll'); if (fa) fa.onclick = () => { FAV_MODE = true; updateFavUI(); render(); window.scrollTo({ top: 0 }); };
+}
+/* ===================== ЛИПКАЯ КНОПКА «В КОРЗИНУ» В КАРТОЧКЕ ===================== */
+function setupStickyBuy(p) {
+  const bar = $('stickyBuy'), det = $('detail');
+  $('sbName').textContent = (catWordOf(p.cat) + ' ' + (p.model || '')).trim();
+  $('sbPrice').textContent = priceOf(p) ? fmtPrice(priceOf(p)) : '';
+  $('sbBtn').textContent = L('ВЫБРАТЬ РАЗМЕР', 'SELECT SIZE');
+  $('sbBtn').onclick = () => {
+    const ac = $('detailContent').querySelector('.addcart');
+    if (!ac) return;
+    haptic('light');
+    const sel = ac.querySelector('.sz.active');
+    if (sel) { ac.querySelector('.ac-go').click(); return; }
+    det.scrollTo({ top: ac.offsetTop - 70, behavior: 'smooth' });
+    const row = ac.querySelector('.sz-row');
+    if (row) { row.classList.remove('shake'); void row.offsetWidth; setTimeout(() => row.classList.add('shake'), 350); }
+  };
+  const check = () => {
+    const ac = $('detailContent').querySelector('.ac-go');
+    if (!ac || !det.classList.contains('open')) { bar.classList.remove('show'); return; }
+    const r = ac.getBoundingClientRect();
+    bar.classList.toggle('show', r.bottom < 60 || r.top > window.innerHeight);
+    const sel = $('detailContent').querySelector('.sz.active');
+    $('sbBtn').textContent = sel ? L('В КОРЗИНУ', 'ADD TO CART') + ' · ' + sel.getAttribute('data-size') : L('ВЫБРАТЬ РАЗМЕР', 'SELECT SIZE');
+  };
+  det.onscroll = check;
+  $('detailContent').addEventListener('click', () => setTimeout(check, 0));
+  setTimeout(check, 700);
+}
+
 /* ---------- adaptive accent ---------- */
 function setAccent(p) {
   const list = colorList(p.colors);
@@ -2817,6 +3043,14 @@ function openDetail(id, cardEl, opts) {
   setAccent(p);
 
   $('detailArt').textContent = p.id;
+  pushRecent(p.id);
+  let dfav = $('detailFav');
+  if (!dfav) {
+    dfav = document.createElement('button'); dfav.id = 'detailFav'; dfav.className = 'detail-fav'; dfav.setAttribute('aria-label', 'В избранное'); dfav.innerHTML = HEART;
+    $('detailCart').parentNode.insertBefore(dfav, $('detailCart'));
+  }
+  dfav.classList.toggle('on', isFav(p.id));
+  dfav.onclick = () => { const on = toggleFav(p.id); dfav.classList.toggle('on', on); };
   $('detailContent').innerHTML =
     '<div class="detail-img' + (p.image2 ? ' duo' : '') + '" id="detailImg">' + imgHTML(p) +
       (p.image2 ? '<img src="' + esc(p.image2) + '" alt="" data-fade decoding="async" onerror="this.style.display=\'none\'">' : '') +
@@ -2840,6 +3074,7 @@ function openDetail(id, cardEl, opts) {
   $('shareBtn').onclick = () => { haptic('medium'); shareProduct(p); };
   setupAddCart(p, $('detailContent'));
   setupWear(p);
+  setupStickyBuy(p);
   document.querySelectorAll('.rel-card').forEach(el => el.onclick = () => {
     haptic('light'); openDetail(el.getAttribute('data-goto'), null, { noAnim: true });
   });
@@ -2954,6 +3189,8 @@ function unlockScroll() {
 function closeDetail(fromPop) {
   if (!$('detail').classList.contains('open')) return;
   $('detail').classList.remove('open');
+  $('stickyBuy').classList.remove('show');
+  if (homeActive() && RECENT.length) renderHome();
   $('detail').style.transform = '';
   $('detail').style.opacity = '';
   unlockScroll();
@@ -3489,6 +3726,7 @@ function cartAdd(id, size, qty) {
   const e = CART.find(i => i.id === id && i.size === size);
   if (e) e.qty += qty; else CART.push({ id: id, size: size, qty: qty });
   saveCart(); renderCartFab(); ymGoal('add_to_cart');
+  ['cartFab', 'detailCart'].forEach(k => { const el = $(k); if (el) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } });
 }
 function cartSet(id, size, qty) {
   const idx = CART.findIndex(i => i.id === id && i.size === size); if (idx < 0) return;
@@ -4049,6 +4287,8 @@ $('toTop').onclick = () => {
 $('contactFab').onclick = () => openChat();
 /* кнопка «Новинки» (push-уведомления) в магазине отключена */
 $('cartFab').onclick = () => openCart();
+$('favBtn').onclick = () => { haptic('light'); FAV_MODE = !FAV_MODE; updateFavUI(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+updateFavUI();
 $('detailCart').onclick = () => openCart();
 initPush();
 renderCartFab();
