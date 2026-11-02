@@ -908,8 +908,21 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 }
 .detail-img img.loaded { opacity: 1; }
 /* две фотографии рядом (полный вид + крупный план ткани) */
-.detail-img.duo { aspect-ratio: 3 / 2; display: flex; gap: 3px; }
+.dimg-track { width: 100%; height: 100%; }
+.detail-img.duo .dimg-track { display: flex; gap: 3px; }
+.detail-img.duo { aspect-ratio: 3 / 2; }
 .detail-img.duo img { width: 50%; }
+.dimg-dots { display: none; }
+/* телефон: два фото листаются пальцем во весь экран */
+@media (max-width: 899px) {
+  .detail-img.duo { aspect-ratio: 3 / 4; }
+  .detail-img.duo .dimg-track { gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; touch-action: pan-x pan-y; overscroll-behavior-x: contain; }
+  .detail-img.duo .dimg-track::-webkit-scrollbar { display: none; }
+  .detail-img.duo img { flex: none; width: 100%; scroll-snap-align: start; }
+  .dimg-dots { display: flex; gap: 6px; position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 2; }
+  .dimg-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.55); box-shadow: 0 0 0 1px rgba(0,0,0,0.08); transition: width 0.3s var(--ease), background 0.3s; }
+  .dimg-dots i.on { width: 18px; border-radius: 3px; background: #fff; }
+}
 .detail-img img.zooming { transition: none; }
 .detail-img img.zoom-reset { transition: transform 0.45s var(--spring), opacity 0.5s var(--ease); }
 .detail-img .ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
@@ -2542,7 +2555,7 @@ function selectTileColor(el, gid) {
     img.classList.remove('loaded');
     img.removeAttribute('data-src');
     img.onload = () => img.classList.add('loaded');
-    img.src = v.image;
+    img.src = sm(v.image);
   }
   el.querySelectorAll('.mdot').forEach(d =>
     d.classList.toggle('active', d.getAttribute('data-goto') === gid));
@@ -2642,9 +2655,11 @@ function dotHTML(c) {
   return '<span class="dot" style="background:' + PALETTE[c].hex + '"></span>';
 }
 
+/* уменьшенная копия фото для каталога и лент (images/sm/...) — грузится в разы быстрее */
+function sm(src) { return /^images\/[^/]+$/.test(src || '') ? src.replace('images/', 'images/sm/') : src; }
 function imgHTML(p, lazy) {
   if (!p.image) return '<div class="ph">' + PH_SVG + '</div>';
-  const srcAttr = lazy ? 'data-src="' + esc(p.image) + '"' : 'src="' + esc(p.image) + '"';
+  const srcAttr = lazy ? 'data-src="' + esc(sm(p.image)) + '"' : 'src="' + esc(p.image) + '"';
   return '<img ' + srcAttr + ' alt="" data-fade decoding="async" onerror="this.style.display=\'none\'">';
 }
 
@@ -2810,7 +2825,7 @@ let WEAR_TAB = 0;
 function wearGridHTML(p, tab) {
   const fam = familyOf(p) || 'blue';
   const look = (LOOKS[fam] || LOOKS.blue)[tab];
-  const jacket = '<div class="wear-item jk"><img src="' + esc(p.image) + '" alt=""><div class="wear-cap">' + esc(L('Этот пиджак', 'This jacket')) + '</div></div>';
+  const jacket = '<div class="wear-item jk"><img src="' + esc(sm(p.image)) + '" alt=""><div class="wear-cap">' + esc(L('Этот пиджак', 'This jacket')) + '</div></div>';
   return jacket + look.map(k => {
     const it = W[k];
     return '<div class="wear-item">' + WEAR_SVG[it[0]](it[1]) + '<div class="wear-cap">' + esc(L(it[2], it[3])) + '</div></div>';
@@ -2851,7 +2866,7 @@ function relatedHTML(p) {
   return '<div class="rel d-anim d4">' +
     '<div class="wear-head"><div class="wear-title">' + L('Похожие модели', 'Similar styles') + '</div></div>' +
     '<div class="rel-row">' + list.map(x =>
-      '<button class="rel-card" data-goto="' + esc(x.id) + '"><img src="' + esc(x.image) + '" alt="" loading="lazy">' +
+      '<button class="rel-card" data-goto="' + esc(x.id) + '"><img src="' + esc(sm(x.image)) + '" alt="" loading="lazy">' +
         '<div class="rel-name">' + esc((catWordOf(x.cat) + ' ' + (x.model || '')).trim()) + '</div>' +
         (priceOf(x) ? '<div class="rel-price">' + fmtPrice(priceOf(x)) + '</div>' : '') +
       '</button>').join('') + '</div>' +
@@ -2888,7 +2903,7 @@ function pushRecent(id) {
 }
 function miniCardsHTML(list) {
   return '<div class="rel-row">' + list.map(x =>
-    '<button class="rel-card" data-goto="' + esc(x.id) + '"><img src="' + esc(x.image) + '" alt="" loading="lazy">' +
+    '<button class="rel-card" data-goto="' + esc(x.id) + '"><img src="' + esc(sm(x.image)) + '" alt="" loading="lazy">' +
       '<div class="rel-name">' + esc((catWordOf(x.cat) + ' ' + (x.model || '')).trim()) + '</div>' +
       (priceOf(x) ? '<div class="rel-price">' + fmtPrice(priceOf(x)) + '</div>' : '') +
     '</button>').join('') + '</div>';
@@ -3060,8 +3075,11 @@ function openDetail(id, cardEl, opts) {
   dfav.classList.toggle('on', isFav(p.id));
   dfav.onclick = () => { const on = toggleFav(p.id); dfav.classList.toggle('on', on); };
   $('detailContent').innerHTML =
-    '<div class="detail-img' + (p.image2 ? ' duo' : '') + '" id="detailImg">' + imgHTML(p) +
-      (p.image2 ? '<img src="' + esc(p.image2) + '" alt="" data-fade decoding="async" onerror="this.style.display=\'none\'">' : '') +
+    '<div class="detail-img' + (p.image2 ? ' duo' : '') + '" id="detailImg">' +
+      '<div class="dimg-track" id="dimgTrack">' + imgHTML(p) +
+        (p.image2 ? '<img src="' + esc(p.image2) + '" alt="" data-fade decoding="async" onerror="this.style.display=\'none\'">' : '') +
+      '</div>' +
+      (p.image2 ? '<div class="dimg-dots"><i class="on"></i><i></i></div>' : '') +
       (p.image ? '<span class="zoom-hint">' + t().zoom + '</span>' : '') +
     '</div>' +
     '<div class="detail-body">' +
@@ -3095,6 +3113,11 @@ function openDetail(id, cardEl, opts) {
 
   bindImages($('detailContent'));
   setupZoom();
+  const trk = $('dimgTrack');
+  if (trk && p.image2) trk.onscroll = () => {
+    const i = Math.round(trk.scrollLeft / Math.max(1, trk.clientWidth));
+    $('detailImg').querySelectorAll('.dimg-dots i').forEach((d, k) => d.classList.toggle('on', k === i));
+  };
   $('detail').scrollTop = 0;
 
   if (noAnim) {
@@ -3136,7 +3159,7 @@ function openDetail(id, cardEl, opts) {
 
     const targetW = window.innerWidth;
     /* высота совпадает с реальным блоком фото: дуо (3:2) или одиночное (3:4) */
-    const targetH = p.image2 ? targetW * 2 / 3 : targetW * 4 / 3;
+    const targetH = targetW * 4 / 3;
     /* верх совпадает с нижней гранью панели (с учётом «чёлки»), чтобы фото не налезало на кнопки */
     const topBar = document.querySelector('.detail-top');
     const barH = topBar ? Math.round(topBar.getBoundingClientRect().height) : 52;
@@ -3357,7 +3380,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeZoom();
 function setupZoom() {
   const wrap = $('detailImg');
   if (!wrap) return;
-  const img = wrap.querySelector('img');
+  let img = wrap.querySelector('img');
   if (!img) return;
   let d0 = 0, scale = 1, ox = 50, oy = 50, zooming = false, moved = false, sx = 0, sy = 0;
 
@@ -3373,6 +3396,8 @@ function setupZoom() {
   wrap.addEventListener('touchstart', e => {
     if (e.touches.length === 2) {
       e.preventDefault();
+      const under = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+      if (under && under.tagName === 'IMG' && wrap.contains(under)) img = under;
       zooming = true;
       img.classList.remove('zoom-reset');
       img.classList.add('zooming');
@@ -3873,7 +3898,7 @@ function renderQuickAdd() {
     '<div class="ct-title">' + L('ВЫБОР РАЗМЕРА', 'CHOOSE SIZE') + '</div>' +
     '<div class="ct-sub">' + esc(modelName) + '</div>' +
     '<div class="qa-top">' +
-      '<img class="qa-img" src="' + esc(p.image) + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
+      '<img class="qa-img" src="' + esc(sm(p.image)) + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
       '<div class="qa-colors"><div class="qa-cur" id="qaCur">' + esc(curLabel) + '</div><div class="qa-dots">' + dots + '</div></div>' +
     '</div>' +
     '<div class="addcart">' + addcartHTML(p) + '</div>' +
@@ -3904,7 +3929,7 @@ function renderCart() {
       const price = priceOf(p);
       const sub = esc(col) + ' · ' + esc(p.id) + ' · <b>' + L('РАЗМЕР', 'SIZE') + ' ' + esc(ci.size) + '</b>';
       return '<div class="cart-item">' +
-        '<img src="' + esc(p.image) + '" alt="" loading="lazy">' +
+        '<img src="' + esc(sm(p.image)) + '" alt="" loading="lazy">' +
         '<div class="cart-item-info">' +
           '<div class="cart-item-name">' + esc(getName(p)) + '</div>' +
           '<div class="cart-item-sub">' + sub + '</div>' +
