@@ -8,7 +8,8 @@
 <meta http-equiv="Expires" content="0">
 <title>GABILEEN — мужские пиджаки</title>
 <meta name="description" content="Пиджаки на каждый день и на особый случай. Примерка с выездом — бесплатно при покупке. Доставка по Москве и всей России.">
-<meta name="theme-color" content="#1a1814">
+<meta name="theme-color" content="#f5f5f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)">
 <!-- Favicon / app icons -->
 <link rel="icon" type="image/png" href="./favicon.png?v=1">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=1">
@@ -1544,7 +1545,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 .dl-opt.active .dl-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--text); }
 .dl-opt b { display: block; font-weight: 400; text-transform: uppercase; letter-spacing: 0.05em; font-size: 12.5px; }
 .dl-opt small { display: block; color: var(--text2); font-size: 11.5px; margin-top: 3px; line-height: 1.4; }
-.dl-price { margin-left: auto; white-space: nowrap; font-size: 12px; color: var(--text2); padding-left: 8px; }
+.dl-price { margin-left: auto; font-size: 11.5px; color: var(--text2); padding-left: 8px; max-width: 34%; text-align: right; line-height: 1.3; text-transform: none; }
 .cart-field { width: 100%; font-family: var(--font); font-size: 14px; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(26,24,20,0.15); background: rgba(255,255,255,0.6); color: var(--text); margin-bottom: 8px; -webkit-appearance: none; }
 .cart-field:focus { outline: none; border-color: var(--text2); }
 .cart-field::placeholder { color: var(--muted); }
@@ -1671,6 +1672,59 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
   .hero2 { max-width: 1340px; aspect-ratio: 21 / 9; }
   .usp, .home-sec { max-width: 1380px; padding-left: 20px; padding-right: 20px; }
   .home-sec .rel-card { width: 16%; }
+}
+/* ===================== ТЁМНАЯ ТЕМА (включается сама по настройке телефона) ===================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121110; --card: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.12);
+    --text: #ece8e1; --text2: #aaa398; --muted: #8b8478;
+    --glass: rgba(255,255,255,0.05); --glass-border: rgba(255,255,255,0.10);
+    color-scheme: dark;
+  }
+  html, body { background: #121110; }
+  #auroraCanvas { display: none; }
+  .grain { opacity: 0.025; }
+  .header { background: rgba(18,17,16,0.72); border-bottom-color: rgba(255,255,255,0.08); }
+  .search-wrap, .count-wrap { border-color: rgba(255,255,255,0.08); }
+  .lang-btn, .lang-menu { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); color: var(--text2); }
+  .ln, .cf { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); color: var(--text2); }
+  .ln.active { background: #ece8e1; color: #121110; border-color: #ece8e1; }
+  .cf.active { background: rgba(255,255,255,0.14); border-color: #ece8e1; }
+  .card { background: #1b1a18; border-color: rgba(255,255,255,0.07); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+  .art-tag { background: rgba(18,17,16,0.7); color: #ece8e1; border-color: rgba(255,255,255,0.12); }
+  .sidebar { background: rgba(18,17,16,0.8); border-left-color: rgba(255,255,255,0.08); }
+  .detail { background: #121110; }
+  .detail-top { background: rgba(18,17,16,0.86); border-bottom-color: rgba(255,255,255,0.08); }
+  .back-btn { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); color: var(--text); }
+  .zoom-hint { background: rgba(18,17,16,0.7); color: #ece8e1; }
+  .ct-sheet { background: #1b1a18; color: var(--text); }
+  .ct-close { background: rgba(255,255,255,0.08); color: var(--text); }
+  .contacts { background: rgba(0,0,0,0.6); }
+  .sz { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.18); color: var(--text); }
+  .sz.active { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); }
+  .addcart-btn, .sb-btn, .card-pack, .cart-fab, .hero2-cta { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22); }
+  .svc, .fit-box, .dl-opt, .cart-field, .cart-note, .usp-i, .fav-banner { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); color: var(--text); }
+  .dl-opt.active { background: rgba(255,255,255,0.09); border-color: #ece8e1; }
+  .dl-radio { border-color: rgba(255,255,255,0.35); }
+  .dl-opt.active .dl-radio { border-color: #ece8e1; }
+  .dl-opt.active .dl-radio::after, .fit-rules li::before { background: #ece8e1; }
+  .svc-row + .svc-row, .fit-rules li, .th-steps li, .sc-table td, .spec-row, .specs, .cart-item { border-color: rgba(255,255,255,0.08); }
+  .sc-table th { border-color: rgba(255,255,255,0.18); }
+  .th-steps li::before { border-color: #ece8e1; }
+  .qty, .qty button { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--text); }
+  .wear-tab { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: var(--text); }
+  .wear-tab.active { background: #ece8e1; color: #121110; border-color: #ece8e1; }
+  .wear-item { background: #24221f; }
+  .wear-item.jk { background: #24221f; }
+  .sticky-buy { background: rgba(30,28,26,0.9); border-color: rgba(255,255,255,0.1); }
+  .to-top { background: rgba(40,38,35,0.9); color: #ece8e1; border-color: rgba(255,255,255,0.12); }
+  .contact-fab { background: #ece8e1; color: #121110; }
+  .toast { box-shadow: 0 8px 26px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.15); }
+  .cart-remind { background: #ece8e1; color: #121110; }
+  .cart-remind b { background: #121110; color: #ece8e1; }
+  .a2hs { background: #1b1a18; color: var(--text); }
+  .sk-img, .sk-line { background: rgba(255,255,255,0.06); }
+  .rel-card img, .card-img { background: #24221f; }
 }
 </style>
 <!-- Yandex.Metrika: впиши номер счётчика в YM_ID (сейчас 0 — счётчик выключен) -->
@@ -3068,8 +3122,12 @@ function setAccent(p) {
   if (list.length) hex = PALETTE[list[0]].hex;
   const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
   const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  /* в тёмной теме слишком тёмный акцент сливается с фоном — берём светлый */
+  const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (dark && lum < 0.3) { hex = '#ece8e1'; }
+  const lum2 = dark && hex === '#ece8e1' ? 0.9 : lum;
   document.documentElement.style.setProperty('--accent', hex);
-  document.documentElement.style.setProperty('--accent-fg', lum > 0.72 ? '#161614' : '#ffffff');
+  document.documentElement.style.setProperty('--accent-fg', lum2 > 0.72 ? '#161614' : '#ffffff');
 }
 
 /* ---------- detail + hero transition ---------- */
