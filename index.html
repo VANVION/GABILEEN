@@ -3421,22 +3421,7 @@ function openFromHash() {
   d.addEventListener('touchend', release, { passive: true });
   d.addEventListener('touchcancel', release, { passive: true });
 
-  /* горизонтальный свайп — предыдущий / следующий товар */
-  let sx = null, sy = null, multi = false;
-  d.addEventListener('touchstart', e => {
-    multi = e.touches.length > 1;
-    sx = e.touches[0].clientX;
-    sy = e.touches[0].clientY;
-  }, { passive: true });
-  d.addEventListener('touchend', e => {
-    if (sx === null || multi) { sx = sy = null; return; }
-    const dx = e.changedTouches[0].clientX - sx;
-    const dyAbs = Math.abs(e.changedTouches[0].clientY - sy);
-    if (Math.abs(dx) > 60 && Math.abs(dx) > dyAbs * 1.5) {
-      navigateDetail(dx < 0 ? 1 : -1);   // влево = следующий, вправо = предыдущий
-    }
-    sx = sy = null;
-  }, { passive: true });
+  /* горизонтальный свайп между товарами отключён: в карточке свайпом листаются фото */
 })();
 
 /* ---------- переход между товарами (свайп / стрелки) ---------- */
