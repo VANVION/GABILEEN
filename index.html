@@ -1625,8 +1625,8 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 .fav-banner button { font-size: 11px; letter-spacing: 0.06em; text-decoration: underline; text-underline-offset: 3px; color: var(--text2); }
 .fav-empty { padding: 60px 30px; text-align: center; color: var(--text2); font-size: 13px; line-height: 1.6; text-transform: none; }
 /* ===================== ЛИПКАЯ КНОПКА «В КОРЗИНУ» ===================== */
-.sticky-buy { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 1150; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(255,255,255,0.86); -webkit-backdrop-filter: blur(20px) saturate(1.8); backdrop-filter: blur(20px) saturate(1.8); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 12px 34px rgba(0,0,0,0.16); transform: translateY(140%); transition: transform 0.45s var(--ease); }
-.sticky-buy.show { transform: none; }
+.sticky-buy { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 1150; display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(255,255,255,0.86); -webkit-backdrop-filter: blur(20px) saturate(1.8); backdrop-filter: blur(20px) saturate(1.8); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 12px 34px rgba(0,0,0,0.16); transform: translateY(calc(100% + 60px)); opacity: 0; visibility: hidden; pointer-events: none; transition: transform 0.45s var(--ease), opacity 0.3s, visibility 0s 0.45s; }
+.sticky-buy.show { transform: none; opacity: 1; visibility: visible; pointer-events: auto; transition: transform 0.45s var(--ease), opacity 0.3s, visibility 0s; }
 .sb-info { flex: 1; min-width: 0; }
 .sb-name { font-size: 10.5px; letter-spacing: 0.08em; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sb-price { font-size: 15px; letter-spacing: 0.03em; margin-top: 1px; }
