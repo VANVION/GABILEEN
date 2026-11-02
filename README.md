@@ -64,3 +64,19 @@
 
 Шрифт — **Futura PT Book** (`futura-pt-book.ttf`). Логотип — `logo.svg`; иконки приложения
 (`icon-512.png`, `apple-touch-icon.png`, `favicon.png`) и картинка превью `og-image.jpg` сделаны из него.
+
+## Telegram-бот и мини-приложение
+
+Магазин открывается внутри Telegram как мини-приложение (Mini App). Настройка в @BotFather:
+
+1. `/newbot` — имя `GABILEEN`, username например `gabileen_shop_bot`.
+2. `/setuserpic` → выбрать бота → отправить `telegram/bot-avatar-512.png`.
+3. `/mybots` → бот → **Bot Settings → Menu Button → Configure menu button** →
+   ссылка `https://vanvion.github.io/GABILEEN/`, название кнопки `Магазин`.
+4. `/newapp` → бот → название `GABILEEN`, описание, фото `telegram/app-cover-640x360.png`,
+   GIF — `/empty`, ссылка `https://vanvion.github.io/GABILEEN/`, короткое имя например `shop`.
+   Получится ссылка `https://t.me/gabileen_shop_bot/shop`.
+5. Впишите имя бота и короткое имя в `TG_APP` в начале `<script>` в `index.html`
+   (`const TG_APP = { bot: 'gabileen_shop_bot', app: 'shop' };`) — тогда «Поделиться» внутри Telegram
+   будет отправлять ссылки вида `https://t.me/gabileen_shop_bot/shop?startapp=GB-4303`, которые открывают
+   конкретную модель прямо в мини-приложении.

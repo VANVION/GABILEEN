@@ -60,7 +60,7 @@
 </script>
 
 <!-- External enhancement libs load asynchronously so a slow/blocked CDN can never prevent the catalogue from rendering. -->
-<script async src="https://telegram.org/js/telegram-web-app.js"></script>
+<script async src="https://telegram.org/js/telegram-web-app.js" onload="window.__tgInit && window.__tgInit()"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting.css" media="print" onload="this.media='all'">
@@ -1896,6 +1896,25 @@ const SIZE_CHART = [
   { size: 56, chest: '110–113', waist: '98–101' },
   { size: 58, chest: '114–117', waist: '102–105' }
 ];
+/* ---------- TELEGRAM MINI APP ----------
+   После создания бота впишите его имя (без @) и короткое имя мини-приложения из @BotFather (/newapp).
+   Тогда «Поделиться» внутри Telegram отправит ссылку, которая открывает модель прямо в мини-приложении. */
+const TG_APP = { bot: '', app: '' };
+function tgAppLink(id) {
+  if (!TG_APP.bot) return '';
+  return 'https://t.me/' + TG_APP.bot + (TG_APP.app ? '/' + TG_APP.app : '') + (id ? '?startapp=' + encodeURIComponent(id) : '');
+}
+function inTelegram() { return !!(tg && tg.initData); }
+/* внешние ссылки: внутри Telegram — его средствами (t.me открываем без выхода из Telegram) */
+function openExt(url) {
+  if (inTelegram()) {
+    try {
+      if (/^https:\/\/t\.me\//.test(url) && tg.openTelegramLink) { tg.openTelegramLink(url); return; }
+      if (tg.openLink) { tg.openLink(url); return; }
+    } catch (e) {}
+  }
+  window.open(url, '_blank');
+}
 function orderLinks(msg) {
   const t = encodeURIComponent(msg);
   return {
@@ -3351,9 +3370,17 @@ function closeDetail(fromPop) {
 /* позицией каталога управляем сами — отключаем авто-восстановление браузера,
    иначе оно перекрывает наш возврат на прежнее место */
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+let TG_START_USED = false;
 function hashProductId() {
   const m = location.hash.match(/^#p=(.+)$/);
-  return m ? decodeURIComponent(m[1]) : null;
+  if (m) return decodeURIComponent(m[1]);
+  /* мини-приложение Telegram, открытое ссылкой ...?startapp=GB-4303 */
+  if (!TG_START_USED) {
+    let sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
+    if (!sp) { try { sp = new URLSearchParams(location.search).get('tgWebAppStartParam'); } catch (e) {} }
+    if (sp) { TG_START_USED = true; return sp; }
+  }
+  return null;
 }
 window.addEventListener('popstate', () => {
   const id = hashProductId();
@@ -4174,21 +4201,21 @@ function sendCart(channel) {
   const msg = cartMessage();
   copyText(msg);
   if (channel === 'wa') {
-    window.open('https://wa.me/' + CONTACTS.wa + '?text=' + encodeURIComponent(msg), '_blank');
+    openExt('https://wa.me/' + CONTACTS.wa + '?text=' + encodeURIComponent(msg));
     setTimeout(() => showThanks('wa'), 600);
     return;
   }
   if (channel === 'tg') {
     // Telegram: открываем диалог «Поделиться» с уже готовым текстом заказа
-    window.open('https://t.me/share/url?url=' + encodeURIComponent(location.origin + location.pathname) +
-      '&text=' + encodeURIComponent(msg), '_blank');
+    openExt('https://t.me/share/url?url=' + encodeURIComponent(tgAppLink('') || (location.origin + location.pathname)) +
+      '&text=' + encodeURIComponent(msg));
     toast(L('Выберите чат менеджера — заказ уже вставлен', 'Pick the manager chat — order is prefilled'));
     setTimeout(() => showThanks('tg'), 600);
     return;
   }
   // MAX предзаполнение текста не поддерживает — копируем и открываем чат
   toast(L('Заказ скопирован — вставьте в чат', 'Order copied — paste it in the chat'));
-  setTimeout(() => window.open(CONTACTS.max, '_blank'), 800);
+  setTimeout(() => openExt(CONTACTS.max), 800);
   setTimeout(() => showThanks('mx'), 1200);
 }
 /* цель Яндекс.Метрики (работает только когда счётчик включён) */
@@ -4323,7 +4350,8 @@ function newsProductId(n) {
 async function shareProduct(p) {
   const text = getName(p) + ' — ' + (priceOf(p) ? fmtPrice(priceOf(p)) : 'GABILEEN');
   /* своя страница модели: в мессенджерах покажется фото и название этого пиджака */
-  const url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'p/' + encodeURIComponent(p.id) + '.html';
+  const url = (inTelegram() && tgAppLink(p.id)) || (location.origin + location.pathname.replace(/[^/]*$/, '') + 'p/' + encodeURIComponent(p.id) + '.html');
+  if (inTelegram()) { openExt('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text)); return; }
   if (navigator.share) {
     try { await navigator.share({ title: 'GABILEEN', text: text, url: url }); return; }
     catch (e) { if (e && e.name === 'AbortError') return; /* пользователь отменил */ }
@@ -4398,6 +4426,8 @@ if ('serviceWorker' in navigator) {
 (function initA2HS() {
   const el = $('a2hs');
   if (!el) return;
+  /* в Telegram подсказка «установить на экран» не нужна */
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) return;
   const ua = navigator.userAgent || '';
   const isIOS = /iphone|ipad|ipod/i.test(ua) && !window.MSStream;
   const isStandalone = ('standalone' in navigator && navigator.standalone) ||
@@ -4571,16 +4601,38 @@ function revealDetailName() {
   }
 }
 
+/* ---------- Telegram: настройка мини-приложения (вызывается, как только загрузится библиотека Telegram) ---------- */
+let TG_INITED = false;
+function initTelegram() {
+  tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg || TG_INITED) return;
+  TG_INITED = true;
+  tg.ready();
+  tg.expand();
+  try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {}
+  try {
+    const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const c = dark ? '#121110' : '#f5f5f3';
+    if (tg.setHeaderColor) tg.setHeaderColor(c);
+    if (tg.setBackgroundColor) tg.setBackgroundColor(c);
+    if (tg.setBottomBarColor) tg.setBottomBarColor(c);
+  } catch (e) {}
+  if (tg.initData) document.documentElement.classList.add('in-tg');
+  /* ссылки WhatsApp / MAX / Telegram в карточке и окнах — открываем средствами Telegram */
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[target="_blank"]');
+    if (a && inTelegram()) { e.preventDefault(); openExt(a.href); }
+  });
+  if (tg.BackButton) tg.BackButton.onClick(closeDetail);
+  /* модель из ссылки ...?startapp=GB-4303, если каталог уже загрузился раньше библиотеки */
+  if (booted && !$('detail').classList.contains('open')) openFromHash();
+}
+window.__tgInit = initTelegram;
 document.addEventListener('DOMContentLoaded', () => {
   // Async CDN scripts may have finished loading after parse time — recompute flags.
   HAS_GSAP  = typeof gsap !== 'undefined';
   HAS_SPLIT = typeof Splitting !== 'undefined';
-  tg = window.Telegram && window.Telegram.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
-    if (tg.BackButton) tg.BackButton.onClick(closeDetail);
-  }
+  initTelegram();
   // The catalogue is the priority — render it first, enhancements are optional.
   loadData();
   try { initEnhancements(); } catch (e) { /* enhancements are non-critical */ }
