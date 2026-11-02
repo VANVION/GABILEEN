@@ -1637,6 +1637,14 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 .cart-fab.bump, .detail-cart.bump { animation: bump 0.5s var(--spring); }
 @keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.22); } 100% { transform: scale(1); } }
 .cart-hint { font-size: 11px; color: var(--text2); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
+/* широкий экран: 3 пиджака в ряд */
+@media (min-width: 1200px) {
+  .grid, .sk-grid { grid-template-columns: repeat(3, 1fr); max-width: 1380px; gap: 20px; padding: 20px; }
+  .count-wrap { max-width: 1380px; padding-left: 20px; padding-right: 20px; }
+  .hero2 { max-width: 1340px; aspect-ratio: 21 / 9; }
+  .usp, .home-sec { max-width: 1380px; padding-left: 20px; padding-right: 20px; }
+  .home-sec .rel-card { width: 16%; }
+}
 </style>
 <!-- Yandex.Metrika: впиши номер счётчика в YM_ID (сейчас 0 — счётчик выключен) -->
 <script type="text/javascript">
