@@ -1559,6 +1559,12 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 .rel-card img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; background: #eee; }
 .rel-name { font-size: 11.5px; letter-spacing: 0.06em; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; }
 .rel-price { font-size: 12.5px; margin-top: 3px; }
+.fit-rules { list-style: none; margin: 4px 0 14px; padding: 0; text-transform: none; }
+.fit-rules li { position: relative; padding: 7px 0 7px 20px; font-size: 13px; line-height: 1.4; letter-spacing: 0.01em; border-bottom: 1px solid rgba(26,24,20,0.07); }
+.fit-rules li:last-child { border-bottom: none; }
+.fit-rules li::before { content: ''; position: absolute; left: 3px; top: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--text); }
+.fit-box { border: 1px solid rgba(26,24,20,0.12); border-radius: 16px; padding: 12px 14px 2px; margin: -6px 0 16px; background: rgba(255,255,255,0.45); }
+.fit-more { display: inline; padding: 0; font-size: 11.5px; text-transform: none; text-decoration: underline; text-underline-offset: 2px; color: var(--text); letter-spacing: 0.02em; }
 .cart-hint { font-size: 11px; color: var(--text2); margin-top: 10px; text-align: center; letter-spacing: 0.02em; }
 </style>
 <!-- Yandex.Metrika: впиши номер счётчика в YM_ID (сейчас 0 — счётчик выключен) -->
@@ -1678,10 +1684,32 @@ const CONTACTS = {
 /* ---------- ВЫЕЗД С ПРИМЕРКОЙ ----------
    Бесплатно, если клиент что-то покупает. FITTING_FEE — стоимость выезда, если ничего не купили
    (число в ₽, например 2000). Пока null — пишем «стоимость уточнит менеджер». */
-const FITTING_FEE = null;
+const FITTING_FEE = { moscow: 2000, outside: 3000 };   /* по Москве (в пределах МКАД) / за МКАД */
 function fittingFeeText(ru) {
-  return FITTING_FEE ? fmtPrice(FITTING_FEE) : (ru ? 'стоимость уточнит менеджер' : 'the manager will confirm the cost');
+  if (!FITTING_FEE) return ru ? 'стоимость уточнит менеджер' : 'the manager will confirm the cost';
+  return ru ? fmtPrice(FITTING_FEE.moscow) + ' по Москве, ' + fmtPrice(FITTING_FEE.outside) + ' за МКАД'
+            : fmtPrice(FITTING_FEE.moscow) + ' in Moscow, ' + fmtPrice(FITTING_FEE.outside) + ' outside the MKAD';
 }
+/* правила выезда с примеркой — показываются в корзине и в окне «Условия примерки» */
+function fittingRules() {
+  const ru = LANG === 'ru';
+  return ru ? [
+    'Бесплатно, если вы покупаете хотя бы один пиджак',
+    'Если ничего не подошло — оплачивается только выезд: ' + fittingFeeText(true),
+    'Привезём до 3 моделей, каждую в 2 размерах',
+    'На примерку — около 30 минут',
+    'Выезд по записи: менеджер согласует с вами день и время',
+    'Дальнее Подмосковье — по договорённости'
+  ] : [
+    'Free if you buy at least one jacket',
+    'If nothing suits you, only the visit is charged: ' + fittingFeeText(false),
+    'Up to 3 styles, each in 2 sizes',
+    'About 30 minutes to try everything on',
+    'By appointment: the manager will agree the day and time with you',
+    'Remote areas of the Moscow region by arrangement'
+  ];
+}
+function fittingRulesHTML() { return '<ul class="fit-rules">' + fittingRules().map(r => '<li>' + esc(r) + '</li>').join('') + '</ul>'; }
 /* ---------- СПОСОБЫ ПОЛУЧЕНИЯ ----------
    price: число (₽), 0 — бесплатно, null — «уточнит менеджер». needsAddress — спрашивать адрес. */
 const DELIVERY = [
@@ -1689,8 +1717,8 @@ const DELIVERY = [
     note_ru: 'Привезём в удобное время', note_en: 'At a time that suits you' },
   { key: 'fitting', ru: 'Выезд с примеркой', en: 'Home try-on visit', price: 0, needsAddress: true,
     label_ru: 'бесплатно при покупке', label_en: 'free with purchase',
-    get note_ru() { return 'Привезём модель в нескольких размерах — примерите дома или в офисе. Если ничего не выберете — выезд: ' + fittingFeeText(true); },
-    get note_en() { return 'We bring several sizes to try at home or in the office. If nothing suits you, the visit fee: ' + fittingFeeText(false); } },
+    note_ru: 'Привезём модели в нескольких размерах — примерите дома или в офисе',
+    note_en: 'We bring several sizes to try at home or in the office' },
   { key: 'cdek', ru: 'Доставка по России (СДЭК)', en: 'Delivery across Russia (CDEK)', price: null, needsAddress: true,
     note_ru: 'До пункта выдачи или курьером до двери', note_en: 'To a pickup point or to your door' },
   { key: 'pickup', ru: 'Самовывоз', en: 'Pickup', price: 0, needsAddress: false,
@@ -1915,6 +1943,7 @@ const DICT = {
   'Похожие модели': { tr: 'Benzer modeller', az: 'Oxşar modellər' },
   'НА КАЖДЫЙ ДЕНЬ': { tr: 'GÜNLÜK', az: 'GÜNDƏLİK' },
   'В ОФИС': { tr: 'OFİS', az: 'OFİS' },
+  'УСЛОВИЯ ПРИМЕРКИ': { tr: 'PROVA KOŞULLARI', az: 'PROVA ŞƏRTLƏRİ' },
   'ВЫБОР РАЗМЕРА': { tr: 'BEDEN SEÇİMİ', az: 'ÖLÇÜ SEÇİMİ' },
   'РАЗМЕР': { tr: 'BEDEN', az: 'ÖLÇÜ' },
   'Выберите размер': { tr: 'Beden seçin', az: 'Ölçü seçin' },
@@ -3401,6 +3430,7 @@ function faqAnswer(q) {
       '\nМОДЕЛИ: ' + model;
   }
   if (has('как заказ', 'оформ', 'сделать заказ', 'заказать', 'купить')) return 'Оформить заказ просто:\n1. Выберите модель и цвет.\n2. Выберите размер: 50, 52, 54, 56 или 58.\n3. Нажмите «В КОРЗИНУ».\n4. В корзине 🛒 укажите имя, телефон и адрес доставки и отправьте заказ в WhatsApp, Telegram или MAX.\nМенеджер подтвердит наличие, оплату и доставку.';
+  if (has('примерк', 'примерить', 'выезд', 'привез')) return 'Выезд с примеркой:\n• ' + fittingRules().join('\n• ') + '\nДобавьте пиджак в корзину и выберите способ получения «Выезд с примеркой».';
   if (has('размер', 'сетк', 'какой размер', 'подобрать', 'рост')) return 'Каждый пиджак доступен в размерах 50, 52, 54, 56 и 58.\nНе уверены в размере — напишите менеджеру свои рост и обхват груди, поможем подобрать.';
   if (has('цен', 'стоит', 'прайс', 'почём', 'сколько')) return 'Цена каждого пиджака — 25 000 ₽.\nДобавьте модели в корзину 🛒 — там будет итоговая сумма заказа.';
   if (has('контакт', 'адрес', 'телефон', 'где вы', 'садовод', 'как связат', 'позвонит')) return 'Телефоны: ' + CONTACTS.phones.join(', ') + '.\nАдреса: ' + CONTACTS.addresses.join('; ') + '.\nНапишите нам в WhatsApp / Telegram / MAX — кнопки в разделе контактов и в карточке товара.';
@@ -3497,7 +3527,8 @@ const ICON_RULER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 function servicesHTML() {
   return '<div class="svc">' +
     '<div class="svc-row">' + ICON_HANGER + '<div>' + L('ВЫЕЗД С ПРИМЕРКОЙ', 'HOME TRY-ON') +
-      '<small>' + L('Привезём модель в нескольких размерах — примерите дома или в офисе. Бесплатно при покупке', 'We bring several sizes to try at home or in the office. Free with purchase') + '</small></div></div>' +
+      '<small>' + L('Привезём модели в нескольких размерах — примерите дома или в офисе. Бесплатно при покупке', 'We bring several sizes to try at home or in the office. Free with purchase') +
+      ' <button class="fit-more" type="button">' + L('Условия', 'Terms') + '</button></small></div></div>' +
     '<div class="svc-row">' + ICON_TRUCK + '<div>' + L('ДОСТАВКА ПО МОСКВЕ И РОССИИ', 'DELIVERY IN MOSCOW & RUSSIA') +
       '<small>' + L('Курьером или СДЭК — выберете в корзине', 'By courier or CDEK — choose in the cart') + '</small></div></div>' +
     '<div class="svc-row">' + ICON_RULER + '<div>' + L('ПОМОЖЕМ С РАЗМЕРОМ', 'HELP WITH SIZING') +
@@ -3505,6 +3536,20 @@ function servicesHTML() {
   '</div>';
 }
 /* ---------- окно «таблица размеров» ---------- */
+function openFitting() {
+  haptic('light');
+  const box = $('sizeChart');
+  box.innerHTML = '<div class="ct-sheet">' +
+    '<button class="ct-close" id="scClose" aria-label="Закрыть">&#10005;</button>' +
+    '<div class="ct-title">' + L('ВЫЕЗД С ПРИМЕРКОЙ', 'HOME TRY-ON') + '</div>' +
+    '<div class="ct-sub">' + L('УСЛОВИЯ', 'TERMS') + '</div>' +
+    fittingRulesHTML() +
+    '<div class="sc-note">' + L('Выберите размер, добавьте пиджак в корзину и укажите способ получения «Выезд с примеркой».', 'Add a jacket to the cart and choose “Home try-on” as the delivery method.') + '</div>' +
+  '</div>';
+  box.classList.add('show');
+  $('scClose').onclick = closeSizeChart;
+  box.onclick = e => { if (e.target === box) closeSizeChart(); };
+}
 function openSizeChart() {
   haptic('light');
   const box = $('sizeChart');
@@ -3534,6 +3579,7 @@ function setupAddCart(p, root, onAdded) {
   const btn = root.querySelector('.ac-go'); if (!btn) return;
   const row = root.querySelector('.sz-row');
   const help = root.querySelector('.sz-help'); if (help) help.onclick = openSizeChart;
+  root.querySelectorAll('.fit-more').forEach(b => b.onclick = openFitting);
   let sel = null;
   root.querySelectorAll('.sz:not(.off)').forEach(b => b.onclick = () => {
     haptic('light');
@@ -3638,6 +3684,7 @@ function renderCart() {
       (dl.price === null ? '<div class="cart-hint" style="margin:-8px 0 14px;text-align:right">' + L('+ доставка — стоимость сообщит менеджер', '+ delivery — the manager will confirm the cost') + '</div>' : '') +
       '<div class="addcart-label">' + L('СПОСОБ ПОЛУЧЕНИЯ', 'DELIVERY METHOD') + '</div>' +
       '<div class="dl-opts">' + dlOpts + '</div>' +
+      (dl.key === 'fitting' ? '<div class="fit-box"><div class="addcart-label">' + L('УСЛОВИЯ ПРИМЕРКИ', 'TRY-ON TERMS') + '</div>' + fittingRulesHTML() + '</div>' : '') +
       '<div class="addcart-label">' + L('ВАШИ ДАННЫЕ', 'YOUR DETAILS') + '</div>' +
       '<input class="cart-field" id="cfName" autocomplete="name" placeholder="' + L('Имя', 'Name') + '" value="' + esc(CUST.name) + '">' +
       '<input class="cart-field" id="cfPhone" type="tel" autocomplete="tel" placeholder="' + L('Телефон', 'Phone') + '" value="' + esc(CUST.phone) + '">' +
