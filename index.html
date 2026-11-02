@@ -1675,13 +1675,22 @@ const CONTACTS = {
     'Россия, Москва, ТЦ «Садовод», 16 линия, пав. 72'
   ]
 };
+/* ---------- ВЫЕЗД С ПРИМЕРКОЙ ----------
+   Бесплатно, если клиент что-то покупает. FITTING_FEE — стоимость выезда, если ничего не купили
+   (число в ₽, например 2000). Пока null — пишем «стоимость уточнит менеджер». */
+const FITTING_FEE = null;
+function fittingFeeText(ru) {
+  return FITTING_FEE ? fmtPrice(FITTING_FEE) : (ru ? 'стоимость уточнит менеджер' : 'the manager will confirm the cost');
+}
 /* ---------- СПОСОБЫ ПОЛУЧЕНИЯ ----------
    price: число (₽), 0 — бесплатно, null — «уточнит менеджер». needsAddress — спрашивать адрес. */
 const DELIVERY = [
   { key: 'courier', ru: 'Курьер по Москве', en: 'Courier in Moscow', price: null, needsAddress: true,
     note_ru: 'Привезём в удобное время', note_en: 'At a time that suits you' },
-  { key: 'fitting', ru: 'Выезд с примеркой', en: 'Home try-on visit', price: null, needsAddress: true,
-    note_ru: 'Привезём модель в нескольких размерах — примерите дома или в офисе', note_en: 'We bring several sizes for you to try at home or in the office' },
+  { key: 'fitting', ru: 'Выезд с примеркой', en: 'Home try-on visit', price: 0, needsAddress: true,
+    label_ru: 'бесплатно при покупке', label_en: 'free with purchase',
+    get note_ru() { return 'Привезём модель в нескольких размерах — примерите дома или в офисе. Если ничего не выберете — выезд: ' + fittingFeeText(true); },
+    get note_en() { return 'We bring several sizes to try at home or in the office. If nothing suits you, the visit fee: ' + fittingFeeText(false); } },
   { key: 'cdek', ru: 'Доставка по России (СДЭК)', en: 'Delivery across Russia (CDEK)', price: null, needsAddress: true,
     note_ru: 'До пункта выдачи или курьером до двери', note_en: 'To a pickup point or to your door' },
   { key: 'pickup', ru: 'Самовывоз', en: 'Pickup', price: 0, needsAddress: false,
@@ -3420,7 +3429,7 @@ try { Object.assign(CUST, JSON.parse(localStorage.getItem('gabileen_customer') |
 if (!DELIVERY.some(d => d.key === CUST.delivery)) CUST.delivery = DELIVERY[0].key;
 function saveCust() { try { localStorage.setItem('gabileen_customer', JSON.stringify(CUST)); } catch (e) {} }
 function curDelivery() { return DELIVERY.find(d => d.key === CUST.delivery) || DELIVERY[0]; }
-function dlPriceLabel(d) { return d.price === 0 ? L('бесплатно', 'free') : d.price ? fmtPrice(d.price) : ''; }
+function dlPriceLabel(d) { if (d.label_ru) return LANG === 'ru' ? d.label_ru : d.label_en; return d.price === 0 ? L('бесплатно', 'free') : d.price ? fmtPrice(d.price) : ''; }
 function saveCart() { try { localStorage.setItem('gabileen_cart', JSON.stringify(CART)); } catch (e) {} }
 function prodById(id) { return PRODUCTS.find(p => p.id === id); }
 function cartCount() { return CART.reduce((s, i) => s + i.qty, 0); }
@@ -3488,7 +3497,7 @@ const ICON_RULER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 function servicesHTML() {
   return '<div class="svc">' +
     '<div class="svc-row">' + ICON_HANGER + '<div>' + L('ВЫЕЗД С ПРИМЕРКОЙ', 'HOME TRY-ON') +
-      '<small>' + L('Привезём модель в нескольких размерах — примерите дома или в офисе', 'We bring several sizes for you to try at home or in the office') + '</small></div></div>' +
+      '<small>' + L('Привезём модель в нескольких размерах — примерите дома или в офисе. Бесплатно при покупке', 'We bring several sizes to try at home or in the office. Free with purchase') + '</small></div></div>' +
     '<div class="svc-row">' + ICON_TRUCK + '<div>' + L('ДОСТАВКА ПО МОСКВЕ И РОССИИ', 'DELIVERY IN MOSCOW & RUSSIA') +
       '<small>' + L('Курьером или СДЭК — выберете в корзине', 'By courier or CDEK — choose in the cart') + '</small></div></div>' +
     '<div class="svc-row">' + ICON_RULER + '<div>' + L('ПОМОЖЕМ С РАЗМЕРОМ', 'HELP WITH SIZING') +
@@ -3689,7 +3698,7 @@ function cartMessage() {
   lines.push('Итого: ' + n + ' ' + plural(n, 'товар', 'товара', 'товаров') + ' на сумму ' + fmtPrice(cartSum()));
   const dl = curDelivery();
   lines.push('');
-  lines.push('Получение: ' + dl.ru + (dl.price ? ' (' + fmtPrice(dl.price) + ')' : dl.price === 0 ? ' (бесплатно)' : ''));
+  lines.push('Получение: ' + dl.ru + (dl.key === 'fitting' ? ' (бесплатно при покупке; без покупки — выезд: ' + fittingFeeText(true) + ')' : dl.price ? ' (' + fmtPrice(dl.price) + ')' : dl.price === 0 ? ' (бесплатно)' : ''));
   if (CUST.name.trim()) lines.push('Имя: ' + CUST.name.trim());
   if (CUST.phone.trim()) lines.push('Телефон: ' + CUST.phone.trim());
   if (dl.needsAddress && CUST.address.trim()) lines.push('Адрес: ' + CUST.address.trim());
