@@ -70,7 +70,7 @@
 Магазин открывается внутри Telegram как мини-приложение (Mini App). Настройка в @BotFather:
 
 1. `/newbot` — имя `GABILEEN`, username например `gabileen_shop_bot`.
-2. `/setuserpic` → выбрать бота → отправить `telegram/bot-avatar-512.png`.
+2. `/setuserpic` → выбрать бота → отправить `telegram/bot-avatar-1024.png`.
 3. `/mybots` → бот → **Bot Settings → Menu Button → Configure menu button** →
    ссылка `https://vanvion.github.io/GABILEEN/`, название кнопки `Магазин`.
 4. `/newapp` → бот → название `GABILEEN`, описание, фото `telegram/app-cover-640x360.png`,
