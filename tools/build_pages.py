@@ -25,25 +25,29 @@ os.makedirs(os.path.join(ROOT, 'p'), exist_ok=True)
 urls = [SITE + '/']
 for p in products:
     pid = p['id']
+    slug = pid.replace('/', '--')
     model = (p.get('model') or '').strip()
     color = colors_ru.get((p.get('colors') or '').split(',')[0].strip(), '')
     price = int(re.sub(r'\D', '', str(p.get('price') or 0)) or 0)
-    title = 'Пиджак ' + model + (' — ' + cap(color) if color else '') + ' | GABILEEN'
+    title = 'Брюки ' + model + (' — ' + cap(color) if color else '') + ' | GABILEEN'
     parts = []
     if color: parts.append('Цвет: ' + color.lower())
     if p.get('comp_ru'): parts.append('состав: ' + p['comp_ru'].lower())
     if p.get('sizes'): parts.append('размеры ' + p['sizes'])
     desc = (price_text(price) + '. ' if price else '') + ', '.join(parts) + '. Примерка с выездом — бесплатно при покупке. Доставка по Москве и России.'
     img = SITE + '/' + p['image'] if p.get('image') else SITE + '/og-image.jpg'
-    page = SITE + '/p/' + pid + '.html'
+    page = SITE + '/p/' + slug + '.html'
     ld = {
         '@context': 'https://schema.org', '@type': 'Product',
-        'name': 'Пиджак ' + model + (' ' + cap(color) if color else ''),
+        'name': 'Брюки ' + model + (' ' + cap(color) if color else ''),
         'sku': pid, 'brand': {'@type': 'Brand', 'name': 'GABILEEN'},
         'image': [img] + ([SITE + '/' + p['image2']] if p.get('image2') else []),
-        'description': desc,
-        'offers': {'@type': 'Offer', 'priceCurrency': 'RUB', 'price': price, 'availability': 'https://schema.org/InStock', 'url': page}
+        'description': desc
     }
+    if price:
+        ld['offers'] = {'@type': 'Offer', 'priceCurrency': 'RUB', 'price': price, 'url': page}
+    price_meta = (f'<meta property="product:price:amount" content="{price}">\n'
+                  '<meta property="product:price:currency" content="RUB">\n') if price else ''
     e = html.escape
     out = f'''<!DOCTYPE html>
 <html lang="ru">
@@ -60,9 +64,7 @@ for p in products:
 <meta property="og:url" content="{e(page)}">
 <meta property="og:image" content="{e(img)}">
 <meta property="og:locale" content="ru_RU">
-<meta property="product:price:amount" content="{price}">
-<meta property="product:price:currency" content="RUB">
-<meta name="twitter:card" content="summary_large_image">
+{price_meta}<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{e(title)}">
 <meta name="twitter:description" content="{e(desc)}">
 <meta name="twitter:image" content="{e(img)}">
@@ -80,7 +82,7 @@ for p in products:
 </body>
 </html>
 '''
-    open(os.path.join(ROOT, 'p', pid + '.html'), 'w', encoding='utf-8').write(out)
+    open(os.path.join(ROOT, 'p', slug + '.html'), 'w', encoding='utf-8').write(out)
     urls.append(page)
 
 today = datetime.date.today().isoformat()
