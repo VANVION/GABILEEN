@@ -23,7 +23,7 @@
     "display_subtitle_ru": "1 м93v",
     "display_subtitle_en": "1 m93v",
     "image_original": "images/a258033c13c44a8aa86a0a870a46a95e_bananalab-pro_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PR-3003",
@@ -49,7 +49,7 @@
     "display_subtitle_ru": "5 м93v",
     "display_subtitle_en": "5 m93v",
     "image_original": "images/b8049ab18232461d903aeff12268be94_bananalab-pro_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PR-3002",
@@ -75,7 +75,7 @@
     "display_subtitle_ru": "1005 м107",
     "display_subtitle_en": "1005 m107",
     "image_original": "images/a8f5fc40a7c04e7cad5900e2bc7d80d6_bananalab-pro_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PR-3004",
@@ -101,7 +101,7 @@
     "display_subtitle_ru": "5001/3 м107",
     "display_subtitle_en": "5001/3 m107",
     "image_original": "images/96bad4848a4243e19c291fbbde8b7a43_bananalab-pro_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PR-3006",
@@ -127,7 +127,7 @@
     "display_subtitle_ru": "7072/15 м107",
     "display_subtitle_en": "7072/15 m107",
     "image_original": "images/9f341e313af74627ba8a21071a46d35d_bananalab-pro_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PR-3007",
@@ -153,7 +153,7 @@
     "display_subtitle_ru": "780 м107",
     "display_subtitle_en": "780 m107",
     "image_original": "images/955034790e9543b6b5cef5af20e1f4c9_bananalab-pro_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PR-3005",
@@ -180,7 +180,7 @@
     "display_subtitle_en": "5001/3 m98",
     "image_original": "images/edcd48812d204e4fb594bd5affd8dc22_img_4K.jpg",
     "swatch_hex": "#302b42",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "3041/8",
@@ -206,7 +206,7 @@
     "isnew": false,
     "new_since": "2026-11-18",
     "image_original": "images/d58986fe82d340f59a892f2d214b32ae_img_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "3041/6",
@@ -232,7 +232,7 @@
     "isnew": false,
     "new_since": "2026-11-18",
     "image_original": "images/5a620ed260424f93af48d2c116dc4c7f_img_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "3041/5",
@@ -258,7 +258,7 @@
     "isnew": false,
     "new_since": "2026-11-18",
     "image_original": "images/8693a1cc92c7438b9421df01293cf719_img_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "3041/2",
@@ -284,7 +284,7 @@
     "isnew": false,
     "new_since": "2026-11-18",
     "image_original": "images/0f5755971ea34332816855a530f217cc_img_4K.jpg",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "5001/2",
@@ -311,7 +311,7 @@
     "display_subtitle_en": "5001/2 m98",
     "image_original": "images/a81b9f42e81b4167928947946ee39fc4_img_4K.jpg",
     "swatch_hex": "#211e21",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "5001/8",
@@ -339,7 +339,7 @@
     "image_original": "images/dd9e0bba980549409351e7a17a5e85fc_img_4K.jpg",
     "swatch_hex": "#4e3e49",
     "article": "3060",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "3060",
@@ -366,7 +366,7 @@
     "display_subtitle_en": "3060 m98",
     "image_original": "images/ac2b09b37e1343c69d0992cfa4890211_bananalab-pro_4K.jpg",
     "swatch_hex": "#7a6f75",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PODKOVA-3060",
@@ -382,7 +382,7 @@
     "display_subtitle_ru": "3060 подкова",
     "display_subtitle_en": "3060 podkova",
     "sizes": "48, 50, 52",
-    "price": 3500
+    "price": 3700
   },
   {
     "id": "PODKOVA-2097",
@@ -398,6 +398,6 @@
     "display_subtitle_ru": "2097 подкова",
     "display_subtitle_en": "2097 podkova",
     "sizes": "48, 50, 52",
-    "price": 3500
+    "price": 3700
   }
 ]
