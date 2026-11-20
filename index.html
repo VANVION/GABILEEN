@@ -1765,6 +1765,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
       <div class="count-num" id="countNum">0</div>
       <div class="count-label" id="countLabel"></div>
     </div>
+    <div id="checkoutEntry" hidden></div>
     <div id="content"></div>
   </main>
   <aside class="sidebar" id="sidebar">
@@ -1792,6 +1793,7 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
   <span class="cart-badge" id="cartBadge">0</span>
 </button>
 <div class="contacts" id="cart"></div>
+<div class="contacts" id="checkoutOrders"></div>
 <div class="contacts" id="qadd"></div>
 <div class="contacts" id="sizeChart"></div>
 <div class="contacts" id="news"></div>
@@ -1904,9 +1906,10 @@ const SIZE_CHART = [
    После создания бота впишите его имя (без @) и короткое имя мини-приложения из @BotFather (/newapp).
    Тогда «Поделиться» внутри Telegram отправит ссылку, которая открывает модель прямо в мини-приложении. */
 const TG_APP = { bot: '', app: '' };
+const CHECKOUT_API = ''; // HTTPS origin for the checkout service; empty keeps online checkout disabled.
 function tgAppLink(id) {
   if (!TG_APP.bot) return '';
-  return 'https://t.me/' + TG_APP.bot + (TG_APP.app ? '/' + TG_APP.app : '') + (id ? '?startapp=' + encodeURIComponent(id) : '');
+  return 'https://t.me/' + TG_APP.bot + (TG_APP.app ? '/' + TG_APP.app : '') + (id ? '?startapp=' + encodeURIComponent(id.replaceAll('/', '--')) : '');
 }
 function inTelegram() { return !!(tg && tg.initData); }
 /* внешние ссылки: внутри Telegram — его средствами (t.me открываем без выхода из Telegram) */
@@ -3396,7 +3399,10 @@ function hashProductId() {
   if (!TG_START_USED) {
     let sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param;
     if (!sp) { try { sp = new URLSearchParams(location.search).get('tgWebAppStartParam'); } catch (e) {} }
-    if (sp) { TG_START_USED = true; return sp; }
+    if (sp) {
+      TG_START_USED = true;
+      return PRODUCTS.find(p => p.id.replaceAll('/', '--') === sp)?.id || sp;
+    }
   }
   return null;
 }
@@ -4096,7 +4102,7 @@ function renderCart() {
         '<span class="dl-price">' + dlPriceLabel(d) + '</span>' +
       '</button>').join('');
     const dlCost = dl.price ? dl.price : 0;
-    body = items +
+    body = items + (window.gabileenCheckout?.active() ? window.gabileenCheckout.cartHTML() :
       '<div class="cart-total"><span>' + L('ИТОГО', 'TOTAL') + ' · ' + n + ' ' + pcsWord(n) + '</span><b>' + fmtPrice(cartSum() + dlCost) + '</b></div>' +
       (dl.price === null ? '<div class="cart-hint" style="margin:-8px 0 14px;text-align:right">' + L('+ доставка — стоимость сообщит менеджер', '+ delivery — the manager will confirm the cost') + '</div>' : '') +
       '<div class="addcart-label">' + L('СПОСОБ ПОЛУЧЕНИЯ', 'DELIVERY METHOD') + '</div>' +
@@ -4114,7 +4120,7 @@ function renderCart() {
         '<button class="ob ob-mx" id="cartMx">MAX</button>' +
       '</div>' +
       '<div class="cart-hint">' + L('Менеджер подтвердит наличие, оплату и доставку', 'A manager will confirm availability, payment and delivery') + '</div>' +
-      '<button class="cart-clear" id="cartClear">' + L('Очистить корзину', 'Clear cart') + '</button>';
+      '<button class="cart-clear" id="cartClear">' + L('Очистить корзину', 'Clear cart') + '</button>');
   }
   box.innerHTML = '<div class="ct-sheet">' +
     '<button class="ct-close" id="cartClose" aria-label="Закрыть">&#10005;</button>' +
@@ -4131,6 +4137,7 @@ function renderCart() {
     });
   });
   box.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { haptic('light'); cartRemove(b.getAttribute('data-rm'), b.getAttribute('data-rms')); });
+  window.gabileenCheckout?.bindCart();
   const clr = $('cartClear'); if (clr) clr.onclick = () => cartClear();
   const note = $('cartNote'); if (note) note.oninput = e => { CART_COMMENT = e.target.value; };
   [['cfName', 'name'], ['cfPhone', 'phone'], ['cfAddr', 'address']].forEach(([id, k]) => {
@@ -4638,6 +4645,7 @@ function initTelegram() {
     if (tg.setBottomBarColor) tg.setBottomBarColor(c);
   } catch (e) {}
   if (tg.initData) document.documentElement.classList.add('in-tg');
+  window.gabileenCheckout?.renderEntry();
   /* ссылки WhatsApp / MAX / Telegram в карточке и окнах — открываем средствами Telegram */
   document.addEventListener('click', e => {
     const a = e.target.closest && e.target.closest('a[target="_blank"]');
@@ -4661,5 +4669,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="atelier/card.js"></script>
 <script src="atelier/grid.js"></script>
 <script src="atelier/navigation.js"></script>
+<script src="atelier/checkout.js"></script>
 </body>
 </html>
