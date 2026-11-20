@@ -1,5 +1,5 @@
 (() => {
-  if (!CHECKOUT_API || !TG_APP.bot) return;
+  if (!CHECKOUT_API || !tgAppLink('')) return;
   const entry = $('checkoutEntry');
   const ordersBox = $('checkoutOrders');
   let cartRequest = null;

@@ -53,7 +53,7 @@
     "@type": "PostalAddress",
     "addressCountry": "RU",
     "addressLocality": "Москва",
-    "streetAddress": "ТЦ «Садовод», корпус Б, 1 этаж, линия В, пав. 50–52"
+    "streetAddress": "ТК «Садовод», корпус Б, павильон В50–52"
   },
   "areaServed": "RU"
 }
@@ -1847,7 +1847,7 @@ const CONTACTS = {
   max: 'https://max.ru/u/f9LHodD0cOIlXvXC5mnCHMCtTl2CfgFDoTLVj_M9Z-R5CqJycCxygXcoflc',
   email: 'vanvion@yandex.com',
   addresses: [
-    'Россия, Москва, ТЦ «Садовод», корпус Б, 1 этаж, линия В, пав. 50–52',
+    'Москва, ТК «Садовод», корпус Б, павильон В50–52',
     'Россия, Москва, ТЦ «Садовод», 16 линия, пав. 72'
   ]
 };
@@ -1905,11 +1905,11 @@ const SIZE_CHART = [
 /* ---------- TELEGRAM MINI APP ----------
    После создания бота впишите его имя (без @) и короткое имя мини-приложения из @BotFather (/newapp).
    Тогда «Поделиться» внутри Telegram отправит ссылку, которая открывает модель прямо в мини-приложении. */
-const TG_APP = { bot: '', app: '' };
+const TG_APP = { bot: 'GabileenShopBot', app: '' }; // Set app to 'shop' after creating it in BotFather.
 const CHECKOUT_API = ''; // HTTPS origin for the checkout service; empty keeps online checkout disabled.
 function tgAppLink(id) {
-  if (!TG_APP.bot) return '';
-  return 'https://t.me/' + TG_APP.bot + (TG_APP.app ? '/' + TG_APP.app : '') + (id ? '?startapp=' + encodeURIComponent(id.replaceAll('/', '--')) : '');
+  if (!TG_APP.bot || !TG_APP.app) return '';
+  return 'https://t.me/' + TG_APP.bot + '/' + TG_APP.app + (id ? '?startapp=' + encodeURIComponent(id.replaceAll('/', '--')) : '');
 }
 function inTelegram() { return !!(tg && tg.initData); }
 /* внешние ссылки: внутри Telegram — его средствами (t.me открываем без выхода из Telegram) */
@@ -3852,7 +3852,12 @@ function faqAnswer(q) {
   if (has('как заказ', 'оформ', 'сделать заказ', 'заказать', 'купить')) return 'Откройте карточку брюк, выберите цвет и напишите менеджеру в WhatsApp, Telegram или MAX. Менеджер уточнит размер, наличие, оплату и доставку.';
   if (has('примерк', 'примерить', 'выезд', 'привез')) return 'Выезд с примеркой:\n• ' + fittingRules().join('\n• ') + '\nДоговоритесь о примерке с менеджером.';
   if (has('размер', 'сетк', 'какой размер', 'подобрать', 'рост')) return 'Размерный ряд указан в карточке брюк. Уточнить наличие и подобрать размер поможет менеджер.';
-  if (has('цен', 'стоит', 'прайс', 'почём', 'сколько')) return 'Цены уточняйте у менеджера.\nДобавьте модели в корзину 🛒 — там будет итоговая сумма заказа.';
+  if (has('цен', 'стоит', 'прайс', 'почём', 'сколько')) {
+    const prices = new Set(PRODUCTS.map(priceOf));
+    const price = prices.size === 1 ? [...prices][0] : 0;
+    return price ? 'Цена каждой модели брюк — ' + fmtPrice(price) + '.' :
+      'Цена указана в карточке модели. В корзине будет итоговая сумма заказа.';
+  }
   if (has('контакт', 'адрес', 'телефон', 'где вы', 'садовод', 'как связат', 'позвонит')) return 'Телефоны: ' + CONTACTS.phones.join(', ') + '.\nАдреса: ' + CONTACTS.addresses.join('; ') + '.\nНапишите нам в WhatsApp / Telegram / MAX — кнопки в разделе контактов и в карточке товара.';
   if (has('приложени', 'на экран', 'домой', 'установ', 'ярлык')) return 'Чтобы открывать магазин как приложение:\n• iPhone (Safari): «Поделиться» → «На экран „Домой"».\n• Android (Chrome): всплывёт кнопка «Установить приложение».';
   if (has('налич', 'есть ли', 'склад', 'в наличии', 'остат')) return 'Наличие нужного размера и цвета уточнит менеджер — напишите в WhatsApp / Telegram / MAX или отправьте заказ из корзины.';
