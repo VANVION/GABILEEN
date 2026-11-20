@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
 
 const { TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
-  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS } = process.env;
+  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE } = process.env;
 if (![TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
   TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS].every(Boolean)) {
   throw new Error('Checkout configuration is incomplete. See checkout/README.md.');
@@ -12,6 +12,13 @@ if (![TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
 if (new URL(CATALOG_ORIGIN).origin !== CATALOG_ORIGIN || !CATALOG_ORIGIN.startsWith('https://') ||
     new URL(TELEGRAM_RETURN_URL).origin !== 'https://t.me') {
   throw new Error('Use the HTTPS catalogue origin and a t.me return URL.');
+}
+
+const vatCode = Number(RECEIPT_VAT_CODE);
+const taxSystemCode = RECEIPT_TAX_SYSTEM_CODE ? Number(RECEIPT_TAX_SYSTEM_CODE) : null;
+if (RECEIPT_VAT_CODE && (!Number.isInteger(vatCode) || vatCode < 1 || vatCode > 99) ||
+    taxSystemCode !== null && (!Number.isInteger(taxSystemCode) || taxSystemCode < 1 || taxSystemCode > 6)) {
+  throw new Error('Invalid YooKassa receipt settings.');
 }
 
 const products = new Map(JSON.parse(readFileSync(new URL('../data/products.json', import.meta.url)))
@@ -25,10 +32,15 @@ db.exec(`
     status TEXT NOT NULL DEFAULT 'creating', payment_url TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE(customer, checkout_key)
   );
+  CREATE TABLE IF NOT EXISTS receipt_requests (
+    order_id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL
+  );
   CREATE INDEX IF NOT EXISTS orders_customer ON orders(customer, created_at);
 `);
 const store = {
   create: db.prepare('INSERT OR IGNORE INTO orders (id, customer, checkout_key, items, amount) VALUES (?, ?, ?, ?, ?)'),
+  saveReceipt: db.prepare('INSERT OR IGNORE INTO receipt_requests (order_id, fingerprint) VALUES (?, ?)'),
+  receipt: db.prepare('SELECT fingerprint FROM receipt_requests WHERE order_id = ?'),
   byKey: db.prepare('SELECT * FROM orders WHERE customer = ? AND checkout_key = ?'),
   byCustomer: db.prepare('SELECT * FROM orders WHERE customer = ? ORDER BY created_at DESC LIMIT 50'),
   byPayment: db.prepare('SELECT * FROM orders WHERE payment_id = ?'),
@@ -138,12 +150,33 @@ async function readJson(request) {
   throw new RequestError(400, 'body');
 }
 
+function receiptFor(items, emailValue) {
+  if (!vatCode) throw new RequestError(503, 'receipt_configuration');
+  const email = typeof emailValue === 'string' ? emailValue.trim() : '';
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new RequestError(422, 'receipt_email');
+  }
+  return {
+    customer: { email },
+    ...(taxSystemCode !== null ? { tax_system_code: taxSystemCode } : {}),
+    items: items.map(item => ({
+      description: (item.name + ' / ' + item.id + ' / ' + item.size).slice(0, 128),
+      quantity: item.qty.toFixed(3),
+      amount: { value: item.unitPrice.toFixed(2), currency: 'RUB' },
+      vat_code: vatCode,
+      payment_subject: 'commodity',
+      payment_mode: 'full_prepayment',
+    })),
+  };
+}
+
 async function createOrder(customer, body) {
   const { checkoutKey } = body;
   if (typeof checkoutKey !== 'string' || !/^[a-f0-9-]{36}$/i.test(checkoutKey)) throw new RequestError(400, 'checkout_key');
   const existing = store.byKey.get(customer, checkoutKey);
   if (existing?.payment_id) return orderView(await refresh(existing));
   const items = existing ? JSON.parse(existing.items) : normalizeCart(body.cart);
+  const receipt = receiptFor(items, body.receiptEmail);
   const amount = items.reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
   store.create.run(randomUUID(), customer, checkoutKey, JSON.stringify(items), amount);
   const order = store.byKey.get(customer, checkoutKey);
@@ -151,6 +184,10 @@ async function createOrder(customer, body) {
   if (Date.now() - Date.parse(order.created_at.replace(' ', 'T') + 'Z') >= 23 * 3600_000) {
     throw new RequestError(409, 'payment_review');
   }
+  // A retry uses the same payment parameters while the email stays out of SQLite.
+  const fingerprint = createHmac('sha256', authKey).update(JSON.stringify(receipt)).digest('hex');
+  store.saveReceipt.run(order.id, fingerprint);
+  if (store.receipt.get(order.id).fingerprint !== fingerprint) throw new RequestError(409, 'receipt_retry');
   const payment = validatePayment(order, await yookassa('', {
     method: 'POST',
     headers: { 'Idempotence-Key': order.id },
@@ -160,8 +197,10 @@ async function createOrder(customer, body) {
       confirmation: { type: 'redirect', return_url: TELEGRAM_RETURN_URL },
       description: 'GABILEEN · ' + order.id,
       metadata: { order_id: order.id },
+      receipt,
     }),
   }));
+  if (payment.test !== true) throw new RequestError(502, 'test_payment_required');
   let confirmation = null;
   if (payment.confirmation?.confirmation_url) {
     const url = new URL(payment.confirmation.confirmation_url);

@@ -22,6 +22,8 @@
   function showError(error) {
     if (error.message === 'telegram_session') return L('Откройте магазин в Telegram заново.', 'Reopen the shop in Telegram.');
     if (error.message === 'cart') return L('Проверьте размеры и количество в корзине. Максимум 5 единиц на позицию.', 'Check sizes and quantities. Up to 5 units per item.');
+    if (error.message === 'receipt_email') return L('Укажите email для чека.', 'Enter an email for the receipt.');
+    if (error.message === 'receipt_retry') return L('Для повтора укажите тот же email, что и в первой попытке.', 'Use the same email as on your first attempt.');
     if (error.message === 'payment_review') return L('Статус платежа нужно уточнить у менеджера.', 'Ask the manager to check your payment status.');
     return L('Не удалось связаться с сервисом оплаты. Попробуйте ещё раз.', 'Could not reach the payment service. Please try again.');
   }
@@ -80,12 +82,14 @@
   async function pay() {
     const button = $('checkoutPay');
     if (!button || cartRequest) return;
+    const receiptEmail = $('checkoutReceiptEmail');
+    if (!receiptEmail.reportValidity()) return;
     const cart = CART.map(({ id, size, qty }) => ({ id, size, qty }));
     const checkoutKey = getCheckoutKey(cart);
     const message = $('checkoutStatus');
     button.disabled = true;
     message.textContent = L('Создаём заказ…', 'Creating order…');
-    cartRequest = request('POST', { checkoutKey, cart });
+    cartRequest = request('POST', { checkoutKey, cart, receiptEmail: receiptEmail.value.trim() });
     try {
       const order = await cartRequest;
       if (order.status === 'canceled') {
@@ -130,7 +134,12 @@
     cartHTML() {
       return '<div class="cart-total"><span>' + L('ИТОГО', 'TOTAL') + '</span><b>' + fmtPrice(cartSum()) +
         '</b></div><p>' + L('Получение: самовывоз. Адрес покажем в заказе.', 'Pickup address is shown in the order.') +
-        '</p><button type="button" class="addcart-btn" id="checkoutPay">' + L('Оформить и оплатить', 'Place order and pay') +
+        '</p><p>' + L('Тестовый заказ. Реального списания не будет.', 'Test order. No real charge.') +
+        '</p><label for="checkoutReceiptEmail">' + L('Email для чека', 'Email for the receipt') + '</label>' +
+        '<input id="checkoutReceiptEmail" class="cart-field" type="email" autocomplete="email" required maxlength="254">' +
+        '<p class="cart-hint">' + L('Email передаётся ЮKassa для отправки чека.', 'YooKassa uses your email to send the receipt.') +
+        ' <a href="offer.html" target="_blank" rel="noopener">' + L('Условия продажи', 'Terms of sale') + '</a></p>' +
+        '<button type="button" class="addcart-btn" id="checkoutPay">' + L('Оформить и оплатить', 'Place order and pay') +
         '</button><div id="checkoutStatus" aria-live="polite"></div>';
     },
     bindCart() {
