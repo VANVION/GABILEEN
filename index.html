@@ -1621,8 +1621,9 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
   .home-sec .rel-card { width: 22%; }
 }
 /* ===================== ИЗБРАННОЕ ===================== */
-.fav-btn { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text); }
-.fav-btn svg { width: 23px; height: 23px; }
+.brand-lockup { display: flex; align-items: center; gap: 4px; }
+.fav-btn { position: relative; flex: 0 0 28px; width: 28px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--text); }
+.fav-btn svg { width: 18px; height: 18px; }
 .fav-btn.on svg { fill: #b33a3a; stroke: #b33a3a; }
 .fav-n { position: absolute; top: 1px; right: -2px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #b33a3a; color: #fff; font-size: 9.5px; line-height: 16px; text-align: center; display: none; }
 .fav-n.show { display: block; }
@@ -1749,8 +1750,10 @@ button { font-family: var(--font); text-transform: uppercase; cursor: pointer; b
 
 <div class="header" id="header">
   <div class="header-top">
-    <button class="fav-btn" id="favBtn" aria-label="Избранное"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg><span class="fav-n" id="favN"></span></button>
-    <div class="brand">GABILEEN</div>
+    <div class="brand-lockup">
+      <button class="fav-btn" id="favBtn" aria-label="Избранное"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg><span class="fav-n" id="favN"></span></button>
+      <div class="brand">GABILEEN</div>
+    </div>
     <button class="lang-btn" id="langBtn">EN</button>
   </div>
   <div class="subtitle" id="subtitle"></div>
