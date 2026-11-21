@@ -22,6 +22,8 @@
   function showError(error) {
     if (error.message === 'telegram_session') return L('Откройте магазин в Telegram заново.', 'Reopen the shop in Telegram.');
     if (error.message === 'cart') return L('Проверьте размеры и количество в корзине. Максимум 5 единиц на позицию.', 'Check sizes and quantities. Up to 5 units per item.');
+    if (error.message === 'receipt_configuration') return L('Для теста нужно настроить ставку НДС на сервере.', 'Set the VAT code on the server before testing.');
+    if (error.message === 'test_payment_required') return L('Для проверки нужен тестовый магазин ЮKassa.', 'Use a YooKassa test shop.');
     if (error.message === 'receipt_email') return L('Укажите email для чека.', 'Enter an email for the receipt.');
     if (error.message === 'receipt_retry') return L('Для повтора укажите тот же email, что и в первой попытке.', 'Use the same email as on your first attempt.');
     if (error.message === 'payment_review') return L('Статус платежа нужно уточнить у менеджера.', 'Ask the manager to check your payment status.');
@@ -116,20 +118,21 @@
     }
   }
 
+  function testCheckoutActive() {
+    return inTelegram() && new URLSearchParams(tg.initData).get('start_param') === 'checkout-test';
+  }
+
   function renderEntry() {
-    entry.hidden = false;
-    if (inTelegram()) {
-      entry.innerHTML = '<button type="button" class="cart-clear" id="checkoutHistoryButton">' +
-        L('Мои заказы', 'My orders') + '</button>';
-      $('checkoutHistoryButton').onclick = openOrders;
-    } else {
-      entry.innerHTML = '<a href="' + esc(tgAppLink('')) + '" class="cart-clear">' +
-        L('Открыть магазин в Telegram', 'Open the shop in Telegram') + '</a>';
-    }
+    entry.hidden = !testCheckoutActive();
+    entry.replaceChildren();
+    if (entry.hidden) return;
+    entry.innerHTML = '<button type="button" class="cart-clear" id="checkoutHistoryButton">' +
+      L('Мои заказы', 'My orders') + '</button>';
+    $('checkoutHistoryButton').onclick = openOrders;
   }
 
   window.gabileenCheckout = {
-    active: inTelegram,
+    active: testCheckoutActive,
     renderEntry,
     cartHTML() {
       return '<div class="cart-total"><span>' + L('ИТОГО', 'TOTAL') + '</span><b>' + fmtPrice(cartSum()) +

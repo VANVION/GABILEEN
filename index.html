@@ -1911,7 +1911,7 @@ const SIZE_CHART = [
    После создания бота впишите его имя (без @) и короткое имя мини-приложения из @BotFather (/newapp).
    Тогда «Поделиться» внутри Telegram отправит ссылку, которая открывает модель прямо в мини-приложении. */
 const TG_APP = { bot: 'GabileenShopBot', app: 'shop' };
-const CHECKOUT_API = ''; // HTTPS origin for the checkout service; empty keeps online checkout disabled.
+const CHECKOUT_API = 'https://pay.gabileen.ru';
 function tgAppLink(id) {
   if (!TG_APP.bot || !TG_APP.app) return '';
   return 'https://t.me/' + TG_APP.bot + '/' + TG_APP.app + (id ? '?startapp=' + encodeURIComponent(id.replaceAll('/', '--')) : '');
