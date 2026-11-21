@@ -188,13 +188,15 @@ async function createOrder(customer, body) {
   const fingerprint = createHmac('sha256', authKey).update(JSON.stringify(receipt)).digest('hex');
   store.saveReceipt.run(order.id, fingerprint);
   if (store.receipt.get(order.id).fingerprint !== fingerprint) throw new RequestError(409, 'receipt_retry');
+  const returnUrl = new URL(TELEGRAM_RETURN_URL);
+  returnUrl.searchParams.set('startapp', 'checkout-order-' + order.id);
   const payment = validatePayment(order, await yookassa('', {
     method: 'POST',
     headers: { 'Idempotence-Key': order.id },
     body: JSON.stringify({
       amount: { value: order.amount.toFixed(2), currency: 'RUB' },
       capture: true,
-      confirmation: { type: 'redirect', return_url: TELEGRAM_RETURN_URL },
+      confirmation: { type: 'redirect', return_url: returnUrl.href },
       description: 'GABILEEN · ' + order.id,
       metadata: { order_id: order.id },
       receipt,
@@ -216,7 +218,8 @@ async function createOrder(customer, body) {
 }
 
 async function handle(request) {
-  const path = new URL(request.url, 'http://localhost').pathname;
+  const url = new URL(request.url, 'http://localhost');
+  const path = url.pathname;
   if (request.method === 'GET' && path === '/health') return { ok: true };
   if (request.method === 'OPTIONS' && request.headers.origin === CATALOG_ORIGIN) return {};
   if (request.method === 'POST' && path === '/checkout/webhook') {
@@ -231,11 +234,13 @@ async function handle(request) {
   if (request.method === 'POST' && path === '/checkout/orders') return createOrder(customer, await readJson(request));
   if (request.method === 'GET' && path === '/checkout/orders') {
     const orders = store.byCustomer.all(customer);
-    // The latest payment may have completed since Telegram was opened.
-    const latestPending = orders.findIndex(order => order.status === 'pending');
-    if (latestPending !== -1) {
-      try { orders[latestPending] = await refresh(orders[latestPending]); } catch { /* Display the last confirmed status. */ }
-    }
+    const pending = orders.map((order, index) => ({ order, index }))
+      .filter(({ order }) => ['pending', 'waiting_for_capture'].includes(order.status));
+    const requested = pending.find(({ order }) => order.id === url.searchParams.get('order'));
+    const toRefresh = [requested, ...pending.filter(entry => entry !== requested)].filter(Boolean).slice(0, 3);
+    await Promise.allSettled(toRefresh.map(async ({ order, index }) => {
+      orders[index] = await refresh(order);
+    }));
     return orders.map(orderView);
   }
   throw new RequestError(404, 'route');

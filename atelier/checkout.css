@@ -1,0 +1,19 @@
+.checkout-sheet { text-transform: none; }
+.checkout-sheet .ct-title { margin: 0 40px 20px 0; }
+.checkout-order { padding: 14px; margin: 0 0 12px; border: 1px solid var(--border); border-radius: 12px; line-height: 1.4; }
+.checkout-order-current { background: #f1eee8; color: #26231e; border-color: #d8d0c1; }
+.checkout-order-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
+.checkout-order h3 { margin: 0; font-size: 1.05rem; }
+.checkout-order p { margin: 8px 0; }
+.checkout-muted, .checkout-lines span { color: inherit; opacity: .75; font-size: .9rem; }
+.checkout-badge { padding: 3px 8px; border-radius: 6px; font-size: .85rem; font-weight: 600; }
+.checkout-paid { color: #174f2d; background: #dcecdf; }
+.checkout-pending { color: #653c00; background: #f4e6c8; }
+.checkout-closed { color: #3c3832; background: #e7e3dc; }
+.checkout-lines { list-style: none; margin: 12px 0; padding: 0; border-block: 1px solid var(--border); }
+.checkout-lines li { padding: 7px 0; }
+.checkout-lines strong, .checkout-lines span { display: block; }
+.checkout-payment { width: 100%; margin-top: 8px; }
+.checkout-earlier { margin: 14px 0; }
+.checkout-earlier summary { cursor: pointer; padding: 8px 0; }
+#checkoutRefresh { min-height: 44px; }
