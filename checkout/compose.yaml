@@ -1,0 +1,39 @@
+services:
+  checkout:
+    build:
+      context: ..
+      dockerfile: checkout/Dockerfile
+    env_file:
+      - ${CHECKOUT_ENV_FILE:?Set CHECKOUT_ENV_FILE to the absolute path of the private settings file}
+    environment:
+      ORDERS_DB: /data/orders.sqlite
+      PORT: "8787"
+    volumes:
+      - orders:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 4
+      start_period: 10s
+
+  https:
+    image: caddy:2-alpine
+    environment:
+      NO_PROXY: checkout,localhost,127.0.0.1
+      no_proxy: checkout,localhost,127.0.0.1
+      CHECKOUT_DOMAIN: ${CHECKOUT_DOMAIN:?Set CHECKOUT_DOMAIN to the checkout DNS name}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  orders:
+  caddy_data:
+  caddy_config:

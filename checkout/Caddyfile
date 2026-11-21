@@ -1,0 +1,3 @@
+{$CHECKOUT_DOMAIN} {
+	reverse_proxy checkout:8787
+}
