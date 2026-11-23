@@ -1,5 +1,5 @@
 /* GABILEEN service worker — установка как приложение + задел под push-уведомления */
-const CACHE = 'gabileen-v1';
+const CACHE = 'gabileen-v2';
 
 self.addEventListener('install', e => { self.skipWaiting(); });
 
@@ -13,11 +13,12 @@ self.addEventListener('activate', e => {
 /* сетевой проход с мягким кэшем: онлайн — свежее, офлайн — последнее сохранённое */
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin ||
+      req.headers.has('Authorization')) return;
   e.respondWith(
     fetch(req)
       .then(res => {
-        if (res && res.status === 200 && req.url.startsWith(self.location.origin)) {
+        if (res && res.status === 200) {
           const copy = res.clone();
           caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
         }

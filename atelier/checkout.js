@@ -36,24 +36,43 @@
   }
 
   async function request(method, body, orderId) {
-    const response = await fetch(CHECKOUT_API + '/checkout/orders' + (orderId ? '?order=' + encodeURIComponent(orderId) : ''), {
-      method,
-      headers: {
-        Authorization: browserTest() ? guestAuthorization() : 'tma ' + tg.initData,
-        ...(body ? { 'Content-Type': 'application/json' } : {}),
-      },
-      body: body ? JSON.stringify(body) : undefined,
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!response.ok) {
-      const error = (await response.json()).error;
-      if (error === 'guest_test_code') sessionStorage.removeItem('gabileen_guest_test_code');
-      throw new Error(error || 'checkout_unavailable');
+    const authorization = browserTest() ? guestAuthorization() : 'tma ' + tg.initData;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    let response;
+    let result;
+    try {
+      try {
+        response = await fetch(CHECKOUT_API + '/checkout/orders' + (orderId ? '?order=' + encodeURIComponent(orderId) : ''), {
+          method, credentials: 'omit',
+          headers: { Authorization: authorization, ...(body ? { 'Content-Type': 'application/json' } : {}) },
+          body: body ? JSON.stringify(body) : undefined,
+          signal: controller.signal,
+        });
+      } catch {
+        throw new Error(controller.signal.aborted ? 'checkout_timeout' : 'checkout_network');
+      }
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error('checkout_http_' + response.status);
+      }
+    } finally {
+      clearTimeout(timeout);
     }
-    return response.json();
+    if (!response.ok) {
+      if (result?.error === 'guest_test_code') sessionStorage.removeItem('gabileen_guest_test_code');
+      throw new Error(result?.error || 'checkout_http_' + response.status);
+    }
+    return result;
   }
 
   function showError(error) {
+    if (error.message === 'checkout_timeout') return L('Сервер оплаты не ответил за 15 секунд.', 'The payment server did not respond within 15 seconds.');
+    if (error.message === 'checkout_network') return L('Браузер не смог подключиться к pay.gabileen.ru.', 'The browser could not connect to pay.gabileen.ru.');
+    if (/^checkout_http_\d{3}$/.test(error.message)) return L('Сервер оплаты вернул HTTP ', 'Payment server returned HTTP ') + error.message.slice(-3) + '.';
+    if (error.message === 'payment_provider') return L('ЮKassa не подтвердила запрос. Попробуйте обновить статус.', 'YooKassa did not confirm the request. Try refreshing the status.');
+    if (error.message === 'checkout_response') return L('Получен неожиданный ответ сервера заказов.', 'Unexpected response from the order server.');
     if (error.message === 'guest_test_code') return L('Введите действующий код тестовой оплаты и повторите попытку.', 'Enter a valid checkout test code and try again.');
     if (error.message === 'guest_disabled') return L('Тестовая оплата на сайте ещё не включена на сервере.', 'Website test checkout has not been enabled on the server.');
     if (error.message === 'guest_storage') return L('Разрешите сохранение данных сайта и повторите попытку.', 'Allow site storage and try again.');
@@ -109,6 +128,7 @@
     try {
       const orders = await request('GET', undefined, selectedOrder);
       if (generation !== ordersRequest) return;
+      if (!Array.isArray(orders)) throw new Error('checkout_response');
       const visible = orders.filter(order => order.status !== 'creating');
       const current = visible.find(order => order.id === selectedOrder) || visible[0];
       const earlier = visible.filter(order => order !== current);
@@ -128,7 +148,11 @@
         refreshTimer = setTimeout(refreshOrders, 10000);
       }
     } catch (error) {
-      if (generation === ordersRequest) status.textContent = showError(error);
+      if (generation === ordersRequest) {
+        status.textContent = showError(error) + (selectedOrder ?
+          L(' Заказ № ', ' Order #') + selectedOrder.slice(0, 8).toUpperCase() +
+          L('. Если вы уже оплатили, не повторяйте платёж.', '. If you have already paid, do not pay again.') : '');
+      }
     } finally {
       if (generation === ordersRequest) $('checkoutRefresh').disabled = false;
     }

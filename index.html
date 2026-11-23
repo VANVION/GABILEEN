@@ -4455,7 +4455,7 @@ $('backBtn').onclick = () => { haptic('light'); closeDetail(); };
 /* регистрируем service worker (нужен для установки приложения и push-уведомлений) */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js?v=2').catch(() => {});
   });
 }
 
@@ -4680,6 +4680,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="atelier/grid.js"></script>
 <script src="atelier/navigation.js"></script>
 <link rel="stylesheet" href="atelier/checkout.css?v=orders-2">
-<script src="atelier/checkout.js?v=guest-1"></script>
+<script src="atelier/checkout.js?v=guest-2"></script>
 </body>
 </html>
