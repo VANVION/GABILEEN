@@ -95,3 +95,32 @@ SQLite. Не удаляйте тома при обновлении или ост
 
 Платёжный сервер готовится с тестовыми ключами. Публикуйте адрес API в
 каталоге только после проверки HTTPS и настроек тестового магазина.
+
+## Команды и уведомления в Telegram
+
+В защищённый файл `/etc/gabileen/checkout.env` добавьте
+`TELEGRAM_WEBHOOK_SECRET` со случайным значением из `openssl rand -hex 32`.
+Пересоберите контейнер и зарегистрируйте вебхук:
+
+```bash
+cd /opt/gabileen
+export CHECKOUT_ENV_FILE=/etc/gabileen/checkout.env
+export CHECKOUT_DOMAIN=pay.gabileen.ru
+docker compose -f checkout/compose.yaml up -d --build checkout
+docker compose -f checkout/compose.yaml exec -T checkout node checkout/telegram-setup.mjs
+```
+
+Откройте личный чат с @GabileenShopBot, нажмите «Старт» и отправьте `/id`.
+Число из ответа сохраните в `TELEGRAM_SELLER_CHAT_ID` в том же файле.
+Пересоздайте контейнер командой
+`docker compose -f checkout/compose.yaml up -d --force-recreate checkout`.
+Продавец видит заказы магазина, остальные пользователи — свои.
+`/orders` показывает последние заказы, `/status 54F74A71` — детали и
+проверенный статус заказа. Номер берётся из карточки заказа.
+
+Для автоматических уведомлений в тестовом магазине ЮKassa укажите
+`https://pay.gabileen.ru/checkout/webhook` для событий
+`payment.succeeded` и `payment.canceled`. Сервер перепроверяет события у ЮKassa.
+Подтверждённые статусы ставятся в очередь уведомлений SQLite. При недоступности
+Telegram сервер повторяет отправку. При сбое сразу после приёма сообщения
+Telegram оно может прийти повторно, сверяйте его по номеру заказа.

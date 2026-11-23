@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
 
 const { TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
-  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE } = process.env;
+  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID } = process.env;
 if (![TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
   TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS].every(Boolean)) {
   throw new Error('Checkout configuration is incomplete. See checkout/README.md.');
@@ -21,6 +21,11 @@ if (RECEIPT_VAT_CODE && (!Number.isInteger(vatCode) || vatCode < 1 || vatCode > 
   throw new Error('Invalid YooKassa receipt settings.');
 }
 
+if ((TELEGRAM_WEBHOOK_SECRET && !/^[A-Za-z0-9_-]{24,256}$/.test(TELEGRAM_WEBHOOK_SECRET)) ||
+    (TELEGRAM_SELLER_CHAT_ID && !/^[1-9]\d{0,15}$/.test(TELEGRAM_SELLER_CHAT_ID))) {
+  throw new Error('Invalid Telegram bot configuration.');
+}
+
 const products = new Map(JSON.parse(readFileSync(new URL('../data/products.json', import.meta.url)))
   .filter(product => product.cat === 'bryuki').map(product => [product.id, product]));
 const db = new DatabaseSync(ORDERS_DB);
@@ -35,6 +40,16 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS receipt_requests (
     order_id TEXT PRIMARY KEY, fingerprint TEXT NOT NULL
   );
+  CREATE TABLE IF NOT EXISTS seller_notifications (
+    order_id TEXT NOT NULL, status TEXT NOT NULL, sent INTEGER NOT NULL DEFAULT 0,
+    retry_at INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (order_id, status)
+  );
+  CREATE TRIGGER IF NOT EXISTS queue_seller_notification
+  AFTER UPDATE OF status ON orders
+  WHEN NEW.status <> OLD.status AND NEW.status IN ('succeeded', 'canceled')
+  BEGIN
+    INSERT OR IGNORE INTO seller_notifications (order_id, status) VALUES (NEW.id, NEW.status);
+  END;
   CREATE INDEX IF NOT EXISTS orders_customer ON orders(customer, created_at);
 `);
 const store = {
@@ -43,6 +58,15 @@ const store = {
   receipt: db.prepare('SELECT fingerprint FROM receipt_requests WHERE order_id = ?'),
   byKey: db.prepare('SELECT * FROM orders WHERE customer = ? AND checkout_key = ?'),
   byCustomer: db.prepare('SELECT * FROM orders WHERE customer = ? ORDER BY created_at DESC LIMIT 50'),
+  recentForSeller: db.prepare("SELECT * FROM orders WHERE payment_id IS NOT NULL ORDER BY created_at DESC LIMIT 8"),
+  recentForBuyer: db.prepare("SELECT * FROM orders WHERE customer = ? AND payment_id IS NOT NULL ORDER BY created_at DESC LIMIT 8"),
+  statusForSeller: db.prepare("SELECT * FROM orders WHERE id LIKE ? AND payment_id IS NOT NULL LIMIT 2"),
+  statusForBuyer: db.prepare("SELECT * FROM orders WHERE id LIKE ? AND customer = ? AND payment_id IS NOT NULL LIMIT 2"),
+  pendingNotifications: db.prepare(`SELECT n.order_id, n.status AS event_status, o.*
+    FROM seller_notifications n JOIN orders o ON o.id = n.order_id
+    WHERE n.sent = 0 AND n.retry_at <= unixepoch() ORDER BY o.created_at LIMIT 5`),
+  markNotified: db.prepare('UPDATE seller_notifications SET sent = 1 WHERE order_id = ? AND status = ?'),
+  retryNotification: db.prepare('UPDATE seller_notifications SET retry_at = unixepoch() + 60 WHERE order_id = ? AND status = ?'),
   byPayment: db.prepare('SELECT * FROM orders WHERE payment_id = ?'),
   attach: db.prepare(`UPDATE orders SET payment_id = ?, status = ?, payment_url = ? WHERE id = ? AND payment_id IS NULL`),
   status: db.prepare(`UPDATE orders SET status = ? WHERE id = ? AND status IN ('pending', 'waiting_for_capture')`),
@@ -217,11 +241,107 @@ async function createOrder(customer, body) {
   return orderView(store.byPayment.get(payment.id));
 }
 
+const telegramSecretHash = TELEGRAM_WEBHOOK_SECRET ?
+  createHmac('sha256', authKey).update(TELEGRAM_WEBHOOK_SECRET).digest() : null;
+
+function telegramAuthorized(header) {
+  return telegramSecretHash && typeof header === 'string' &&
+    timingSafeEqual(createHmac('sha256', authKey).update(header).digest(), telegramSecretHash);
+}
+
+async function sendTelegram(chatId, text) {
+  const response = await fetch('https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text }),
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!response.ok || !(await response.json()).ok) throw new RequestError(502, 'telegram_delivery');
+}
+
+const statusLabels = {
+  pending: 'Ожидает оплаты', waiting_for_capture: 'Оплата проверяется',
+  succeeded: 'Оплачено', canceled: 'Платёж отменён',
+};
+function orderSummary(order, details = false) {
+  const value = 'Заказ № ' + order.id.slice(0, 8).toUpperCase() + ' · ' +
+    (statusLabels[order.status] || 'Не оформлен') + ' · ' + order.amount.toLocaleString('ru-RU') + ' ₽';
+  if (!details) return value;
+  const lines = JSON.parse(order.items).map(item => {
+    const product = products.get(item.id);
+    return '• ' + item.name + ' · арт. ' + (product?.article || item.id) + ' · размер ' + item.size + ' × ' + item.qty;
+  });
+  // Telegram limits a text message to 4096 characters.
+  return [value, ...lines].join('\n').slice(0, 3800) + '\nСамовывоз: ' + PICKUP_ADDRESS.slice(0, 200);
+}
+
+async function botReply(update) {
+  const message = update.message;
+  if (message?.chat?.type !== 'private' || !Number.isSafeInteger(message.from?.id) ||
+      message.chat.id !== message.from.id || typeof message.text !== 'string') return;
+  const customer = String(message.from.id);
+  const seller = customer === TELEGRAM_SELLER_CHAT_ID;
+  const [command, orderNumber] = message.text.trim().split(/\s+/, 2);
+  switch (command.toLowerCase().split('@')[0]) {
+    case '/id':
+      return sendTelegram(customer, 'Ваш ID чата: ' + customer);
+    case '/start':
+    case '/help':
+      return sendTelegram(customer, 'GABILEEN\n/orders — последние заказы\n/status НОМЕР — статус заказа, например /status 54F74A71\n/id — ID этого чата');
+    case '/orders': {
+      const orders = seller ? store.recentForSeller.all() : store.recentForBuyer.all(customer);
+      return sendTelegram(customer, orders.length ? orders.map(order => orderSummary(order)).join('\n') +
+        '\n\nДля подробностей: /status НОМЕР' : 'Оформленных заказов пока нет.');
+    }
+    case '/status': {
+      if (!orderNumber || !/^(?:[a-f0-9]{8}|[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})$/i.test(orderNumber)) {
+        return sendTelegram(customer, 'Укажите номер заказа, например /status 54F74A71. Список заказов: /orders');
+      }
+      const prefix = orderNumber.toLowerCase() + '%';
+      const rows = seller ? store.statusForSeller.all(prefix) : store.statusForBuyer.all(prefix, customer);
+      if (rows.length !== 1) return sendTelegram(customer, rows.length ? 'Укажите полный номер заказа.' : 'Заказ не найден.');
+      let order = rows[0];
+      try { order = await refresh(order); } catch {
+        return sendTelegram(customer, orderSummary(order, true) + '\nНе удалось проверить оплату. Показан последний подтверждённый статус.');
+      }
+      return sendTelegram(customer, orderSummary(order, true));
+    }
+  }
+}
+
+let notifying = false;
+async function deliverSellerNotifications() {
+  if (!TELEGRAM_SELLER_CHAT_ID || notifying) return;
+  notifying = true;
+  try {
+    for (const order of store.pendingNotifications.all()) {
+      try {
+        await sendTelegram(TELEGRAM_SELLER_CHAT_ID, 'GABILEEN · тестовый заказ\n' + orderSummary({ ...order, status: order.event_status }, true));
+        store.markNotified.run(order.order_id, order.event_status);
+      } catch {
+        store.retryNotification.run(order.order_id, order.event_status);
+      }
+    }
+  } finally {
+    notifying = false;
+  }
+}
+
+if (TELEGRAM_SELLER_CHAT_ID) {
+  setInterval(() => {
+    deliverSellerNotifications().catch(() => console.error('Seller notification queue temporarily unavailable'));
+  }, 5000).unref();
+}
+
 async function handle(request) {
   const url = new URL(request.url, 'http://localhost');
   const path = url.pathname;
   if (request.method === 'GET' && path === '/health') return { ok: true };
   if (request.method === 'OPTIONS' && request.headers.origin === CATALOG_ORIGIN) return {};
+  if (request.method === 'POST' && path === '/checkout/telegram-webhook') {
+    if (!telegramAuthorized(request.headers['x-telegram-bot-api-secret-token'])) throw new RequestError(403, 'telegram_webhook');
+    await botReply(await readJson(request));
+    return {};
+  }
   if (request.method === 'POST' && path === '/checkout/webhook') {
     const { event, object } = await readJson(request);
     if (['payment.succeeded', 'payment.canceled'].includes(event) && typeof object?.id === 'string') {
