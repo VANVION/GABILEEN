@@ -14,21 +14,49 @@
     try { sessionStorage.setItem('gabileen_last_order', id); } catch {}
   }
 
+  const webQuery = new URLSearchParams(location.search);
+  const browserTest = () => !inTelegram() && webQuery.get('checkout') === 'test';
+
+  function guestAuthorization() {
+    try {
+      let key = localStorage.getItem('gabileen_guest_checkout_key');
+      if (!/^[a-f0-9]{64}$/.test(key || '')) {
+        key = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('');
+        localStorage.setItem('gabileen_guest_checkout_key', key);
+      }
+      const code = sessionStorage.getItem('gabileen_guest_test_code') ||
+        prompt(L('Введите код доступа к тестовой оплате', 'Enter the test checkout access code'))?.trim();
+      if (!/^[0-9a-f]{32,64}$/.test(code || '')) throw new Error('guest_test_code');
+      sessionStorage.setItem('gabileen_guest_test_code', code);
+      return 'guest ' + key + '.' + code;
+    } catch (error) {
+      if (error.message === 'guest_test_code') throw error;
+      throw new Error('guest_storage');
+    }
+  }
+
   async function request(method, body, orderId) {
     const response = await fetch(CHECKOUT_API + '/checkout/orders' + (orderId ? '?order=' + encodeURIComponent(orderId) : ''), {
       method,
       headers: {
-        Authorization: 'tma ' + tg.initData,
+        Authorization: browserTest() ? guestAuthorization() : 'tma ' + tg.initData,
         ...(body ? { 'Content-Type': 'application/json' } : {}),
       },
       body: body ? JSON.stringify(body) : undefined,
       signal: AbortSignal.timeout(15_000),
     });
-    if (!response.ok) throw new Error((await response.json()).error || 'checkout_unavailable');
+    if (!response.ok) {
+      const error = (await response.json()).error;
+      if (error === 'guest_test_code') sessionStorage.removeItem('gabileen_guest_test_code');
+      throw new Error(error || 'checkout_unavailable');
+    }
     return response.json();
   }
 
   function showError(error) {
+    if (error.message === 'guest_test_code') return L('Введите действующий код тестовой оплаты и повторите попытку.', 'Enter a valid checkout test code and try again.');
+    if (error.message === 'guest_disabled') return L('Тестовая оплата на сайте ещё не включена на сервере.', 'Website test checkout has not been enabled on the server.');
+    if (error.message === 'guest_storage') return L('Разрешите сохранение данных сайта и повторите попытку.', 'Allow site storage and try again.');
     if (error.message === 'telegram_session') return L('Откройте магазин в Telegram заново.', 'Reopen the shop in Telegram.');
     if (error.message === 'cart') return L('Проверьте размеры и количество в корзине. Максимум 5 единиц на позицию.', 'Check sizes and quantities. Up to 5 units per item.');
     if (error.message === 'receipt_configuration') return L('Для теста нужно настроить ставку НДС на сервере.', 'Set the VAT code on the server before testing.');
@@ -92,7 +120,8 @@
       history.querySelectorAll('[data-payment-url]').forEach(button => button.onclick = () => {
         selectedOrder = button.dataset.orderId;
         rememberOrder(selectedOrder);
-        tg.openLink(button.dataset.paymentUrl);
+        if (browserTest()) location.assign(button.dataset.paymentUrl);
+        else tg.openLink(button.dataset.paymentUrl);
       });
       status.textContent = '';
       if (current && ['pending', 'waiting_for_capture'].includes(current.status) && !document.hidden) {
@@ -175,11 +204,13 @@
   }
 
   function returnedOrder() {
+    const browserOrder = browserTest() ? webQuery.get('order') : null;
+    if (/^[a-f0-9-]{36}$/i.test(browserOrder || '')) return browserOrder;
     return /^checkout-order-([a-f0-9-]{36})$/i.exec(checkoutStart())?.[1];
   }
 
   function testCheckoutActive() {
-    return checkoutStart() === 'checkout-test' || Boolean(returnedOrder());
+    return browserTest() || checkoutStart() === 'checkout-test' || Boolean(returnedOrder());
   }
 
   function renderEntry() {
