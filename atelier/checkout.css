@@ -17,3 +17,19 @@
 .checkout-earlier { margin: 14px 0; }
 .checkout-earlier summary { cursor: pointer; padding: 8px 0; }
 #checkoutRefresh { min-height: 44px; }
+
+.checkout-entry { padding: 0 24px 16px; }
+.checkout-history-button {
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 1px solid #20211f;
+  border-radius: 6px;
+  background: #20211f;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.checkout-history-button:hover { background: #373833; }
+@media (min-width: 900px) { .checkout-entry { padding-inline: 48px; } }

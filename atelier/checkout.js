@@ -186,7 +186,7 @@
     entry.hidden = !testCheckoutActive();
     entry.replaceChildren();
     if (entry.hidden) return;
-    entry.innerHTML = '<button type="button" class="cart-clear" id="checkoutHistoryButton">' +
+    entry.innerHTML = '<button type="button" class="checkout-history-button" id="checkoutHistoryButton">' +
       L('Мои заказы', 'My orders') + '</button>';
     $('checkoutHistoryButton').onclick = () => openOrders();
     const id = returnedOrder();
