@@ -15,13 +15,15 @@ export function createPhoneLogin(db, key, gatewayToken, RequestError) {
       token_hash TEXT PRIMARY KEY, account TEXT NOT NULL, expires_at INTEGER NOT NULL
     );
   `);
-  const purge = db.prepare('DELETE FROM phone_challenges WHERE created_at < unixepoch() - 3600');
+  const purge = db.prepare('DELETE FROM phone_challenges WHERE created_at < unixepoch() - 86400');
   const purgeSessions = db.prepare('DELETE FROM phone_sessions WHERE expires_at <= unixepoch()');
-  const limits = db.prepare(`SELECT count(*) total,
-    coalesce(sum(account = ?), 0) for_account,
-    coalesce(sum(requester = ?), 0) for_requester,
+  const limits = db.prepare(`SELECT
+    coalesce(sum(created_at >= unixepoch() - 3600), 0) total,
+    coalesce(sum(requester LIKE 'phone-web:%'), 0) public_daily,
+    coalesce(sum(account = ? AND created_at >= unixepoch() - 3600), 0) for_account,
+    coalesce(sum(requester = ? AND created_at >= unixepoch() - 3600), 0) for_requester,
     coalesce(sum(account = ? AND created_at >= unixepoch() - 60), 0) recent
-    FROM phone_challenges WHERE created_at >= unixepoch() - 3600`);
+    FROM phone_challenges WHERE created_at >= unixepoch() - 86400`);
   const reserve = db.prepare('INSERT INTO phone_challenges (id, requester, account) VALUES (?, ?, ?)');
   const attach = db.prepare('UPDATE phone_challenges SET gateway_id = ? WHERE id = ?');
   const tryCode = db.prepare(`UPDATE phone_challenges SET attempts = attempts + 1
@@ -56,11 +58,12 @@ export function createPhoneLogin(db, key, gatewayToken, RequestError) {
     async start(requester, { phone }) {
       if (!gatewayToken) throw new RequestError(503, 'phone_disabled');
       if (typeof phone !== 'string' || !/^\+[1-9]\d{7,14}$/.test(phone)) throw new RequestError(422, 'phone_number');
-      const account = 'phone:' + digest('number', phone);
+      const isPublic = requester.startsWith('phone-web:');
+      const account = (isPublic ? 'phone-public:' : 'phone:') + digest('number', phone);
       const challenge = randomBytes(24).toString('hex');
       purge.run();
       const counts = limits.get(account, requester, account);
-      if (counts.for_account >= 3 || counts.for_requester >= 5 || counts.total >= 30 || counts.recent) {
+      if (counts.for_account >= 3 || counts.for_requester >= 5 || counts.total >= 30 || counts.recent || (isPublic && counts.public_daily >= 60)) {
         throw new RequestError(429, 'phone_limit');
       }
       reserve.run(challenge, requester, account);

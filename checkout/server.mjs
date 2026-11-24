@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { createPhoneLogin } from './phone-login.mjs';
 
 const { TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
-  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID, GUEST_CHECKOUT_TEST_CODE, TELEGRAM_GATEWAY_TOKEN } = process.env;
+  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID, GUEST_CHECKOUT_TEST_CODE, TELEGRAM_GATEWAY_TOKEN, PUBLIC_PHONE_LOGIN } = process.env;
 if (![TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
   TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS].every(Boolean)) {
   throw new Error('Checkout configuration is incomplete. See checkout/README.md.');
@@ -203,7 +203,9 @@ function checkoutCustomer(request) {
   const authorization = request.headers.authorization;
   if (authorization?.startsWith('phone ')) {
     if (request.headers.origin !== CATALOG_ORIGIN) throw new RequestError(403, 'phone_origin');
-    return phoneLogin.customer(authorization.slice(6));
+    const account = phoneLogin.customer(authorization.slice(6));
+    if (account.startsWith('phone-public:') && PUBLIC_PHONE_LOGIN !== '1') throw new RequestError(503, 'phone_disabled');
+    return account;
   }
   if (!authorization?.startsWith('guest ')) return authenticate(authorization);
   if (!guestTestCodeHash) throw new RequestError(503, 'guest_disabled');
@@ -386,14 +388,26 @@ async function handle(request) {
       phoneLogin.logout(authorization.slice(6));
       return {};
     }
-    if (!authorization.startsWith('guest ')) throw new RequestError(401, 'guest_test_code');
-    const requester = checkoutCustomer(request);
+    let requester;
+    if (authorization.startsWith('phone-web ')) {
+      if (PUBLIC_PHONE_LOGIN !== '1') throw new RequestError(503, 'phone_disabled');
+      if (request.headers.origin !== CATALOG_ORIGIN) throw new RequestError(403, 'phone_origin');
+      const browserKey = authorization.slice(10);
+      if (!/^[a-f0-9]{64}$/.test(browserKey)) throw new RequestError(401, 'phone_session');
+      requester = 'phone-web:' + createHmac('sha256', authKey).update(browserKey).digest('hex');
+    } else {
+      if (!authorization.startsWith('guest ')) throw new RequestError(401, 'guest_test_code');
+      requester = checkoutCustomer(request);
+    }
     if (path === '/checkout/phone/start') return phoneLogin.start(requester, await readJson(request));
     if (path === '/checkout/phone/verify') return phoneLogin.verify(requester, await readJson(request));
     throw new RequestError(404, 'route');
   }
   const customer = checkoutCustomer(request);
-  if (request.method === 'POST' && path === '/checkout/orders') return createOrder(customer, await readJson(request));
+  if (request.method === 'POST' && path === '/checkout/orders') {
+    if (customer.startsWith('phone-public:')) throw new RequestError(403, 'public_payment_disabled');
+    return createOrder(customer, await readJson(request));
+  }
   if (request.method === 'GET' && path === '/checkout/orders') {
     const orders = store.byCustomer.all(customer);
     const pending = orders.map((order, index) => ({ order, index }))
