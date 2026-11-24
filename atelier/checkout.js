@@ -15,10 +15,12 @@
   }
 
   const webQuery = new URLSearchParams(location.search);
-  const browserTest = () => !inTelegram() && webQuery.get('checkout') === 'test';
+  const maxContext = webQuery.get('app') === 'max';
+  const maxApp = () => maxContext ? window.WebApp : null;
+  const browserTest = () => !maxContext && !inTelegram() && webQuery.get('checkout') === 'test';
 
   const phoneTest = () => browserTest() && webQuery.get('login') === 'phone';
-  const publicPhone = () => !inTelegram() && !browserTest();
+  const publicPhone = () => !maxContext && !inTelegram() && !browserTest();
   const phoneAccount = () => phoneTest() || publicPhone();
   const phoneSessionKey = () => publicPhone() ? 'gabileen_public_phone_session' : 'gabileen_phone_session';
 
@@ -27,6 +29,11 @@
   }
 
   function orderAuthorization() {
+    if (maxContext) {
+      const data = maxApp()?.initData;
+      if (!data) throw new Error('max_session');
+      return 'max ' + data;
+    }
     if (phoneAccount()) {
       const token = phoneSession();
       if (!token) throw new Error('phone_session');
@@ -98,6 +105,8 @@
   }
 
   function showError(error) {
+    if (error.message === 'max_disabled') return L('Кабинет MAX пока не включён на сервере.', 'The MAX account is not enabled on the server yet.');
+    if (error.message === 'max_session') return L('Откройте каталог заново из бота GABILEEN в MAX.', 'Reopen the catalogue from the GABILEEN bot in MAX.');
     if (error.message === 'checkout_timeout') return L('Сервер оплаты не ответил за 15 секунд.', 'The payment server did not respond within 15 seconds.');
     if (error.message === 'checkout_network') return L('Браузер не смог подключиться к pay.gabileen.ru.', 'The browser could not connect to pay.gabileen.ru.');
     if (/^checkout_http_\d{3}$/.test(error.message)) return L('Сервер оплаты вернул HTTP ', 'Payment server returned HTTP ') + error.message.slice(-3) + '.';
@@ -415,11 +424,11 @@
   }
 
   function testCheckoutActive() {
-    return browserTest() || checkoutStart() === 'checkout-test' || Boolean(returnedOrder());
+    return !maxContext && (browserTest() || checkoutStart() === 'checkout-test' || Boolean(returnedOrder()));
   }
 
   function renderEntry() {
-    entry.hidden = !testCheckoutActive() && !publicPhone();
+    entry.hidden = !maxContext && !testCheckoutActive() && !publicPhone();
     entry.replaceChildren();
     if (entry.hidden) return;
     entry.innerHTML = '<button type="button" class="checkout-history-button" id="checkoutHistoryButton">' +
@@ -459,4 +468,13 @@
   const originalRender = render;
   render = function () { originalRender(); renderEntry(); };
   renderEntry();
+  if (maxContext) {
+    const bridge = document.createElement('script');
+    bridge.src = 'https://st.max.ru/js/max-web-app.js';
+    bridge.onload = () => {
+      maxApp()?.ready?.();
+      renderEntry();
+    };
+    document.head.append(bridge);
+  }
 })();

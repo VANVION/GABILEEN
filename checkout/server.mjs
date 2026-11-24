@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { createPhoneLogin } from './phone-login.mjs';
 
 const { TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
-  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID, GUEST_CHECKOUT_TEST_CODE, TELEGRAM_GATEWAY_TOKEN, PUBLIC_PHONE_LOGIN } = process.env;
+  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID, GUEST_CHECKOUT_TEST_CODE, TELEGRAM_GATEWAY_TOKEN, PUBLIC_PHONE_LOGIN, MAX_BOT_TOKEN } = process.env;
 if (![TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
   TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS].every(Boolean)) {
   throw new Error('Checkout configuration is incomplete. See checkout/README.md.');
@@ -73,6 +73,7 @@ const store = {
   status: db.prepare(`UPDATE orders SET status = ? WHERE id = ? AND status IN ('pending', 'waiting_for_capture')`),
 };
 const authKey = createHmac('sha256', 'WebAppData').update(TELEGRAM_BOT_TOKEN).digest();
+const maxAuthKey = MAX_BOT_TOKEN ? createHmac('sha256', 'WebAppData').update(MAX_BOT_TOKEN).digest() : null;
 const guestTestCodeHash = /^[0-9a-f]{32,64}$/.test(GUEST_CHECKOUT_TEST_CODE || '') ?
   createHmac('sha256', authKey).update(GUEST_CHECKOUT_TEST_CODE).digest() : null;
 const yookassaAuthorization = 'Basic ' + Buffer.from(YOOKASSA_SHOP_ID + ':' + YOOKASSA_SECRET_KEY).toString('base64');
@@ -87,23 +88,22 @@ class RequestError extends Error {
 
 const phoneLogin = createPhoneLogin(db, authKey, TELEGRAM_GATEWAY_TOKEN, RequestError);
 
-function authenticate(header) {
-  const raw = typeof header === 'string' && header.startsWith('tma ') ? header.slice(4) : '';
+function authenticateMiniApp(raw, key, errorCode) {
   const data = new URLSearchParams(raw);
   const hash = data.get('hash');
   data.delete('hash');
   data.sort();
   const signed = [...data].map(([key, value]) => key + '=' + value).join('\n');
-  const expected = createHmac('sha256', authKey).update(signed).digest();
+  const expected = createHmac('sha256', key).update(signed).digest();
   const timestamp = Number(data.get('auth_date'));
   const age = Date.now() / 1000 - timestamp;
   if (!hash || !/^[a-f0-9]{64}$/i.test(hash) || !timingSafeEqual(Buffer.from(hash, 'hex'), expected) ||
       !Number.isSafeInteger(timestamp) || age < -30 || age > 3600) {
-    throw new RequestError(401, 'telegram_session');
+    throw new RequestError(401, errorCode);
   }
   let user;
-  try { user = JSON.parse(data.get('user')); } catch { throw new RequestError(401, 'telegram_session'); }
-  if (!Number.isSafeInteger(user?.id) || user.id <= 0) throw new RequestError(401, 'telegram_session');
+  try { user = JSON.parse(data.get('user')); } catch { throw new RequestError(401, errorCode); }
+  if (!Number.isSafeInteger(user?.id) || user.id <= 0) throw new RequestError(401, errorCode);
   return String(user.id);
 }
 
@@ -205,13 +205,20 @@ function receiptFor(items, emailValue) {
 
 function checkoutCustomer(request) {
   const authorization = request.headers.authorization;
+  if (authorization?.startsWith('max ')) {
+    if (!maxAuthKey) throw new RequestError(503, 'max_disabled');
+    if (request.headers.origin !== CATALOG_ORIGIN) throw new RequestError(403, 'max_origin');
+    return 'max:' + authenticateMiniApp(authorization.slice(4), maxAuthKey, 'max_session');
+  }
   if (authorization?.startsWith('phone ')) {
     if (request.headers.origin !== CATALOG_ORIGIN) throw new RequestError(403, 'phone_origin');
     const account = phoneLogin.customer(authorization.slice(6));
     if (account.startsWith('phone-public:') && PUBLIC_PHONE_LOGIN !== '1') throw new RequestError(503, 'phone_disabled');
     return account;
   }
-  if (!authorization?.startsWith('guest ')) return authenticate(authorization);
+  if (!authorization?.startsWith('guest ')) {
+    return authenticateMiniApp(authorization?.startsWith('tma ') ? authorization.slice(4) : '', authKey, 'telegram_session');
+  }
   if (!guestTestCodeHash) throw new RequestError(503, 'guest_disabled');
   const match = /^guest ([0-9a-f]{64})\.([0-9a-f]{32,64})$/.exec(authorization);
   if (!match || request.headers.origin !== CATALOG_ORIGIN ||
@@ -409,7 +416,7 @@ async function handle(request) {
   }
   const customer = checkoutCustomer(request);
   if (request.method === 'POST' && path === '/checkout/orders') {
-    if (customer.startsWith('phone-public:')) throw new RequestError(403, 'public_payment_disabled');
+    if (customer.startsWith('phone-public:') || customer.startsWith('max:')) throw new RequestError(403, 'public_payment_disabled');
     return createOrder(customer, await readJson(request));
   }
   if (request.method === 'GET' && path === '/checkout/orders') {
