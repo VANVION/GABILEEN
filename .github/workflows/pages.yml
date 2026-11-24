@@ -28,7 +28,7 @@ jobs:
         run: python3 tools/build_pages.py
         env:
           SITE_URL: ${{ steps.pages.outputs.base_url }}
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: .
       - id: deployment
