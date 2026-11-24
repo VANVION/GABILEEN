@@ -78,7 +78,11 @@ const guestTestCodeHash = /^[0-9a-f]{32,64}$/.test(GUEST_CHECKOUT_TEST_CODE || '
 const yookassaAuthorization = 'Basic ' + Buffer.from(YOOKASSA_SHOP_ID + ':' + YOOKASSA_SECRET_KEY).toString('base64');
 
 class RequestError extends Error {
-  constructor(status, message) { super(message); this.status = status; }
+  constructor(status, message, retryAfter) {
+    super(message);
+    this.status = status;
+    this.retryAfter = retryAfter;
+  }
 }
 
 const phoneLogin = createPhoneLogin(db, authKey, TELEGRAM_GATEWAY_TOKEN, RequestError);
@@ -435,6 +439,11 @@ createServer({ requestTimeout: 15_000 }, async (request, response) => {
     response.end(JSON.stringify(await handle(request)));
   } catch (error) {
     response.statusCode = error instanceof RequestError ? error.status : 503;
-    response.end(JSON.stringify({ error: error instanceof RequestError ? error.message : 'checkout_unavailable' }));
+    const retryAfter = error instanceof RequestError ? error.retryAfter : undefined;
+    if (retryAfter) response.setHeader('Retry-After', String(retryAfter));
+    response.end(JSON.stringify({
+      error: error instanceof RequestError ? error.message : 'checkout_unavailable',
+      retry_after: retryAfter,
+    }));
   }
 }).listen(Number(process.env.PORT || 8787), process.env.BIND_ADDRESS || '127.0.0.1');

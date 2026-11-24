@@ -44,3 +44,5 @@
   pointer-events: none;
 }
 .checkout-phone-field .cart-field { padding-inline-start: 38px; }
+
+#phoneLoginReset[hidden] { display: none; }

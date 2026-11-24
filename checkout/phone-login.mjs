@@ -18,11 +18,16 @@ export function createPhoneLogin(db, key, gatewayToken, RequestError) {
   const purge = db.prepare('DELETE FROM phone_challenges WHERE created_at < unixepoch() - 86400');
   const purgeSessions = db.prepare('DELETE FROM phone_sessions WHERE expires_at <= unixepoch()');
   const limits = db.prepare(`SELECT
-    coalesce(sum(created_at >= unixepoch() - 3600), 0) total,
-    coalesce(sum(requester LIKE 'phone-web:%'), 0) public_daily,
-    coalesce(sum(account = ? AND created_at >= unixepoch() - 3600), 0) for_account,
-    coalesce(sum(requester = ? AND created_at >= unixepoch() - 3600), 0) for_requester,
-    coalesce(sum(account = ? AND created_at >= unixepoch() - 60), 0) recent
+    unixepoch() AS now,
+    max(created_at) FILTER (WHERE account = :account) AS last_for_account,
+    min(created_at) FILTER (WHERE account = :account AND created_at >= unixepoch() - 3600) AS first_for_account,
+    count(*) FILTER (WHERE account = :account AND created_at >= unixepoch() - 3600) AS for_account,
+    min(created_at) FILTER (WHERE requester = :requester AND created_at >= unixepoch() - 3600) AS first_for_requester,
+    count(*) FILTER (WHERE requester = :requester AND created_at >= unixepoch() - 3600) AS for_requester,
+    min(created_at) FILTER (WHERE created_at >= unixepoch() - 3600) AS first_hourly,
+    count(*) FILTER (WHERE created_at >= unixepoch() - 3600) AS total,
+    min(created_at) FILTER (WHERE requester LIKE 'phone-web:%') AS first_public,
+    count(*) FILTER (WHERE requester LIKE 'phone-web:%') AS public_daily
     FROM phone_challenges WHERE created_at >= unixepoch() - 86400`);
   const reserve = db.prepare('INSERT INTO phone_challenges (id, requester, account) VALUES (?, ?, ?)');
   const attach = db.prepare('UPDATE phone_challenges SET gateway_id = ? WHERE id = ?');
@@ -62,10 +67,16 @@ export function createPhoneLogin(db, key, gatewayToken, RequestError) {
       const account = (isPublic ? 'phone-public:' : 'phone:') + digest('number', phone);
       const challenge = randomBytes(24).toString('hex');
       purge.run();
-      const counts = limits.get(account, requester, account);
-      if (counts.for_account >= 3 || counts.for_requester >= 5 || counts.total >= 30 || counts.recent || (isPublic && counts.public_daily >= 60)) {
-        throw new RequestError(429, 'phone_limit');
-      }
+      const counts = limits.get({ account, requester });
+      const retryAfter = Math.ceil(Math.max(
+        0,
+        counts.last_for_account === null ? 0 : counts.last_for_account + 61 - counts.now,
+        counts.for_account >= 3 ? counts.first_for_account + 3601 - counts.now : 0,
+        counts.for_requester >= 5 ? counts.first_for_requester + 3601 - counts.now : 0,
+        counts.total >= 30 ? counts.first_hourly + 3601 - counts.now : 0,
+        isPublic && counts.public_daily >= 60 ? counts.first_public + 86401 - counts.now : 0,
+      ));
+      if (retryAfter > 0) throw new RequestError(429, 'phone_limit', retryAfter);
       reserve.run(challenge, requester, account);
       const result = await call('sendVerificationMessage', { phone_number: phone, code_length: 6, ttl: codeLifetime });
       if (typeof result.request_id !== 'string' || !result.request_id) throw new RequestError(502, 'phone_gateway');

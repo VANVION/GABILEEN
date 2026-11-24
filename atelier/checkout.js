@@ -90,7 +90,9 @@
     }
     if (!response.ok) {
       if (result?.error === 'guest_test_code') sessionStorage.removeItem('gabileen_guest_test_code');
-      throw new Error(result?.error || 'checkout_http_' + response.status);
+      const error = new Error(result?.error || 'checkout_http_' + response.status);
+      error.retryAfter = result?.retry_after;
+      throw error;
     }
     return result;
   }
@@ -104,7 +106,14 @@
     if (error.message === 'phone_number') return L('Введите номер с кодом страны, например +79991234567.', 'Enter a phone number with its country code.');
     if (error.message === 'phone_code') return L('Код не подошёл. Проверьте код из Telegram.', 'Check the code from Telegram.');
     if (error.message === 'phone_expired') return L('Код истёк. Запросите новый.', 'The code expired. Request a new one.');
-    if (error.message === 'phone_limit') return L('Слишком много запросов. Попробуйте позже.', 'Too many requests. Try again later.');
+    if (error.message === 'phone_limit') {
+      if (!Number.isFinite(error.retryAfter) || error.retryAfter <= 0) {
+        return L('Слишком много запросов. Попробуйте позже.', 'Too many requests. Try again later.');
+      }
+      const minutes = Math.ceil(error.retryAfter / 60);
+      const delay = error.retryAfter < 60 ? error.retryAfter + L(' сек.', ' sec.') : minutes + L(' мин.', ' min.');
+      return L('Новый код можно запросить через ', 'You can request a new code in ') + delay;
+    }
     if (error.message === 'phone_gateway') return L('Telegram не подтвердил запрос. Проверьте номер и попробуйте позже.', 'Telegram could not process the request. Check your number and try again later.');
     if (error.message === 'phone_disabled') return L('Вход по телефону пока недоступен.', 'Phone sign-in is temporarily unavailable.');
     if (error.message === 'phone_session') return L('Войдите по телефону ещё раз.', 'Sign in with your phone again.');
