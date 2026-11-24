@@ -185,6 +185,42 @@
     }
   }
 
+  function russianPhoneDigits(value) {
+    if (value.trim().startsWith('+') && !value.trim().startsWith('+7')) return '';
+    const digits = value.replace(/\D/g, '');
+    if (digits.length === 11 && /^[78]/.test(digits)) return digits.slice(1);
+    return digits;
+  }
+
+  function formatRussianPhone(digits) {
+    if (!digits) return '';
+    const area = '(' + digits.slice(0, 3);
+    if (digits.length < 4) return area;
+    const groups = [digits.slice(3, 6), digits.slice(6, 8), digits.slice(8, 10)].filter(Boolean);
+    return area + ') ' + groups.join('-');
+  }
+
+  function formatPhoneInput(input) {
+    const original = input.value;
+    const digits = russianPhoneDigits(original);
+    if (digits.length > 10 || (original.trim().startsWith('+') && !digits)) return;
+    const raw = original.replace(/\D/g, '');
+    const caret = input.selectionStart ?? original.length;
+    const before = original.slice(0, caret).replace(/\D/g, '').length;
+    const includedPrefix = raw.length === 11 && /^[78]/.test(raw);
+    const digitTarget = Math.min(digits.length, Math.max(0, before - Number(includedPrefix)));
+    const formatted = formatRussianPhone(digits);
+    if (formatted === original) return;
+    input.value = formatted;
+    if (caret === original.length) return;
+    let index = 0;
+    let seen = 0;
+    while (index < formatted.length && seen < digitTarget) {
+      if (/\d/.test(formatted[index++])) seen++;
+    }
+    input.setSelectionRange(index, index);
+  }
+
   function showPhoneLogin(orderId) {
     ordersRequest++;
     clearTimeout(refreshTimer);
@@ -192,7 +228,8 @@
     ordersBox.innerHTML = '<div class="ct-sheet checkout-sheet"><button class="ct-close" id="phoneLoginClose" type="button" aria-label="' +
       L('Закрыть', 'Close') + '">&#10005;</button><h2 class="ct-title">' + L('Вход по телефону', 'Sign in with your phone') +
       '</h2><form id="phoneLoginForm"><label for="phoneInput">' + L('Номер телефона', 'Phone number') +
-      '</label><input class="cart-field" id="phoneInput" type="tel" autocomplete="tel" placeholder="+7" required maxlength="24">' +
+      '</label><div id="phoneLoginField" class="checkout-phone-field"><span id="phoneCountryCode" aria-hidden="true">+7</span>' +
+      '<input class="cart-field" id="phoneInput" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(999) 123-45-67" aria-describedby="phoneLoginHint" required></div>' +
       '<p id="phoneLoginHint">' + L('Отправим одноразовый код в Telegram на этот номер.', 'We will send a one-time code to Telegram for this number.') +
       '</p><button class="addcart-btn" id="phoneLoginSubmit">' + L('Получить код', 'Get code') +
       '</button> <button class="cart-clear" id="phoneLoginReset" type="button" hidden>' + L('Изменить номер', 'Change number') +
@@ -205,6 +242,14 @@
     const button = $('phoneLoginSubmit');
     const feedback = $('phoneLoginFeedback');
     let challenge;
+    input.oninput = () => { if (!challenge) formatPhoneInput(input); };
+    input.onbeforeinput = event => {
+      if (challenge || event.inputType !== 'deleteContentBackward' || input.selectionStart !== input.selectionEnd) return;
+      const cursor = input.selectionStart;
+      const left = input.value.slice(0, cursor);
+      const match = /\d[^\d]+$/.exec(left);
+      if (match) input.setSelectionRange(match.index, cursor);
+    };
     $('phoneLoginReset').onclick = () => showPhoneLogin(orderId);
     form.onsubmit = async event => {
       event.preventDefault();
@@ -218,10 +263,18 @@
           try { localStorage.setItem(phoneSessionKey, result.token); } catch { throw new Error('guest_storage'); }
           openOrders(orderId);
         } else {
-          const phone = input.value.trim().replace(/[\s()-]/g, '');
+          const digits = russianPhoneDigits(input.value);
+          if (digits.length !== 10) {
+            feedback.textContent = L('Введите 10 цифр номера после +7.', 'Enter 10 digits after +7.');
+            input.focus();
+            return;
+          }
+          const phone = '+7' + digits;
           const result = await request('POST', { phone }, null, '/checkout/phone/start', guestAuthorization());
           if (!form.isConnected) return;
           challenge = result.challenge;
+          $('phoneCountryCode').hidden = true;
+          $('phoneLoginField').classList.remove('checkout-phone-field');
           input.type = 'text';
           input.inputMode = 'numeric';
           input.autocomplete = 'one-time-code';

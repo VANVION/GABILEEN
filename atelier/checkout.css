@@ -33,3 +33,14 @@
 }
 .checkout-history-button:hover { background: #373833; }
 @media (min-width: 900px) { .checkout-entry { padding-inline: 48px; } }
+
+.checkout-phone-field { position: relative; }
+.checkout-phone-field > span {
+  position: absolute;
+  top: 0;
+  left: 14px;
+  line-height: 42px;
+  font-size: 14px;
+  pointer-events: none;
+}
+.checkout-phone-field .cart-field { padding-inline-start: 38px; }
