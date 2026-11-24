@@ -2,9 +2,10 @@ import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
+import { createPhoneLogin } from './phone-login.mjs';
 
 const { TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
-  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID, GUEST_CHECKOUT_TEST_CODE } = process.env;
+  TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS, RECEIPT_VAT_CODE, RECEIPT_TAX_SYSTEM_CODE, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_SELLER_CHAT_ID, GUEST_CHECKOUT_TEST_CODE, TELEGRAM_GATEWAY_TOKEN } = process.env;
 if (![TELEGRAM_BOT_TOKEN, YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY, CATALOG_ORIGIN,
   TELEGRAM_RETURN_URL, ORDERS_DB, PICKUP_ADDRESS].every(Boolean)) {
   throw new Error('Checkout configuration is incomplete. See checkout/README.md.');
@@ -79,6 +80,8 @@ const yookassaAuthorization = 'Basic ' + Buffer.from(YOOKASSA_SHOP_ID + ':' + YO
 class RequestError extends Error {
   constructor(status, message) { super(message); this.status = status; }
 }
+
+const phoneLogin = createPhoneLogin(db, authKey, TELEGRAM_GATEWAY_TOKEN, RequestError);
 
 function authenticate(header) {
   const raw = typeof header === 'string' && header.startsWith('tma ') ? header.slice(4) : '';
@@ -198,6 +201,10 @@ function receiptFor(items, emailValue) {
 
 function checkoutCustomer(request) {
   const authorization = request.headers.authorization;
+  if (authorization?.startsWith('phone ')) {
+    if (request.headers.origin !== CATALOG_ORIGIN) throw new RequestError(403, 'phone_origin');
+    return phoneLogin.customer(authorization.slice(6));
+  }
   if (!authorization?.startsWith('guest ')) return authenticate(authorization);
   if (!guestTestCodeHash) throw new RequestError(503, 'guest_disabled');
   const match = /^guest ([0-9a-f]{64})\.([0-9a-f]{32,64})$/.exec(authorization);
@@ -226,10 +233,12 @@ async function createOrder(customer, body) {
   const fingerprint = createHmac('sha256', authKey).update(JSON.stringify(receipt)).digest('hex');
   store.saveReceipt.run(order.id, fingerprint);
   if (store.receipt.get(order.id).fingerprint !== fingerprint) throw new RequestError(409, 'receipt_retry');
-  const guest = customer.startsWith('guest:');
-  const returnUrl = new URL(guest ? '/GABILEEN/' : TELEGRAM_RETURN_URL, CATALOG_ORIGIN);
-  if (guest) {
+  const phone = customer.startsWith('phone:');
+  const web = phone || customer.startsWith('guest:');
+  const returnUrl = new URL(web ? '/GABILEEN/' : TELEGRAM_RETURN_URL, CATALOG_ORIGIN);
+  if (web) {
     returnUrl.searchParams.set('checkout', 'test');
+    if (phone) returnUrl.searchParams.set('login', 'phone');
     returnUrl.searchParams.set('order', order.id);
   } else {
     returnUrl.searchParams.set('startapp', 'checkout-order-' + order.id);
@@ -369,6 +378,19 @@ async function handle(request) {
       if (order) await refresh(order); // Trust the authenticated YooKassa API, never the incoming event payload.
     }
     return {};
+  }
+  if (request.method === 'POST' && path.startsWith('/checkout/phone/')) {
+    const authorization = request.headers.authorization || '';
+    if (path === '/checkout/phone/logout' && authorization.startsWith('phone ')) {
+      checkoutCustomer(request);
+      phoneLogin.logout(authorization.slice(6));
+      return {};
+    }
+    if (!authorization.startsWith('guest ')) throw new RequestError(401, 'guest_test_code');
+    const requester = checkoutCustomer(request);
+    if (path === '/checkout/phone/start') return phoneLogin.start(requester, await readJson(request));
+    if (path === '/checkout/phone/verify') return phoneLogin.verify(requester, await readJson(request));
+    throw new RequestError(404, 'route');
   }
   const customer = checkoutCustomer(request);
   if (request.method === 'POST' && path === '/checkout/orders') return createOrder(customer, await readJson(request));

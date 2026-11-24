@@ -17,6 +17,22 @@
   const webQuery = new URLSearchParams(location.search);
   const browserTest = () => !inTelegram() && webQuery.get('checkout') === 'test';
 
+  const phoneTest = () => browserTest() && webQuery.get('login') === 'phone';
+  const phoneSessionKey = 'gabileen_phone_session';
+
+  function phoneSession() {
+    try { return localStorage.getItem(phoneSessionKey); } catch { return null; }
+  }
+
+  function orderAuthorization() {
+    if (phoneTest()) {
+      const token = phoneSession();
+      if (!token) throw new Error('phone_session');
+      return 'phone ' + token;
+    }
+    return browserTest() ? guestAuthorization() : 'tma ' + tg.initData;
+  }
+
   function guestAuthorization() {
     try {
       let key = localStorage.getItem('gabileen_guest_checkout_key');
@@ -35,15 +51,14 @@
     }
   }
 
-  async function request(method, body, orderId) {
-    const authorization = browserTest() ? guestAuthorization() : 'tma ' + tg.initData;
+  async function request(method, body, orderId, path = '/checkout/orders', authorization = orderAuthorization()) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     let response;
     let result;
     try {
       try {
-        response = await fetch(CHECKOUT_API + '/checkout/orders' + (orderId ? '?order=' + encodeURIComponent(orderId) : ''), {
+        response = await fetch(CHECKOUT_API + path + (orderId ? '?order=' + encodeURIComponent(orderId) : ''), {
           method, credentials: 'omit',
           headers: { Authorization: authorization, ...(body ? { 'Content-Type': 'application/json' } : {}) },
           body: body ? JSON.stringify(body) : undefined,
@@ -73,6 +88,13 @@
     if (/^checkout_http_\d{3}$/.test(error.message)) return L('Сервер оплаты вернул HTTP ', 'Payment server returned HTTP ') + error.message.slice(-3) + '.';
     if (error.message === 'payment_provider') return L('ЮKassa не подтвердила запрос. Попробуйте обновить статус.', 'YooKassa did not confirm the request. Try refreshing the status.');
     if (error.message === 'checkout_response') return L('Получен неожиданный ответ сервера заказов.', 'Unexpected response from the order server.');
+    if (error.message === 'phone_number') return L('Введите номер с кодом страны, например +79991234567.', 'Enter a phone number with its country code.');
+    if (error.message === 'phone_code') return L('Код не подошёл. Проверьте код из Telegram.', 'Check the code from Telegram.');
+    if (error.message === 'phone_expired') return L('Код истёк. Запросите новый.', 'The code expired. Request a new one.');
+    if (error.message === 'phone_limit') return L('Слишком много запросов. Попробуйте позже.', 'Too many requests. Try again later.');
+    if (error.message === 'phone_gateway') return L('Telegram не подтвердил запрос. Проверьте номер и попробуйте позже.', 'Telegram could not process the request. Check your number and try again later.');
+    if (error.message === 'phone_disabled') return L('Вход по телефону ещё не включён на сервере.', 'Phone sign-in is not enabled yet.');
+    if (error.message === 'phone_session') return L('Войдите по телефону ещё раз.', 'Sign in with your phone again.');
     if (error.message === 'guest_test_code') return L('Введите действующий код тестовой оплаты и повторите попытку.', 'Enter a valid checkout test code and try again.');
     if (error.message === 'guest_disabled') return L('Тестовая оплата на сайте ещё не включена на сервере.', 'Website test checkout has not been enabled on the server.');
     if (error.message === 'guest_storage') return L('Разрешите сохранение данных сайта и повторите попытку.', 'Allow site storage and try again.');
@@ -149,6 +171,11 @@
       }
     } catch (error) {
       if (generation === ordersRequest) {
+        if (phoneTest() && error.message === 'phone_session') {
+          localStorage.removeItem(phoneSessionKey);
+          showPhoneLogin(selectedOrder);
+          return;
+        }
         status.textContent = showError(error) + (selectedOrder ?
           L(' Заказ № ', ' Order #') + selectedOrder.slice(0, 8).toUpperCase() +
           L('. Если вы уже оплатили, не повторяйте платёж.', '. If you have already paid, do not pay again.') : '');
@@ -158,23 +185,95 @@
     }
   }
 
+  function showPhoneLogin(orderId) {
+    ordersRequest++;
+    clearTimeout(refreshTimer);
+    ordersBox.classList.add('show');
+    ordersBox.innerHTML = '<div class="ct-sheet checkout-sheet"><button class="ct-close" id="phoneLoginClose" type="button" aria-label="' +
+      L('Закрыть', 'Close') + '">&#10005;</button><h2 class="ct-title">' + L('Вход по телефону', 'Sign in with your phone') +
+      '</h2><form id="phoneLoginForm"><label for="phoneInput">' + L('Номер телефона', 'Phone number') +
+      '</label><input class="cart-field" id="phoneInput" type="tel" autocomplete="tel" placeholder="+7" required maxlength="24">' +
+      '<p id="phoneLoginHint">' + L('Отправим одноразовый код в Telegram на этот номер.', 'We will send a one-time code to Telegram for this number.') +
+      '</p><button class="addcart-btn" id="phoneLoginSubmit">' + L('Получить код', 'Get code') +
+      '</button> <button class="cart-clear" id="phoneLoginReset" type="button" hidden>' + L('Изменить номер', 'Change number') +
+      '</button><p id="phoneLoginFeedback" class="checkout-muted" aria-live="polite"></p></form></div>';
+    const close = () => { ordersBox.replaceChildren(); ordersBox.classList.remove('show'); };
+    $('phoneLoginClose').onclick = close;
+    ordersBox.onclick = event => { if (event.target === ordersBox) close(); };
+    const form = $('phoneLoginForm');
+    const input = $('phoneInput');
+    const button = $('phoneLoginSubmit');
+    const feedback = $('phoneLoginFeedback');
+    let challenge;
+    $('phoneLoginReset').onclick = () => showPhoneLogin(orderId);
+    form.onsubmit = async event => {
+      event.preventDefault();
+      if (button.disabled) return;
+      button.disabled = true;
+      feedback.textContent = '';
+      try {
+        if (challenge) {
+          const result = await request('POST', { challenge, code: input.value.trim() }, null, '/checkout/phone/verify', guestAuthorization());
+          if (!form.isConnected) return;
+          try { localStorage.setItem(phoneSessionKey, result.token); } catch { throw new Error('guest_storage'); }
+          openOrders(orderId);
+        } else {
+          const phone = input.value.trim().replace(/[\s()-]/g, '');
+          const result = await request('POST', { phone }, null, '/checkout/phone/start', guestAuthorization());
+          if (!form.isConnected) return;
+          challenge = result.challenge;
+          input.type = 'text';
+          input.inputMode = 'numeric';
+          input.autocomplete = 'one-time-code';
+          input.maxLength = 6;
+          input.value = '';
+          input.placeholder = '123456';
+          form.querySelector('label').textContent = L('Код из Telegram', 'Telegram code');
+          $('phoneLoginHint').textContent = L('Введите шесть цифр. Код действует две минуты.', 'Enter six digits. The code expires in two minutes.');
+          $('phoneLoginReset').hidden = false;
+          button.textContent = L('Войти', 'Sign in');
+          input.focus();
+        }
+      } catch (error) {
+        if (form.isConnected) feedback.textContent = showError(error);
+      } finally {
+        button.disabled = false;
+      }
+    };
+  }
+
   async function openOrders(id = null) {
     selectedOrder = id || rememberedOrder();
+    if (phoneTest() && !phoneSession()) return showPhoneLogin(selectedOrder);
     ordersBox.classList.add('show');
     ordersBox.innerHTML = '<div class="ct-sheet checkout-sheet"><button class="ct-close" id="checkoutOrdersClose" aria-label="' +
       L('Закрыть', 'Close') + '">&#10005;</button><h2 class="ct-title">' + L('Мои заказы', 'My orders') +
       '</h2><div id="checkoutHistory"></div><p id="checkoutOrderFeedback" class="checkout-muted" aria-live="polite"></p>' +
-      '<button class="cart-clear" id="checkoutRefresh">' + L('Обновить статус', 'Refresh status') + '</button></div>';
+      '<button class="cart-clear" id="checkoutRefresh">' + L('Обновить статус', 'Refresh status') + '</button>' +
+      (phoneTest() ? ' <button class="cart-clear" id="checkoutLogout" type="button">' + L('Выйти', 'Sign out') + '</button>' : '') + '</div>';
     const close = () => { ordersRequest++; clearTimeout(refreshTimer); ordersBox.classList.remove('show'); };
     $('checkoutOrdersClose').onclick = close;
     $('checkoutRefresh').onclick = refreshOrders;
+    const logout = $('checkoutLogout');
+    if (logout) logout.onclick = async () => {
+      logout.disabled = true;
+      try {
+        await request('POST', {}, null, '/checkout/phone/logout');
+        localStorage.removeItem(phoneSessionKey);
+        showPhoneLogin(null);
+      } catch (error) {
+        if (logout.isConnected) $('checkoutOrderFeedback').textContent = showError(error);
+      } finally {
+        logout.disabled = false;
+      }
+    };
     ordersBox.onclick = event => { if (event.target === ordersBox) close(); };
     await refreshOrders();
   }
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearTimeout(refreshTimer);
-    else if (ordersBox.classList.contains('show')) refreshOrders();
+    else if (ordersBox.classList.contains('show') && $('checkoutRefresh')) refreshOrders();
   });
 
   function getCheckoutKey(cart) {
@@ -191,6 +290,11 @@
   async function pay() {
     const button = $('checkoutPay');
     if (!button || cartRequest) return;
+    if (phoneTest() && !phoneSession()) {
+      closeCart();
+      showPhoneLogin(null);
+      return;
+    }
     const receiptEmail = $('checkoutReceiptEmail');
     if (!receiptEmail.reportValidity()) return;
     const cart = CART.map(({ id, size, qty }) => ({ id, size, qty }));
